@@ -24,13 +24,18 @@ OUT_DIR = os.path.join(BASE_DIR, "output")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 
-def _panen(jumlah: int, negara: str, protokol: str, geo: bool):
+def _panen(jumlah: int, negara: str, protokol: str, geo: bool, tier: str = ""):
     print(f"\n  🌾 Panen proxy (target {jumlah} hidup"
           + (f", negara {negara.upper()}" if negara else "") + ") ...")
     kandidat = harvest(protocols=[protokol] if protokol != "all" else None,
                        country=negara)
     print(f"  📦 Dapat {len(kandidat):,} kandidat mentah")
     hidup = check_pool_sync(kandidat, target=jumlah)
+    if tier:
+        from .tiers import filter_tier
+        sebelum = len(hidup)
+        hidup = filter_tier(hidup, tier)
+        print(f"  🎚️  Tier {tier}: {sebelum} -> {len(hidup)} proxy")
     if geo and hidup:
         print("  🌍 Mengisi data negara (batch) ...")
         enrich_geo(hidup)
@@ -49,7 +54,27 @@ def _panen(jumlah: int, negara: str, protokol: str, geo: bool):
 
 
 def _cmd_panen(a):
-    _panen(a.jumlah, a.negara, a.protokol, a.geo)
+    _panen(a.jumlah, a.negara, a.protokol, a.geo, tier=a.tier)
+
+
+def _cmd_blacklist(a):
+    from .blacklist import (add_to_blacklist, load_blacklist,
+                            remove_from_blacklist)
+    if a.aksi == "list":
+        entries = sorted(load_blacklist())
+        if not entries:
+            print("  Blacklist kosong.")
+        else:
+            print(f"  Blacklist ({len(entries)}):")
+            for e in entries:
+                print(f"    • {e}")
+        return
+    if a.aksi == "add":
+        print("  ✅ Ditambahkan." if add_to_blacklist(a.entri)
+              else "  Sudah ada di blacklist.")
+    elif a.aksi == "remove":
+        print("  ✅ Dihapus." if remove_from_blacklist(a.entri)
+              else "  Tidak ada di blacklist.")
 
 
 def _cmd_cek(a):
@@ -62,6 +87,8 @@ def _cmd_cek(a):
             p = Proxy.from_string(line, source="file")
             if p:
                 cands.append({"protocol": p.protocol, "ip": p.ip, "port": p.port})
+    from .blacklist import filter_blacklisted
+    cands = filter_blacklisted(cands)
     hidup = check_pool_sync(cands, target=a.jumlah, max_check=len(cands) or 300)
     print(f"  ✅ Hidup: {len(hidup)} dari {len(cands)}")
     for p in hidup:
@@ -391,8 +418,14 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--jumlah", type=int, default=20)
     sp.add_argument("--negara", default="")
     sp.add_argument("--protokol", default="all", choices=["all", "http", "socks4", "socks5"])
+    sp.add_argument("--tier", default="", choices=["", "cepat", "sedang", "lambat"],
+                    help="saring hasil hidup berdasarkan kecepatan")
     sp.add_argument("--geo", action="store_true", help="isi negara/kota/ISP (batch)")
     sp.set_defaults(func=_cmd_panen)
+    sb2 = sub.add_parser("blacklist", help="kelola proxy yang tidak boleh dipakai")
+    sb2.add_argument("aksi", choices=["add", "remove", "list"])
+    sb2.add_argument("entri", nargs="?", default="")
+    sb2.set_defaults(func=_cmd_blacklist)
     sc = sub.add_parser("cek", help="cek daftar proxy dari file")
     sc.add_argument("file")
     sc.add_argument("--jumlah", type=int, default=20)

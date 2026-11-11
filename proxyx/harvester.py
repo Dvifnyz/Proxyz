@@ -191,7 +191,11 @@ def _dedup(batches: list[list[dict]]) -> list[dict]:
 
 
 def harvest(protocols=None, country="", sources_path=None) -> list[dict]:
-    """Satu pintu masuk: async bila aiohttp ada, fallback thread bila tidak."""
+    """Satu pintu masuk: async bila aiohttp ada, fallback thread bila tidak.
+    Proxy yang masuk blacklist (config/blacklist.txt) dibuang di sini."""
+    from .blacklist import filter_blacklisted
     if HAS_AIOHTTP:
-        return asyncio.run(harvest_async(protocols, country, sources_path))
-    return harvest_threaded(protocols, country, sources_path)
+        out = asyncio.run(harvest_async(protocols, country, sources_path))
+    else:
+        out = harvest_threaded(protocols, country, sources_path)
+    return filter_blacklisted(out)
