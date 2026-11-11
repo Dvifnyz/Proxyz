@@ -192,6 +192,44 @@ def _cmd_test(a):
         print("  ⚠️  Hasil tidak meyakinkan — periksa pool gateway / koneksi.")
 
 
+def _cmd_bench(a):
+    from .bench import bench_pool
+    from .gateway import load_pool_from_disk
+    proxies = [p for p in load_pool_from_disk() if p.protocol == "http"][:a.jumlah]
+    if not proxies:
+        print("  ✗ Pool kosong / tidak ada proxy HTTP. Panen dulu: python -m proxyx panen")
+        return
+    print(f"\n  ⚡ Bench {len(proxies)} proxy HTTP (unduh 1 MB tiap proxy) ...")
+    results = bench_pool(proxies, workers=a.workers)
+    for i, r in enumerate(results, 1):
+        if r["ok"]:
+            print(f"  {i:>2}. {r['proxy']:22} {r['kbps']:>8} KB/detik  ({r['seconds']} dtk)")
+        else:
+            print(f"  {i:>2}. {r['proxy']:22} GAGAL: {r['error']}")
+    import json
+    path = os.path.join(OUT_DIR, "bench.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(results, f, indent=2)
+    print(f"  💾 Tersimpan: {path}")
+
+
+def _cmd_install_service(a):
+    from .config import load_config
+    from .installer import generate
+    import sys
+    cfg = load_config()
+    port = a.port if a.port else cfg["gateway_port"]
+    paths = generate(OUT_DIR, sys.executable, BASE_DIR, port)
+    print("\n  🔧 File service dibuat:")
+    for name, path in paths.items():
+        print(f"     {name:20} {path}")
+    print("\n  Linux (systemd):")
+    print(f"    sudo cp {paths['proxyx.service']} /etc/systemd/system/")
+    print("    sudo systemctl daemon-reload && sudo systemctl enable --now proxyx")
+    print("\n  Windows (klik kanan install-service.bat > Run as administrator).")
+    print("  Gateway akan jalan otomatis tiap mesin nyala / login.")
+
+
 def _cmd_update(a):
     from .updater import check_update, update_via_pip
     info = check_update(__version__)
@@ -304,6 +342,13 @@ def build_parser() -> argparse.ArgumentParser:
     su = sub.add_parser("update", help="cek & pasang rilis terbaru (aman, via pip)")
     su.add_argument("--yes", action="store_true", help="update tanpa konfirmasi")
     su.set_defaults(func=_cmd_update)
+    sb = sub.add_parser("bench", help="uji kecepatan unduh tiap proxy HTTP di pool")
+    sb.add_argument("--jumlah", type=int, default=10)
+    sb.add_argument("--workers", type=int, default=10)
+    sb.set_defaults(func=_cmd_bench)
+    si = sub.add_parser("install-service", help="buat file service (systemd + Windows Task)")
+    si.add_argument("--port", type=int, default=0, help="0 = pakai config/proxyx.json")
+    si.set_defaults(func=_cmd_install_service)
     sw = sub.add_parser("warp", help="buat profil WARP WireGuard")
     sw.add_argument("--jumlah", type=int, default=1)
     sw.set_defaults(func=_cmd_warp)

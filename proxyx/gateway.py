@@ -240,11 +240,16 @@ button{padding:6px 12px;margin-right:6px;cursor:pointer}
 </style></head><body>
 <h1>⚡ Proxyx Gateway</h1>
 <p id="stats">memuat…</p>
+<p id="leak">Leak test: belum dijalankan.</p>
 <p><button onclick="aksi('rotate')">🔄 Rotasi</button>
 <button onclick="aksi('refill')">🌾 Isi ulang</button>
+<button onclick="leak()">🕵️ Tes kebocoran IP</button>
+<button onclick="bench()">⚡ Uji kecepatan (top 5)</button>
 <button onclick="muat()">↻ Refresh</button></p>
+<p id="bench"></p>
 <p>Pakai: <code>curl -x http://127.0.0.1:8888 http://api.ipify.org</code> ·
 <a href="/api/status">/api/status</a> · <a href="/api/proxies">/api/proxies</a> ·
+<a href="/api/leak-test">/api/leak-test</a> · <a href="/api/bench">/api/bench</a> ·
 <a href="/metrics">/metrics</a> · <a href="/proxy.pac">/proxy.pac</a></p>
 <table><thead><tr><th>Proxy</th><th>Protokol</th><th>Skor</th><th>Anonimitas</th><th>Negara</th><th>Latency</th></tr></thead>
 <tbody id="rows"></tbody></table>
@@ -255,10 +260,26 @@ async function muat(){
     `Pool: ${s.pool} proxy (${s.http} HTTP, ${s.socks5} SOCKS5, ${s.residential} residential) | ` +
     `request: ${s.total_requests} (${s.success_pct}% sukses) | uptime: ${s.uptime_sec} dtk`;
   const list = await (await fetch('/api/proxies')).json();
-  document.getElementById('rows').innerHTML = list.map(p =>
-    `<tr><td>${p.proxy}</td><td>${p.protocol}</td><td>${p.score}</td><td>${p.anonymity||'-'}</td><td>${p.country_code||'-'}</td><td>${p.ms??'-'} ms</td></tr>`).join('');
+  document.getElementById('rows').innerHTML = list.map(p => {
+    const warna = p.score >= 80 ? 'green' : p.score < 50 ? 'red' : 'inherit';
+    return `<tr><td>${p.proxy}</td><td>${p.protocol}</td><td style="color:${warna};font-weight:bold">${p.score}</td><td>${p.anonymity||'-'}</td><td>${p.country_code||'-'}</td><td>${p.ms??'-'} ms</td></tr>`;
+  }).join('');
 }
 async function aksi(n){ await fetch('/api/'+n); muat(); }
+async function leak(){
+  document.getElementById('leak').textContent = 'Tes kebocoran IP…';
+  const r = await (await fetch('/api/leak-test')).json();
+  document.getElementById('leak').textContent =
+    r.zero_leak ? `✅ ZERO LEAK — IP asli ${r.direct_ip}, IP via gateway ${r.gateway_ip}` :
+    `⚠️ IP asli ${r.direct_ip||'-'} vs gateway ${r.gateway_ip||'-'} — periksa pool`;
+}
+async function bench(){
+  document.getElementById('bench').textContent = 'Uji kecepatan… (unduh 1 MB per proxy)';
+  const list = await (await fetch('/api/bench?jumlah=5')).json();
+  document.getElementById('bench').innerHTML = '<b>Tercepat:</b><br>' +
+    list.map((r,i) => r.ok ? `${i+1}. ${r.proxy} — ${r.kbps} KB/detik (${r.seconds} dtk)` :
+      `${r.proxy} — gagal: ${r.error}`).join('<br>');
+}
 muat(); setInterval(muat, 5000);
 </script></body></html>"""
 
@@ -351,7 +372,7 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None):
                     self._json(200, {**pool.stats(), "endpoints": [
                         "/api/status", "/api/proxies", "/api/random",
                         "/api/rotate", "/api/refill", "/api/leak-test",
-                        "/api/clash.yaml", "/metrics", "/proxy.pac"]})
+                        "/api/bench", "/api/clash.yaml", "/metrics", "/proxy.pac"]})
                 else:
                     self._send(200, DASHBOARD_HTML.encode(), "text/html; charset=utf-8")
                 return True
@@ -386,6 +407,15 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None):
                 self._send(200, txt.encode(), "text/plain")
             elif path == "/api/leak-test":
                 self._json(200, self._leak_test())
+            elif path == "/api/bench":
+                from .bench import bench_pool
+                q = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+                try:
+                    n = max(1, min(10, int((q.get("jumlah") or ["5"])[0])))
+                except ValueError:
+                    n = 5
+                snap = pool.snapshot()[:n]
+                self._json(200, bench_pool(snap))
             elif path == "/api/clash.yaml":
                 from .exporter import clash_yaml
                 self._send(200, clash_yaml(pool.snapshot()).encode(), "text/yaml")

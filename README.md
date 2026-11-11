@@ -8,7 +8,7 @@ Ia mengambil ide intinya — panen sumber publik, cek, gateway lokal, WARP —
 lalu membangunnya ulang dengan mesin async, checker yang mengukur anonimitas
 dan skor, gateway yang mendukung SOCKS5 upstream, dan auto-healer.
 
-> Status: ✅ **v1.2.0 rilis** — Tahap 7 selesai, tes 49/49.
+> Status: ✅ **v1.3.0 rilis** — Tahap 8 selesai, tes 52/52.
 > Detail tahapan di [RENCANA_KERJA.md](RENCANA_KERJA.md).
 
 ## Kenapa Proxyx?
@@ -69,7 +69,10 @@ Jangan tulis token di file ini — token lewat env `PROXYX_TOKEN`.
 ```bash
 python -m proxyx test              # IP asli vs IP via gateway (zero-leak?)
 python -m proxyx update            # cek rilis terbaru, update via pip (aman)
+python -m proxyx bench             # ranking kecepatan unduh tiap proxy HTTP
+python -m proxyx install-service   # gateway auto-jalan saat mesin nyala
 curl http://127.0.0.1:8888/api/leak-test
+curl http://127.0.0.1:8888/api/bench?jumlah=5
 curl http://127.0.0.1:8888/api/clash.yaml   # langganan Clash live dari pool
 ```
 
