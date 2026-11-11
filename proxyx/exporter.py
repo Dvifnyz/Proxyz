@@ -70,11 +70,47 @@ def export_clash(proxies: list[Proxy], path: str) -> str:
     return _atomic(path, clash_yaml(proxies))
 
 
+def backup_existing(path: str, keep: int = 5) -> str | None:
+    """Bila file sudah ada, salin ke output/backup/<nama>-<waktu>.<ext>
+    dan jaga maksimal `keep` backup terbaru. Kembalikan path backup."""
+    if not os.path.exists(path):
+        return None
+    from datetime import datetime
+    bak_dir = os.path.join(os.path.dirname(path), "backup")
+    os.makedirs(bak_dir, exist_ok=True)
+    base, ext = os.path.splitext(os.path.basename(path))
+    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    bak = os.path.join(bak_dir, f"{base}-{stamp}{ext}")
+    n = 1
+    while os.path.exists(bak):
+        n += 1
+        bak = os.path.join(bak_dir, f"{base}-{stamp}-{n}{ext}")
+    import shutil
+    shutil.copy2(path, bak)
+    olds = sorted(os.path.join(bak_dir, f) for f in os.listdir(bak_dir)
+                  if f.startswith(base + "-"))
+    for old in olds[:-keep]:
+        try:
+            os.remove(old)
+        except OSError:
+            pass
+    return bak
+
+
 def export_all(proxies: list[Proxy], out_dir: str) -> dict[str, str]:
-    """Ekspor ke semua format. Kembalikan {format: path}."""
+    """Ekspor ke semua format. File lama di-backup dulu (maks 5).
+    Kembalikan {format: path}."""
+    targets = {
+        "txt": os.path.join(out_dir, "proxy_hidup.txt"),
+        "json": os.path.join(out_dir, "proxy_hidup.json"),
+        "csv": os.path.join(out_dir, "proxy_hidup.csv"),
+        "clash": os.path.join(out_dir, "proxy_clash.yaml"),
+    }
+    for path in targets.values():
+        backup_existing(path)
     return {
-        "txt": export_txt(proxies, os.path.join(out_dir, "proxy_hidup.txt")),
-        "json": export_json(proxies, os.path.join(out_dir, "proxy_hidup.json")),
-        "csv": export_csv(proxies, os.path.join(out_dir, "proxy_hidup.csv")),
-        "clash": export_clash(proxies, os.path.join(out_dir, "proxy_clash.yaml")),
+        "txt": export_txt(proxies, targets["txt"]),
+        "json": export_json(proxies, targets["json"]),
+        "csv": export_csv(proxies, targets["csv"]),
+        "clash": export_clash(proxies, targets["clash"]),
     }

@@ -39,6 +39,28 @@ ENV_MAP = {
     "CHECK_TIMEOUT": ("check_timeout", float),
 }
 
+# Profil gateway (baru di Proxyx — repo asli punya 3 profil di menu,
+# tapi hanya label; di sini tiap profil benar-benar mengubah perilaku):
+# - scraper: rotasi agresif, pool besar (tiap request ganti IP)
+# - cepat:  hanya proxy <=350 ms yang dipakai
+# - hemat:   pool kecil, sesi lama, refill jarang (irit kuota & CPU)
+PROFILES = {
+    "scraper": {"healer_target": 30, "min_healthy": 10, "session_ttl": 60,
+                "max_latency_ms": 1200},
+    "cepat": {"healer_target": 10, "min_healthy": 5, "session_ttl": 600,
+              "max_latency_ms": 350},
+    "hemat": {"healer_target": 5, "min_healthy": 2, "session_ttl": 1800,
+              "max_latency_ms": 1200},
+}
+
+
+def apply_profile(cfg: dict, name: str) -> dict:
+    """Terapkan preset profil ke salinan config. Nama tidak dikenal = tidak berubah."""
+    out = dict(cfg)
+    if name in PROFILES:
+        out.update(PROFILES[name])
+    return out
+
 
 def load_config(path: str | None = None) -> dict:
     """Baca config: default -> file -> env. Selalu kembalikan dict lengkap."""

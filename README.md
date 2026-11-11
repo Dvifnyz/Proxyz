@@ -8,8 +8,29 @@ Ia mengambil ide intinya — panen sumber publik, cek, gateway lokal, WARP —
 lalu membangunnya ulang dengan mesin async, checker yang mengukur anonimitas
 dan skor, gateway yang mendukung SOCKS5 upstream, dan auto-healer.
 
-> Status: ✅ **v1.3.0 rilis** — Tahap 8 selesai, tes 52/52.
+> Status: ✅ **v1.4.0 rilis** — Tahap 9 selesai, tes 58/58.
 > Detail tahapan di [RENCANA_KERJA.md](RENCANA_KERJA.md).
+
+## Port dari petani-proxy — apa yang masuk, apa yang tidak
+
+Proxyx dibangun dari bedah penuh repo
+[itzluthfi/petani-proxy](https://github.com/itzluthfi/petani-proxy)
+(~8.682 baris). Hampir semua fiturnya masuk — ini daftar jujurnya:
+
+| Fitur asli | Status di Proxyx |
+|---|---|
+| Fast async harvester (30 sumber) | ✅ 35 sumber + skor kesehatan + backoff |
+| Checker (anonimitas, latensi, GeoIP) | ✅ + GeoIP batch + SOCKS handshake sendiri |
+| Gateway rotating + dashboard + REST + PAC | ✅ + healer probe HTTP + token + leak test + bench |
+| WARP (WireGuard) | ✅ via API resmi Cloudflare |
+| Ekspor TXT/JSON/CSV/Clash | ✅ + penulisan atomik + backup otomatis |
+| Residential Webshare | ✅ via API resmi (multi-akun) + signup semi-otomatis |
+| Sinkronisasi 9Router (SQLite) | ✅ aman: insert-only, backup dulu, dedup |
+| Profil (scraper / cepat / hemat) | ✅ benar-benar mengubah perilaku gateway |
+| Updater otomatis | ✅ diganti updater aman (pip, tanpa perintah remote) |
+| Webshare Hunter (bikin akun otomatis + solver captcha audio) | ❌ tidak dibuat — akun hasil farm cepat di-banned, IP mati |
+| Grok Farm (bikin akun Grok otomatis via email sekali pakai + OTP) | ❌ tidak dibuat — alasan yang sama |
+| Kredensial Gmail hardcode di grok_farm | ❌ tidak pernah disalin |
 
 ## Kenapa Proxyx?
 

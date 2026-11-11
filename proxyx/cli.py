@@ -75,10 +75,22 @@ def _cmd_gateway(a):
     from .config import load_config
     from .gateway import load_pool_from_disk, serve
     from .pool import Pool
+    from .config import apply_profile
     cfg = load_config()
+    if getattr(a, "profil", ""):
+        cfg = apply_profile(cfg, a.profil)
+        print(f"  Profil: {a.profil} "
+              f"(target {cfg['healer_target']}, min {cfg['min_healthy']}, "
+              f"sesi {cfg['session_ttl']} dtk, maks {cfg['max_latency_ms']} ms)")
     port = a.port if a.port else cfg["gateway_port"]
     token = cfg.get("token", "")
-    pool = Pool(load_pool_from_disk())
+    proxies = load_pool_from_disk()
+    if getattr(a, "profil", "") == "cepat":
+        before = len(proxies)
+        proxies = [p for p in proxies
+                   if p.ms is None or p.ms <= cfg["max_latency_ms"]]
+        print(f"  Filter cepat: {before} -> {len(proxies)} proxy (<=350 ms)")
+    pool = Pool(proxies, session_ttl=cfg["session_ttl"])
     print(f"  Pool awal: {len(pool)} proxy (config: {cfg['healer_interval']} dtk healer, "
           f"min {cfg['min_healthy']})")
     if len(pool) == 0:
@@ -213,6 +225,37 @@ def _cmd_bench(a):
     print(f"  💾 Tersimpan: {path}")
 
 
+def _cmd_sync_9router(a):
+    from .gateway import load_pool_from_disk
+    from .router import find_9router_db, sync_to_9router
+    proxies = load_pool_from_disk()
+    if not proxies:
+        print("  ✗ Pool kosong. Panen dulu: python -m proxyx panen")
+        return
+    db = a.db or find_9router_db()
+    if not db:
+        print("  ✗ DB 9Router tidak ditemukan. Beri jalurnya:")
+        print("    python -m proxyx sync-9router --db C:/path/ke/data.sqlite")
+        print("    (atau set env ROUTER_DB_PATH)")
+        return
+    if a.ganti and not a.yes:
+        try:
+            jawab = input("  --ganti akan menghapus baris 'Proxyx' lama di DB. Lanjut? [y/N]: ").strip().lower()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            return
+        if jawab != "y":
+            print("  Dibatalkan.")
+            return
+    res = sync_to_9router(proxies, db, replace=a.ganti)
+    if not res.get("ok"):
+        print(f"  ✗ {res.get('error')}")
+        return
+    print(f"  ✅ 9Router: {res['inserted']} ditambah, {res['skipped']} sudah ada"
+          + (f", {res['deleted']} baris Proxyx lama dihapus" if res['deleted'] else ""))
+    print(f"  💾 Backup DB: {res['backup']}")
+
+
 def _cmd_install_service(a):
     from .config import load_config
     from .installer import generate
@@ -283,6 +326,7 @@ def _menu():
     print("  [3] Buat WARP WireGuard (.conf)")
     print("  [4] Residential Webshare (API resmi / daftar manual)")
     print("  [5] Tes IP asli vs IP proxy")
+    print("  [6] Sinkron pool ke 9Router")
     print("  [0] Keluar")
     try:
         pilih = input("\n  Pilih [1]: ").strip() or "1"
@@ -304,11 +348,13 @@ def _menu():
         elif pilih == "5":
             from .config import load_config
             _cmd_test(argparse.Namespace(port=load_config()["gateway_port"]))
+        elif pilih == "6":
+            _cmd_sync_9router(argparse.Namespace(db="", ganti=False, yes=False))
         elif pilih == "0":
             print("\n  Dadah 👋\n")
             return
         else:
-            print("  Pilih 0-5 ya.")
+            print("  Pilih 0-6 ya.")
     except KeyboardInterrupt:
         print("\n  Dadah 👋\n")
         return
@@ -334,8 +380,15 @@ def build_parser() -> argparse.ArgumentParser:
     sc.set_defaults(func=_cmd_cek)
     sg = sub.add_parser("gateway", help="jalankan gateway rotating")
     sg.add_argument("--port", type=int, default=0, help="0 = pakai config/proxyx.json")
+    sg.add_argument("--profil", default="", choices=["", "scraper", "cepat", "hemat"])
     sg.add_argument("--no-healer", action="store_true")
     sg.set_defaults(func=_cmd_gateway)
+    s9 = sub.add_parser("sync-9router", help="sinkronkan pool ke DB SQLite 9Router (aman)")
+    s9.add_argument("--db", default="")
+    s9.add_argument("--ganti", action="store_true",
+                    help="hapus baris 'Proxyx' lama dulu (hanya milik Proxyx)")
+    s9.add_argument("--yes", action="store_true")
+    s9.set_defaults(func=_cmd_sync_9router)
     st = sub.add_parser("test", help="leak test: IP asli vs IP via gateway")
     st.add_argument("--port", type=int, default=8888)
     st.set_defaults(func=_cmd_test)
