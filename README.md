@@ -64,11 +64,28 @@ print(requests.get("https://api.ipify.org?format=json", proxies=proxies, timeout
 - 📦 **Ekspor** — TXT, JSON, CSV, Clash YAML
 - 🐳 **Docker** — `docker compose up -d`
 
-## Yang sengaja tidak ada
+## Proxy residential (IP rumahan)
 
-Tanpa pemecah captcha, tanpa auto-daftar akun, tanpa bypass Turnstile/anti-bot.
-Butuh IP residential? Daftar manual di penyedia (mis. webshare.io, gratis 10 IP),
-tempel `user:pass@ip:port` ke `output/proxy_manual.txt` — gateway ikut memakainya.
+Residential tetap didukung — lewat jalur resmi, bukan farm akun:
+
+1. Daftar **satu** akun di [proxy.webshare.io/register](https://proxy.webshare.io/register)
+   (captcha diisi sendiri sekali, 30 detik), gratis 10 IP.
+2. Ambil API key dari dashboard Webshare, lalu:
+   ```bash
+   export WEBSHARE_API_KEY="kuncimu"
+   python -m proxyx residential   # menarik proxymu via API resmi
+   ```
+   Atau tempel proxy apa pun (`proto://user:pass@ip:port`) ke
+   `output/proxy_manual.txt` — gateway ikut memakainya, residential
+   diprioritaskan di pool.
+
+**Kenapa tanpa pemecah captcha / auto-daftar akun / bypass Turnstile?**
+Karena hasil bedah repo asli menunjukkan cara itu yang bikin akun cepat
+di-banned (domain sekali pakai + sidik solver audio terdeteksi) dan hunter
+rusak tiap Webshare mengubah halaman — proxy-nya mati dalam hitungan jam.
+Jalur API resmi justru yang membuat 10 IP gratis itu tetap hidup.
+Detailnya di [proxyx/residential.py](proxyx/residential.py) dan
+[docs/STUDI_PETANI_PROXY.md](docs/STUDI_PETANI_PROXY.md).
 
 ## Jujur soal gratisan
 

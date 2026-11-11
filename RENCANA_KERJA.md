@@ -49,7 +49,7 @@
 |---|---|---|
 | 0 | Persiapan: pelajari isi asli, tulis rencana ini, cek repo tujuan | `docs: rencana kerja Proxyx` |
 | 1 | Fondasi repo: struktur, README, LICENSE (MIT), .gitignore, pyproject, config sumber | `chore: fondasi repo Proxyx` |
-| 2 | Harvester + checker async (sumber 35+, anonimitas, geo, skor) + tes | `feat: harvester & checker async` |
+| 2 | Harvester + checker async (sumber 35+, anonimitas, geo, skor) + tes + residential via API resmi | `feat: harvester & checker async` — SELESAI 2026-11-11 (tes 18/18, panen live 69.063 HTTP/9,8 dtk) |
 | 3 | Gateway rotating + REST API + dashboard + auto-healer | `feat: gateway rotating + API` |
 | 4 | WARP + CLI/menu + ekspor (txt/json/csv/clash) + Docker + CI | `feat: warp, CLI, ekspor, docker` |
 | 5 | Verifikasi akhir (tes + panen live + gateway live), push final, laporan | `chore: rilis v1.0.0` |
