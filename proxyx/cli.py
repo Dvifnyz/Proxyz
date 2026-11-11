@@ -256,6 +256,15 @@ def _cmd_bench(a):
     print(f"  💾 Tersimpan: {path}")
 
 
+def _cmd_doctor(a):
+    import sys
+    from .doctor import print_doctor, run_doctor
+    result = run_doctor(check_gateway=not a.no_gateway)
+    print_doctor(result)
+    if not result["healthy"]:
+        sys.exit(1)
+
+
 def _cmd_laporan(a):
     from .gateway import load_pool_from_disk
     from .harvester import health_report
@@ -474,6 +483,9 @@ def build_parser() -> argparse.ArgumentParser:
     si.set_defaults(func=_cmd_install_service)
     sl = sub.add_parser("laporan", help="ringkasan kesehatan pool (output/laporan.md)")
     sl.set_defaults(func=_cmd_laporan)
+    sd = sub.add_parser("doctor", help="diagnosa mandiri: config, sumber, pool, gateway")
+    sd.add_argument("--no-gateway", action="store_true", help="lewati cek gateway")
+    sd.set_defaults(func=_cmd_doctor)
     sa = sub.add_parser("auto", help="panen + cek + ekspor berkala, tanpa henti")
     sa.add_argument("--interval", type=float, default=0, help="menit antar siklus (0 = config)")
     sa.add_argument("--jumlah", type=int, default=0, help="target hidup per siklus (0 = config)")
