@@ -52,6 +52,20 @@ python -m proxyz doctor
 - Perubahan yang menghapus data pengguna tanpa konfirmasi
   (mis. `DELETE` tanpa backup).
 
+## Lint & audit
+
+Sebelum ngirim PR, jalanin ini (ruff sama vulture ada di extra `dev`):
+
+```bash
+ruff check proxyz/ tests/     # harus 0 error; aturannya di pyproject.toml
+python -m vulture proxyz/ --min-confidence 80   # harus kosong
+pytest -q                     # harus hijau
+```
+
+Dua aturan sengaja dimatiin di config (baca alasannya di pyproject):
+`BLE001`/`S110` (error jaringan = proxy mati, bukan bug) sama
+`S101` (assert adalah cara kerja pytest).
+
 ## Melaporkan bug
 
 Pakai template issue "Bug report": sertakan versi Proxyz

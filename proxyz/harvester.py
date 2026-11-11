@@ -20,7 +20,13 @@ import ssl
 import time
 import urllib.request
 
-from .sources import is_fresh_source, load_sources, parse_proxies_from_text, with_country
+from .compat import HAS_AIOHTTP, aiohttp
+from .sources import (
+    is_fresh_source,
+    load_sources,
+    parse_proxies_from_text,
+    with_country,
+)
 
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Proxyz/1.0"}
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -82,14 +88,6 @@ def health_report(path: str | None = None) -> list[dict]:
     rows = [{"url": url, **h} for url, h in health.items()]
     rows.sort(key=lambda r: (-r.get("yield", 0), r.get("fails", 0)))
     return rows
-
-try:
-    import aiohttp
-    HAS_AIOHTTP = True
-except ImportError:  # pragma: no cover
-    aiohttp = None  # type: ignore
-    HAS_AIOHTTP = False
-
 
 def build_jobs(protocols: list[str] | None = None, country: str = "",
                sources_path: str | None = None,

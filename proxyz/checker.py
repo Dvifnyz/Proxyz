@@ -13,13 +13,18 @@ Satu mesin cek (repo asli punya tiga jalur yang saling duplikat).
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
+import logging
 import re
 import ssl
 import time
 import urllib.request
 
+from .compat import HAS_AIOHTTP, aiohttp
 from .models import Proxy
+
+log = logging.getLogger(__name__)
 
 TEST_URL = "https://api.ipify.org?format=json"
 TEST_HOST = "api.ipify.org"
@@ -27,14 +32,6 @@ UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Proxyz/1.0"}
 IP_RE = re.compile(r"^\d+\.\d+\.\d+\.\d+$")
 VIA_HEADERS = ("via", "x-forwarded-for", "forwarded", "x-real-ip",
                "proxy-connection", "x-proxy-id", "x-cache")
-
-try:
-    import aiohttp
-    HAS_AIOHTTP = True
-except ImportError:  # pragma: no cover
-    aiohttp = None  # type: ignore
-    HAS_AIOHTTP = False
-
 
 # ------------------------------------------------------------------ murni
 def classify_anonymity(egress_ip: str, host_ip: str, headers: dict) -> str:
@@ -67,7 +64,8 @@ def get_host_ip(timeout: float = 5.0) -> str:
                 ip = r.read().decode().strip()
             if IP_RE.match(ip):
                 return ip
-        except Exception:
+        except Exception as e:
+            log.debug("get_host_ip gagal %s: %s", url, e)
             continue
     return ""
 
@@ -87,8 +85,8 @@ async def check_http(proxy: Proxy, host_ip: str, timeout: float = 5.0,
     to = aiohttp.ClientTimeout(total=timeout, connect=2.0)
     try:
         async with aiohttp.ClientSession(headers=UA, connector=conn, timeout=to,
-                                         trust_env=True) as s:
-            async with s.get(test_url, proxy=proxy.url) as r:
+                                         trust_env=True) as s, \
+                s.get(test_url, proxy=proxy.url) as r:
                 if r.status != 200:
                     return None
                 data = await r.json(content_type=None)
@@ -171,10 +169,8 @@ async def check_socks(proxy: Proxy, host_ip: str, timeout: float = 6.0) -> Proxy
     except Exception:
         return None
     finally:
-        try:
+        with contextlib.suppress(Exception):
             writer.close()
-        except Exception:
-            pass
     ms = int((time.perf_counter() - start) * 1000)
     proxy.ms = ms
     proxy.egress_ip = body
@@ -250,6 +246,7 @@ def enrich_geo(proxies: list[Proxy], timeout: float = 8.0) -> list[Proxy]:
                     p.country_code = row.get("countryCode", "")
                     p.city = row.get("city", "")
                     p.isp = row.get("isp", "")
-        except Exception:
+        except Exception as e:
+            log.debug("enrich_geo gagal untuk chunk %d IP: %s", len(chunk), e)
             continue
     return proxies

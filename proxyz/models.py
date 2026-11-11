@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass
@@ -50,7 +50,7 @@ class Proxy:
         }
 
     @classmethod
-    def from_string(cls, text: str, source: str = "manual") -> "Proxy | None":
+    def from_string(cls, text: str, source: str = "manual") -> Proxy | None:
         """Parse `proto://user:pass@ip:port`, `user:pass@ip:port`,
         atau `ip:port` polos (default http)."""
         text = text.strip()

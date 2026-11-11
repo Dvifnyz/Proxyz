@@ -41,7 +41,7 @@ def _panen(jumlah: int, negara: str, protokol: str, geo: bool, tier: str = ""):
         enrich_geo(hidup)
     print(f"  ✅ Hidup: {len(hidup)}")
     for p in hidup:
-        print(f"    ✓ {p.protocol:6} {p.hostport:22} {str(p.ms or ''):>4} ms "
+        print(f"    ✓ {p.protocol:6} {p.hostport:22} {p.ms or ''!s:>4} ms "
               f"{p.anonymity:11} skor {p.score} {p.country_code}")
     if hidup:
         paths = export_all(hidup, OUT_DIR)
@@ -58,8 +58,7 @@ def _cmd_panen(a):
 
 
 def _cmd_blacklist(a):
-    from .blacklist import (add_to_blacklist, load_blacklist,
-                            remove_from_blacklist)
+    from .blacklist import add_to_blacklist, load_blacklist, remove_from_blacklist
     if a.aksi == "list":
         entries = sorted(load_blacklist())
         if not entries:
@@ -78,8 +77,6 @@ def _cmd_blacklist(a):
 
 
 def _cmd_cek(a):
-    from .checker import check_one, get_host_ip
-    import asyncio
     from .models import Proxy
     cands = []
     with open(a.file, encoding="utf-8", errors="ignore") as f:
@@ -92,24 +89,23 @@ def _cmd_cek(a):
     hidup = check_pool_sync(cands, target=a.jumlah, max_check=len(cands) or 300)
     print(f"  ✅ Hidup: {len(hidup)} dari {len(cands)}")
     for p in hidup:
-        print(f"    ✓ {p.protocol:6} {p.hostport:22} {str(p.ms or ''):>4} ms {p.anonymity}")
+        print(f"    ✓ {p.protocol:6} {p.hostport:22} {p.ms or ''!s:>4} ms {p.anonymity}")
     if hidup:
         export_all(hidup, OUT_DIR)
 
 
 def _cmd_gateway(a):
     from .checker import check_pool_sync
-    from .config import load_config
+    from .config import apply_profile, load_config
     from .gateway import load_pool_from_disk, serve
     from .pool import Pool
-    from .config import apply_profile
     cfg = load_config()
     if getattr(a, "profil", ""):
         cfg = apply_profile(cfg, a.profil)
         print(f"  Profil: {a.profil} "
               f"(target {cfg['healer_target']}, min {cfg['min_healthy']}, "
               f"sesi {cfg['session_ttl']} dtk, maks {cfg['max_latency_ms']} ms)")
-    port = a.port if a.port else cfg["gateway_port"]
+    port = a.port or cfg["gateway_port"]
     token = cfg.get("token", "")
     proxies = load_pool_from_disk()
     if getattr(a, "profil", "") == "cepat":
@@ -152,9 +148,14 @@ def _cmd_warp(a):
 
 
 def _cmd_residential(a):
-    from .residential import (fetch_all_webshare, fetch_webshare,
-                              guided_signup, load_api_keys, load_manual,
-                              save_api_key, validate_api_key)
+    from .residential import (
+        fetch_webshare,
+        guided_signup,
+        load_api_keys,
+        load_manual,
+        save_api_key,
+        validate_api_key,
+    )
     if a.signup:
         # Semi-otomatis: semua langkah otomatis KECUALI captcha-nya,
         # yang diisi sendiri oleh pengguna sekali saat daftar.
@@ -209,9 +210,10 @@ def _cmd_residential(a):
 
 def _cmd_test(a):
     """Leak test: IP asli vs IP lewat gateway yang sedang jalan."""
-    from .checker import get_host_ip
     import re
     import urllib.request
+
+    from .checker import get_host_ip
     cfg_port = a.port
     direct = get_host_ip()
     gw_ip = ""
@@ -258,6 +260,7 @@ def _cmd_bench(a):
 
 def _cmd_doctor(a):
     import sys
+
     from .doctor import print_doctor, run_doctor
     result = run_doctor(check_gateway=not a.no_gateway)
     print_doctor(result)
@@ -286,8 +289,8 @@ def _cmd_auto(a):
     from .config import load_config
     from .scheduler import LOG_PATH, run_scheduler
     cfg = load_config()
-    interval = a.interval if a.interval else cfg["schedule_interval_min"]
-    target = a.jumlah if a.jumlah else cfg["schedule_target"]
+    interval = a.interval or cfg["schedule_interval_min"]
+    target = a.jumlah or cfg["schedule_target"]
     print(f"\n  🔁 Mode auto: siklus tiap {interval} menit, target {target} hidup.")
     print("  Ctrl+C untuk berhenti.\n")
     try:
@@ -329,11 +332,12 @@ def _cmd_sync_9router(a):
 
 
 def _cmd_install_service(a):
+    import sys
+
     from .config import load_config
     from .installer import generate
-    import sys
     cfg = load_config()
-    port = a.port if a.port else cfg["gateway_port"]
+    port = a.port or cfg["gateway_port"]
     paths = generate(OUT_DIR, sys.executable, BASE_DIR, port)
     print("\n  🔧 File service dibuat:")
     for name, path in paths.items():

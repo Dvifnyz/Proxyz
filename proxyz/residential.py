@@ -27,7 +27,9 @@ ini yang justru membuat 10 IP gratis itu tetap hidup.
 """
 from __future__ import annotations
 
+import contextlib
 import json
+import logging
 import os
 import secrets
 import string
@@ -36,6 +38,8 @@ import urllib.request
 import webbrowser
 
 from .models import Proxy
+
+log = logging.getLogger(__name__)
 
 WEBSHARE_API = "https://proxy.webshare.io/api/v2/proxy/list/?mode=direct&page_size=100"
 WEBSHARE_REGISTER = "https://proxy.webshare.io/register"
@@ -97,10 +101,8 @@ def save_api_key(key: str) -> str:
     os.makedirs(os.path.dirname(KEY_FILE), exist_ok=True)
     with open(KEY_FILE, "w", encoding="utf-8") as f:
         json.dump({"api_keys": keys}, f)
-    try:
+    with contextlib.suppress(Exception):
         os.chmod(KEY_FILE, 0o600)
-    except Exception:
-        pass
     return KEY_FILE
 
 
@@ -128,7 +130,8 @@ def fetch_all_webshare(keys: list[str] | None = None) -> list[Proxy]:
                 if p.hostport not in seen:
                     seen.add(p.hostport)
                     out.append(p)
-        except Exception:
+        except Exception as e:
+            log.debug("fetch_webshare gagal untuk satu key: %s", e)
             continue
     return out
 
@@ -191,8 +194,6 @@ def guided_signup(open_browser: bool = True) -> str:
     secrets.SystemRandom().shuffle(parts)
     password = "".join(parts)
     if open_browser:
-        try:
+        with contextlib.suppress(Exception):
             webbrowser.open(WEBSHARE_REGISTER)
-        except Exception:
-            pass
     return password

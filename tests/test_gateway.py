@@ -1,4 +1,5 @@
 """Tes pool + gateway Proxyz (live, localhost saja)."""
+import contextlib
 import json
 import socket
 import threading
@@ -107,10 +108,8 @@ class DummyHttpProxy(BaseHTTPRequestHandler):
             except Exception:
                 pass
             finally:
-                try:
+                with contextlib.suppress(Exception):
                     dst.shutdown(socket.SHUT_WR)
-                except Exception:
-                    pass
         t1 = threading.Thread(target=pump, args=(self.connection, sock), daemon=True)
         t2 = threading.Thread(target=pump, args=(sock, self.connection), daemon=True)
         t1.start(); t2.start()
@@ -158,10 +157,8 @@ class Socks5Stub:
         except Exception:
             pass
         finally:
-            try:
+            with contextlib.suppress(Exception):
                 conn.close()
-            except Exception:
-                pass
 
     @staticmethod
     def _relay(a, b):
@@ -175,10 +172,8 @@ class Socks5Stub:
             except Exception:
                 pass
             finally:
-                try:
+                with contextlib.suppress(Exception):
                     dst.shutdown(socket.SHUT_WR)
-                except Exception:
-                    pass
         t1 = threading.Thread(target=pump, args=(a, b), daemon=True)
         t2 = threading.Thread(target=pump, args=(b, a), daemon=True)
         t1.start(); t2.start()

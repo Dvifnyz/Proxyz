@@ -17,11 +17,11 @@ Cara pakai: python -m proxyz gateway --port 8888
 from __future__ import annotations
 
 import base64
+import contextlib
 import http.client
 import json
 import os
 import re
-import select
 import socket
 import ssl
 import threading
@@ -117,10 +117,8 @@ def connect_via_proxy(upstream: Proxy, host: str, port: int,
             return s
         raise OSError(f"protokol tidak dikenal: {upstream.protocol}")
     except Exception:
-        try:
+        with contextlib.suppress(Exception):
             s.close()
-        except Exception:
-            pass
         raise
 
 
@@ -630,10 +628,8 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None,
                     up = pool.next()
                     if up is None:
                         break
-            try:
+            with contextlib.suppress(Exception):
                 self.send_error(502, "CONNECT gagal di semua proxy")
-            except Exception:
-                pass
 
         def _relay(self, a, b):
             def pump(src, dst):
@@ -646,19 +642,15 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None,
                 except Exception:
                     pass
                 finally:
-                    try:
+                    with contextlib.suppress(Exception):
                         dst.shutdown(socket.SHUT_WR)
-                    except Exception:
-                        pass
             t1 = threading.Thread(target=pump, args=(a, b), daemon=True)
             t2 = threading.Thread(target=pump, args=(b, a), daemon=True)
             t1.start(); t2.start()
             t1.join(); t2.join()
             for s in (a, b):
-                try:
+                with contextlib.suppress(Exception):
                     s.close()
-                except Exception:
-                    pass
     return Handler
 
 
@@ -673,10 +665,8 @@ def _pump(src: socket.socket, dst: socket.socket) -> None:
     except Exception:
         pass
     finally:
-        try:
+        with contextlib.suppress(Exception):
             dst.shutdown(socket.SHUT_WR)
-        except Exception:
-            pass
 
 
 def serve_socks5(pool: Pool, port: int,
@@ -739,10 +729,8 @@ def serve_socks5(pool: Pool, port: int,
             except Exception:
                 pass
             finally:
-                try:
+                with contextlib.suppress(Exception):
                     conn.close()
-                except Exception:
-                    pass
 
     class Server(socketserver.ThreadingTCPServer):
         allow_reuse_address = True

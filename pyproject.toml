@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "proxyz"
-version = "2.1.0"
+version = "2.1.1"
 description = "Panen proxy gratis, cek anonimitas, gateway lokal berputar, dan WARP — lebih cepat dan lebih lengkap."
 readme = "README.md"
 license = { text = "MIT" }
@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "pytest-asyncio>=0.23"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.4", "vulture>=2.0"]
 
 [project.scripts]
 proxyz = "proxyz.cli:main"
@@ -28,3 +28,26 @@ include = ["proxyz*", "proxyx"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+# E4/E7/E9/F = bawaan ruff; sisanya aturan yang sengaja dipakai di repo ini.
+select = ["E4", "E7", "E9", "F", "I", "S", "BLE", "PLW1510", "SIM", "RUF",
+          "UP", "FURB", "PIE", "ISC"]
+ignore = [
+    # Desain tool ini: error jaringan = proxy/sumber mati, bukan bug.
+    # except Exception + pass disengaja di cleanup/config opsional.
+    # Yang bisa di-log sudah di-log (checker.get_host_ip,
+    # checker.enrich_geo, residential.fetch_all_webshare).
+    "BLE001",
+    "S110",
+    "S101",   # assert adalah cara kerja pytest
+    "S105", "S106",  # "password"/"token" cuma di fixture tes, bukan rahasia
+    "S310",   # urlopen disengaja: fallback urllib ke sumber tepercaya
+    "S603", "S607",  # subprocess selalu pakai sys.executable, tanpa shell
+    "E402",   # lazy import disengaja di cli.py (startup cepat)
+    "E702",   # one-liner `if: return` — gaya yang dipakai di repo ini
+]

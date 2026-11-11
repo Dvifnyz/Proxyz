@@ -27,7 +27,7 @@ def test_run_cycle_empty_pool_no_export(tmp_path):
     def fake_export(proxies, out_dir):
         called.append(1)
         return {}
-    s = run_cycle(harvest_fn=lambda: [], check_fn=_fake_check,
+    s = run_cycle(harvest_fn=list, check_fn=_fake_check,
                   export_fn=fake_export, target=5,
                   out_dir=str(tmp_path), log_path=None)
     assert s["alive"] == 0 and called == []

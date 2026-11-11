@@ -31,8 +31,7 @@ def _save(entries: set[str], path: str) -> None:
     os.makedirs(os.path.dirname(path), exist_ok=True)
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
-        for e in sorted(entries):
-            f.write(e + "\n")
+        f.writelines(e + "\n" for e in sorted(entries))
     os.replace(tmp, path)
 
 

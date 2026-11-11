@@ -1,6 +1,5 @@
 """Tes exporter: semua format + penulisan atomik (tanpa file .tmp tersisa)."""
 import json
-import os
 
 from proxyz.exporter import export_all, export_clash
 from proxyz.models import Proxy
@@ -31,7 +30,8 @@ def test_export_all(tmp_path):
 
 def test_export_clash_skips_socks4(tmp_path):
     path = export_clash(sample(), str(tmp_path / "c.yaml"))
-    text = open(path).read()
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
     assert "type: http" in text and "type: socks5" in text
     assert "3.3.3.3" not in text  # SOCKS4 tidak didukung Clash
     assert "name: PROXYZ" in text and "url-test" in text

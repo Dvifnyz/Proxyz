@@ -4,6 +4,29 @@ Semua perubahan penting Proxyz dicatat di sini, mengikuti
 [Keep a Changelog](https://keepachangelog.com/id/1.1.0/) dan
 [Semantic Versioning](https://semver.org/lang/id/).
 
+## [2.1.1] - 2026-11-11
+
+### Diperbaiki
+
+- Audit kode penuh (ruff, vulture, pylint, coverage): 139 temuan
+  ruff dibersihkan sampai 0, duplikasi kode dihapus, kode mati
+  dihapus.
+- Blok `try/except ImportError` aiohttp yang diduplikat checker.py
+  dan harvester.py dipindah ke `proxyz/compat.py` (dipakai bareng).
+- 11 import tak terpakai dihapus, 14 `try/except/pass` diganti
+  `contextlib.suppress`, 3 `try/except/continue` sekarang nge-log
+  (debug) biar sumber/key yang gagal ketahuan.
+- `subprocess.run` di updater & tes sekarang eksplisit `check=False`
+  (returncode memang diperiksa sendiri).
+- Link rusak di CHANGELOG: `docs/MIGRASI-3.0.md` -> `docs/MIGRASI-2.1.md`.
+
+### Ditambahkan
+
+- Tes baru: smoke test CLI — semua 15 subcommand `--help` jalan
+  (sebelumnya cli.py cuma 7% coverage). Total tes 83 -> 100.
+- Config ruff masuk `pyproject.toml` (dengan alasan tiap aturan
+  yang dimatiin), ruff + vulture masuk extra `dev`.
+
 ## [2.1.0] - 2026-11-11
 
 > Catatan: versi ini sempat terbit sebentar sebagai v3.0.0 lalu
@@ -15,7 +38,7 @@ Semua perubahan penting Proxyz dicatat di sini, mengikuti
 - **Nama tool diganti dari Proxyx menjadi Proxyz** (paket, CLI,
   config, env, header). Perintah lama `proxyx` dan `import proxyx`
   masih jalan sampai v3.0.0 sebagai shim deprecated (lihat
-  [docs/MIGRASI-3.0.md](docs/MIGRASI-3.0.md)).
+  [docs/MIGRASI-2.1.md](docs/MIGRASI-2.1.md)).
 - `config/proxyx.json` -> `config/proxyz.json`.
 - Env `PROXYX_TOKEN` -> `PROXYZ_TOKEN` (nama lama tetap dibaca).
 - Header `X-Proxyx-Token` -> `X-Proxyz-Token` (nama lama tetap dibaca).

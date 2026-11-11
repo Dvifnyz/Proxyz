@@ -71,7 +71,9 @@ def update_via_pip(tag: str) -> tuple[bool, str]:
     cmd = [sys.executable, "-m", "pip", "install", "--upgrade",
            f"git+https://github.com/Dvifnyz/Proxyz.git@{tag}"]
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+        # check=False disengaja: returncode diperiksa sendiri di bawah.
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=300,
+                              check=False)
     except Exception as e:
         return False, str(e)
     if proc.returncode != 0:

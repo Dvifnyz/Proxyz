@@ -22,10 +22,10 @@ __all__ = ["__version__"]
 # Daftarkan semua submodul proxyz sebagai proxyx.* supaya
 # `from proxyx.gateway import ...` tetap jalan.
 _SUBMODULES = (
-    "bench", "blacklist", "checker", "cli", "config", "doctor",
-    "exporter", "gateway", "harvester", "installer", "models",
-    "pool", "report", "residential", "router", "scheduler",
-    "sources", "tiers", "updater", "warp",
+    "bench", "blacklist", "checker", "cli", "compat", "config",
+    "doctor", "exporter", "gateway", "harvester", "installer",
+    "models", "pool", "report", "residential", "router",
+    "scheduler", "sources", "tiers", "updater", "warp",
 )
 for _name in _SUBMODULES:
     sys.modules[__name__ + "." + _name] = importlib.import_module(f"proxyz.{_name}")

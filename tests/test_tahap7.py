@@ -67,7 +67,7 @@ def test_update_via_pip_uses_pip_no_shell(monkeypatch):
         seen["cmd"] = cmd; seen["kw"] = kw
         return P()
     monkeypatch.setattr(updater.subprocess, "run", fake_run)
-    ok, msg = updater.update_via_pip("v1.2.0")
+    ok, _msg = updater.update_via_pip("v1.2.0")
     assert ok and "pip" in seen["cmd"] and seen["kw"].get("shell") is not True
     assert "git+" in " ".join(seen["cmd"])
 

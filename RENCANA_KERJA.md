@@ -59,6 +59,7 @@
 | 15 | **v2.0.0 — Rilis mayor stabil** | SELESAI 2026-11-11 (tes 79/79; migrasi legacy webshare.json otomatis + docs/API.md + doctor; tanpa captcha solver / farm akun — tetap) |
 | 16 | **v2.1.0 — Rename Proxyx -> Proxyz + standar repo besar** | SELESAI 2026-11-11 (tes 83/83; rename penuh paket/CLI/config/env/header + shim deprecated proxyx sampai v3.0.0; README standar repo besar + CHANGELOG + CONTRIBUTING + SECURITY + Code of Conduct + template issue/PR + .editorconfig + docs/MIGRASI-2.1.md; deskripsi + topik repo GitHub diisi) |
 | 17 | **v2.1.0 (perbaikan) — versi 3.0.0 ditarik, README v2** | SELESAI 2026-11-11 (tes 83/83; v3.0.0 dihapus dari tag & rilis karena rename hanya update minor; README ditulis ulang dari referensi FastAPI & uv: Highlights, instalasi multi-cara, diagram arsitektur, contoh output, FAQ, Troubleshooting, Roadmap, struktur proyek; docs/ARSITEKTUR.md baru) |
+| 18 | **v2.1.1 — Audit kode (duplikat, mati, error, bug)** | SELESAI 2026-11-11 (tes 100/100; ruff 139 -> 0, pylint duplikat 10/10, vulture bersih; aiohttp shim didedup ke proxyz/compat.py; 11 import mati dihapus; 14 try/except/pass -> suppress; 3 try/except/continue di-log; smoke test CLI 15 subcommand; config ruff + dev extras di pyproject) |
 |---|---|---|
 | 0 | Persiapan: pelajari isi asli, tulis rencana ini, cek repo tujuan | `docs: rencana kerja Proxyz` |
 | 1 | Fondasi repo: struktur, README, LICENSE (MIT), .gitignore, pyproject, config sumber | `chore: fondasi repo Proxyz` |

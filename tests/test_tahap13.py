@@ -1,7 +1,11 @@
 """Tes v1.7.0: blacklist + tier kecepatan."""
-from proxyz.blacklist import (add_to_blacklist, filter_blacklisted,
-                              is_blacklisted, load_blacklist,
-                              remove_from_blacklist)
+from proxyz.blacklist import (
+    add_to_blacklist,
+    filter_blacklisted,
+    is_blacklisted,
+    load_blacklist,
+    remove_from_blacklist,
+)
 from proxyz.models import Proxy
 from proxyz.tiers import filter_tier, tier_of
 

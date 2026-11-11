@@ -1,6 +1,4 @@
 """Tes v1.9.0: doctor diagnostics."""
-import json
-import os
 
 from proxyz.doctor import print_doctor, run_doctor
 

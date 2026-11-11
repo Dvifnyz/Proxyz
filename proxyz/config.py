@@ -12,6 +12,7 @@ env PROXYZ_TOKEN, API key Webshare lewat env/config webshare.json.
 """
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 
@@ -85,8 +86,6 @@ def load_config(path: str | None = None) -> dict:
     for env_key, (name, cast) in ENV_MAP.items():
         raw = os.environ.get(env_key)
         if raw not in (None, ""):
-            try:
+            with contextlib.suppress(ValueError, TypeError):
                 cfg[name] = cast(raw)
-            except (ValueError, TypeError):
-                pass
     return cfg

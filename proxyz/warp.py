@@ -25,8 +25,8 @@ UA = {"User-Agent": "okhttp/3.12.1"}
 def generate_keypair() -> tuple[str, str]:
     """(private_b64, public_b64) X25519. Coba cryptography, lalu `wg`."""
     try:
-        from cryptography.hazmat.primitives.asymmetric import x25519
         from cryptography.hazmat.primitives import serialization
+        from cryptography.hazmat.primitives.asymmetric import x25519
         priv = x25519.X25519PrivateKey.generate()
         priv_b = base64.b64encode(priv.private_bytes(
             serialization.Encoding.Raw, serialization.PrivateFormat.Raw,

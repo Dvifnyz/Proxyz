@@ -35,9 +35,8 @@ def test_score_elite_fast_beats_transparent():
 
 
 # ---- cek HTTP live melawan proxy dummy localhost ----
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-import urllib.request
 import json
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 
 class DummyProxy(BaseHTTPRequestHandler):

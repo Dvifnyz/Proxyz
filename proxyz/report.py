@@ -65,8 +65,8 @@ def report_markdown(data: dict) -> str:
     if data.get("stats"):
         s = data["stats"]
         lines += ["", "## Gateway",
-                  f"- Request: {s.get('total_requests', 0)} "
-                  f"({s.get('success_pct', 0)}% sukses)",
+                  (f"- Request: {s.get('total_requests', 0)} "
+                   f"({s.get('success_pct', 0)}% sukses)"),
                   f"- Evicted: {s.get('evicted', 0)}",
                   f"- Uptime: {s.get('uptime_sec', 0)} dtk"]
     return "\n".join(lines) + "\n"

@@ -5,6 +5,7 @@ file bisa terbaca setengah bila proses mati di tengah jalan.
 """
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 
@@ -90,10 +91,8 @@ def backup_existing(path: str, keep: int = 5) -> str | None:
     olds = sorted(os.path.join(bak_dir, f) for f in os.listdir(bak_dir)
                   if f.startswith(base + "-"))
     for old in olds[:-keep]:
-        try:
+        with contextlib.suppress(OSError):
             os.remove(old)
-        except OSError:
-            pass
     return bak
 
 

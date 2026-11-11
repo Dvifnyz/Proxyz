@@ -2,8 +2,8 @@
 import json
 import socket
 import threading
-import urllib.request
 import urllib.error
+import urllib.request
 from http.server import ThreadingHTTPServer
 
 from proxyz.gateway import make_handler, serve_socks5, start_healer
@@ -67,11 +67,12 @@ def test_audit_logs_rotate_and_healer(tmp_path):
     import time
     time.sleep(3)
     stop.set()
-    lines = [json.loads(l) for l in open(audit, encoding="utf-8")]
-    events = [l["event"] for l in lines]
+    with open(audit, encoding="utf-8") as f:
+        lines = [json.loads(entry) for entry in f]
+    events = [entry["event"] for entry in lines]
     assert "api_rotate" in events
     assert "healer_prune" in events
-    assert all("ts" in l for l in lines)
+    assert all("ts" in entry for entry in lines)
 
 
 def _socks5_client(port, host, dport, payload):
