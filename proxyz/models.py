@@ -1,4 +1,4 @@
-"""Proxyx — model data proxy (satu bentuk untuk semua modul)."""
+"""Proxyz — model data proxy (satu bentuk untuk semua modul)."""
 from __future__ import annotations
 
 import re

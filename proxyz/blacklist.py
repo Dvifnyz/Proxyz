@@ -1,4 +1,4 @@
-"""Proxyx — blacklist: proxy yang tidak boleh dipakai lagi.
+"""Proxyz — blacklist: proxy yang tidak boleh dipakai lagi.
 
 Satu file teks `config/blacklist.txt`, satu entri per baris:
   1.2.3.4          (blokir semua port IP itu)

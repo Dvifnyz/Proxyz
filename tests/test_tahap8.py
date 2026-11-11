@@ -4,10 +4,10 @@ import threading
 import urllib.request
 from http.server import ThreadingHTTPServer
 
-from proxyx import bench, installer
-from proxyx.gateway import make_handler
-from proxyx.models import Proxy
-from proxyx.pool import Pool
+from proxyz import bench, installer
+from proxyz.gateway import make_handler
+from proxyz.models import Proxy
+from proxyz.pool import Pool
 from tests.test_gateway import DummyHttpProxy, IpifyStandin, _start_server
 
 
@@ -53,12 +53,12 @@ def test_api_bench_endpoint(monkeypatch):
 
 def test_install_service_files(tmp_path):
     paths = installer.generate(str(tmp_path), "/usr/bin/python3",
-                               "/home/rasya/Proxyx", 8888)
-    unit = (tmp_path / "proxyx.service").read_text()
-    assert "ExecStart=/usr/bin/python3 -m proxyx gateway --port 8888" in unit
+                               "/home/rasya/Proxyz", 8888)
+    unit = (tmp_path / "proxyz.service").read_text()
+    assert "ExecStart=/usr/bin/python3 -m proxyz gateway --port 8888" in unit
     assert "Restart=on-failure" in unit
-    xml = (tmp_path / "proxyx-task.xml").read_text()
+    xml = (tmp_path / "proxyz-task.xml").read_text()
     assert "LogonTrigger" in xml and "8888" in xml
     bat = (tmp_path / "install-service.bat").read_text()
-    assert "schtasks" in bat and "proxyx-task.xml" in bat
-    assert set(paths) == {"proxyx.service", "proxyx-task.xml", "install-service.bat"}
+    assert "schtasks" in bat and "proxyz-task.xml" in bat
+    assert set(paths) == {"proxyz.service", "proxyz-task.xml", "install-service.bat"}

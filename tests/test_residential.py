@@ -5,7 +5,7 @@ import urllib.error
 
 import pytest
 
-from proxyx import residential
+from proxyz import residential
 
 
 def test_load_manual_auth_and_plain(tmp_path):

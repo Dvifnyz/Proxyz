@@ -6,9 +6,9 @@ import urllib.request
 import urllib.error
 from http.server import ThreadingHTTPServer
 
-from proxyx.gateway import make_handler, serve_socks5, start_healer
-from proxyx.models import Proxy
-from proxyx.pool import Pool
+from proxyz.gateway import make_handler, serve_socks5, start_healer
+from proxyz.models import Proxy
+from proxyz.pool import Pool
 from tests.test_gateway import DummyHttpProxy, IpifyStandin, _start_server
 
 

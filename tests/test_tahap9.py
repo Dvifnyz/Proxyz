@@ -3,10 +3,10 @@ import json
 import os
 import sqlite3
 
-from proxyx import router
-from proxyx.config import PROFILES, apply_profile, load_config
-from proxyx.exporter import backup_existing, export_all
-from proxyx.models import Proxy
+from proxyz import router
+from proxyz.config import PROFILES, apply_profile, load_config
+from proxyz.exporter import backup_existing, export_all
+from proxyz.models import Proxy
 
 
 def _make_db(path):
@@ -43,7 +43,7 @@ def test_sync_insert_backup_dedup(tmp_path):
     r1 = router.sync_to_9router(_proxies(), db)
     assert r1["ok"] and r1["inserted"] == 2 and r1["skipped"] == 0
     assert os.path.exists(r1["backup"])  # backup dibuat dulu
-    assert _row(db, "http://1.2.3.4:8080")[0]["name"].startswith("Proxyx")
+    assert _row(db, "http://1.2.3.4:8080")[0]["name"].startswith("Proxyz")
     r2 = router.sync_to_9router(_proxies(), db)  # sync ulang: dedup
     assert r2["inserted"] == 0 and r2["skipped"] == 2
     assert len(_row(db, "http://1.2.3.4:8080")) == 1
@@ -54,20 +54,22 @@ def test_sync_replace_only_own_rows(tmp_path):
     _make_db(db)
     conn = sqlite3.connect(db)
     # Baris "orang lain" + baris unknown — harus selamat dari --ganti.
+    # Baris nama lama "Proxyx" (v2.x) ikut dibersihkan karena itu milik tool ini.
     for name, url in [("Router Bawaan", "http://9.9.9.9:8080"),
-                      ("Lain", "http://8.8.8.8:8080")]:
+                      ("Lain", "http://8.8.8.8:8080"),
+                      ("Proxyx [ID] 7.7.7.7:8080 (http)", "http://7.7.7.7:8080")]:
         conn.execute("INSERT INTO proxyPools VALUES (?,?,?,?,?,?)",
                      ("x", 1, "unknown", json.dumps({"name": name, "proxyUrl": url}),
                       "t", "t"))
     conn.commit(); conn.close()
     router.sync_to_9router(_proxies(), db)
     r = router.sync_to_9router(_proxies(), db, replace=True)
-    assert r["deleted"] == 2  # hanya 2 baris Proxyx
+    assert r["deleted"] == 3  # 2 baris Proxyz + 1 baris nama lama Proxyx
     assert r["inserted"] == 2
     conn = sqlite3.connect(db)
     total = conn.execute("SELECT COUNT(*) FROM proxyPools").fetchone()[0]
     conn.close()
-    assert total == 4  # 2 baris orang lain + 2 Proxyx baru
+    assert total == 4  # 2 baris orang lain + 2 Proxyz baru
 
 
 def test_sync_missing_db_or_table(tmp_path):

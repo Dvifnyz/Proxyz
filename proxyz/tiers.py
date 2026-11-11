@@ -1,4 +1,4 @@
-"""Proxyx — tier kecepatan: cepat / sedang / lambat.
+"""Proxyz — tier kecepatan: cepat / sedang / lambat.
 
   cepat : latency <= 350 ms   (buat browsing & scraping responsif)
   sedang: latency <= 800 ms

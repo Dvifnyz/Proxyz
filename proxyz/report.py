@@ -1,8 +1,8 @@
-"""Proxyx — laporan: ringkasan kesehatan pool dalam satu halaman.
+"""Proxyz — laporan: ringkasan kesehatan pool dalam satu halaman.
 
 Sumber data: pool di disk, skor kesehatan sumber, hasil bench terakhir.
 Tidak mengambil data baru dari internet — laporan hanya merangkum
-apa yang sudah diketahui Proxyx.
+apa yang sudah diketahui Proxyz.
 """
 from __future__ import annotations
 
@@ -45,7 +45,7 @@ def build_report(pool: list[Proxy], health_rows: list[dict] | None = None,
 
 
 def report_markdown(data: dict) -> str:
-    lines = [f"# Laporan Proxyx — {data['generated_at']}", "",
+    lines = [f"# Laporan Proxyz — {data['generated_at']}", "",
              f"**Pool:** {data['pool_total']} proxy",
              f"**Protokol:** {data['by_protocol']}",
              f"**Negara teratas:** {data['by_country']}",
@@ -61,7 +61,7 @@ def report_markdown(data: dict) -> str:
     for b in data["bench_top"]:
         lines.append(f"- {b['proxy']} — {b['kbps']} KB/detik")
     if not data["bench_top"]:
-        lines.append("- (belum ada hasil bench — jalankan `proxyx bench`)")
+        lines.append("- (belum ada hasil bench — jalankan `proxyz bench`)")
     if data.get("stats"):
         s = data["stats"]
         lines += ["", "## Gateway",

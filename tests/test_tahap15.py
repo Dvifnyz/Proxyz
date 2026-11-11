@@ -2,7 +2,7 @@
 import json
 import os
 
-from proxyx.doctor import print_doctor, run_doctor
+from proxyz.doctor import print_doctor, run_doctor
 
 
 def test_doctor_real_project_healthy():
@@ -31,4 +31,4 @@ def test_print_doctor_does_not_crash(capsys):
     r = run_doctor(check_gateway=False)
     print_doctor(r)
     out = capsys.readouterr().out
-    assert "Proxyx Doctor" in out and ("Sehat" in out or "error" in out)
+    assert "Proxyz Doctor" in out and ("Sehat" in out or "error" in out)

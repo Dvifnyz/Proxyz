@@ -1,4 +1,4 @@
-"""Proxyx — pool: rotasi, sticky session, skor, dan statistik.
+"""Proxyz — pool: rotasi, sticky session, skor, dan statistik.
 
 Perbedaan dari repo asli (ProxyPoolManager):
 - Urutan pool berdasarkan skor + residential dulu (bukan sekadar urutan panen).

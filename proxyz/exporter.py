@@ -1,4 +1,4 @@
-"""Proxyx — ekspor hasil panen: TXT, JSON, CSV, Clash YAML.
+"""Proxyz — ekspor hasil panen: TXT, JSON, CSV, Clash YAML.
 
 Penulisan atomik (temp + os.replace) — repo asli menulis langsung dan
 file bisa terbaca setengah bila proses mati di tengah jalan.
@@ -44,7 +44,7 @@ def clash_yaml(proxies: list[Proxy]) -> str:
     for i, p in enumerate(proxies):
         if p.protocol not in ("http", "socks5"):
             continue
-        name = f"proxyx-{i + 1}-{p.ip.replace('.', '-')}"
+        name = f"proxyz-{i + 1}-{p.ip.replace('.', '-')}"
         names.append(name)
         lines.append(f"  - name: {name}")
         lines.append(f"    type: {'http' if p.protocol == 'http' else 'socks5'}")
@@ -54,7 +54,7 @@ def clash_yaml(proxies: list[Proxy]) -> str:
             lines.append(f"    username: {p.username}")
             lines.append(f"    password: {p.password}")
     lines.append("proxy-groups:")
-    lines.append("  - name: PROXYX")
+    lines.append("  - name: PROXYZ")
     lines.append("    type: url-test")
     lines.append("    url: http://www.gstatic.com/generate_204")
     lines.append("    interval: 300")
@@ -65,7 +65,7 @@ def clash_yaml(proxies: list[Proxy]) -> str:
 
 
 def export_clash(proxies: list[Proxy], path: str) -> str:
-    """Clash YAML: tiap proxy jadi entri + satu grup `PROXYX` (url-test).
+    """Clash YAML: tiap proxy jadi entri + satu grup `PROXYZ` (url-test).
     Hanya HTTP & SOCKS5 yang didukung Clash (SOCKS4 dilewati)."""
     return _atomic(path, clash_yaml(proxies))
 

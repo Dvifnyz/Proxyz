@@ -1,4 +1,4 @@
-"""Proxyx — sinkronisasi pool ke 9Router (SQLite `proxyPools`).
+"""Proxyz — sinkronisasi pool ke 9Router (SQLite `proxyPools`).
 
 Fitur ini ADA di petani-proxy (exporter.py / fast_validator.py /
 warp_generator.py) dan di-port ke sini dengan satu perbedaan penting:
@@ -7,9 +7,9 @@ Repo asli: `replace=True` menghapus baris `WHERE data LIKE
 '%PetaniProxy%' OR data LIKE '%OmniProxy%' OR testStatus='unknown'`
 — termasuk baris 'unknown' yang BUKAN miliknya. Itu destruktif.
 
-Proxyx: insert-only secara default. Baris lama TIDAK PERNAH dihapus
+Proxyz: insert-only secara default. Baris lama TIDAK PERNAH dihapus
 kecuali dengan `--ganti`, dan itupun HANYA baris yang ditandai
-'Proxyx' milik tool ini sendiri — baris 9Router lain dan baris
+'Proxyz' milik tool ini sendiri — baris 9Router lain dan baris
 'unknown' tidak disentuh. Sebelum menulis apa pun, file DB di-backup
 dulu (`data.sqlite.bak-<waktu>`).
 
@@ -68,7 +68,7 @@ def sync_to_9router(proxies: list[Proxy], db_path: str,
     """Tulis proxy hidup ke proxyPools. Kembalikan ringkasan.
     - backup dulu, lalu insert; proxy yang sudah ada (proxyUrl sama)
       dilewati (dedup) supaya sync berulang tidak menumpuk duplikat.
-    - replace=True: hapus HANYA baris bertanda 'Proxyx' sebelum insert.
+    - replace=True: hapus HANYA baris bertanda 'Proxyz' sebelum insert.
     """
     if not os.path.exists(db_path):
         return {"ok": False, "error": f"DB tidak ditemukan: {db_path}"}
@@ -81,8 +81,11 @@ def sync_to_9router(proxies: list[Proxy], db_path: str,
         now_iso = datetime.now(timezone.utc).isoformat()
         deleted = 0
         if replace:
+            # Hapus baris milik tool ini — nama baru "Proxyz" maupun
+            # nama lama "Proxyx" (v2.x) — dan hanya itu.
             cur = conn.execute(
-                "DELETE FROM proxyPools WHERE data LIKE '%\"name\": \"Proxyx%'")
+                "DELETE FROM proxyPools WHERE data LIKE '%\"name\": \"Proxyz%'"
+                " OR data LIKE '%\"name\": \"Proxyx%'")
             deleted = cur.rowcount
         existing = {row[0] for row in conn.execute(
             "SELECT json_extract(data, '$.proxyUrl') FROM proxyPools")}
@@ -93,7 +96,7 @@ def sync_to_9router(proxies: list[Proxy], db_path: str,
                 skipped += 1
                 continue
             payload = {
-                "name": f"Proxyx [{p.country_code or '??'}] {p.hostport} ({p.protocol})",
+                "name": f"Proxyz [{p.country_code or '??'}] {p.hostport} ({p.protocol})",
                 "proxyUrl": url,
                 "noProxy": "",
                 "type": p.protocol,

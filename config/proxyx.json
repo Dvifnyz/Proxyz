@@ -1,1 +1,0 @@
-{"_comment":"Proxyx — ubah angka di sini, lalu jalankan ulang. Token JANGAN ditulis di sini (pakai env PROXYX_TOKEN).","check_target":20,"check_timeout":5.0,"check_workers":100,"gateway_port":8888,"healer_interval":90,"healer_target":10,"max_latency_ms":1200,"min_healthy":5,"session_ttl":600}

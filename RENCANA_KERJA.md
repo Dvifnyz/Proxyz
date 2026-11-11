@@ -1,4 +1,4 @@
-# Proxyx — Rencana & Instruksi Kerja (bertahap)
+# Proxyz — Rencana & Instruksi Kerja (bertahap)
 
 > Tool baru, ditulis dari nol, terinspirasi PetaniProxy
 > (`itzluthfi/petani-proxy`, MIT, v1.2.0) — bukan fork, bukan copy-paste.
@@ -14,7 +14,7 @@
   13 dependency, fitur: panen 30+ sumber, checker aiohttp, gateway
   `127.0.0.1:8888`, WARP generator, Webshare Hunter (audio captcha solver),
   CapSolver opsional, sync 9Router, daemon auto-healer, auto-updater.
-- Nama tool: **Proxyx**. Nama repo: **Proxyz** (sesuai URL yang diminta).
+- Nama tool: **Proxyz**. Nama repo: **Proxyz** (sesuai URL yang diminta).
 
 ## 1. Prinsip desain (yang membedakan dari aslinya)
 
@@ -57,9 +57,10 @@
 | 13 | v1.8.0 — Laporan | SELESAI 2026-11-11 (tes 74/74; live laporan jalan, 1 sumber terdeteksi mati) |
 | 14 | v1.9.0 — Doctor | SELESAI 2026-11-11 (tes 78/78; live: Sehat, 2 peringatan, 0 error) |
 | 15 | **v2.0.0 — Rilis mayor stabil** | SELESAI 2026-11-11 (tes 79/79; migrasi legacy webshare.json otomatis + docs/API.md + doctor; tanpa captcha solver / farm akun — tetap) |
+| 16 | **v3.0.0 — Rename Proxyx -> Proxyz + standar repo besar** | SELESAI 2026-11-11 (tes 82/82; rename penuh paket/CLI/config/env/header + shim deprecated proxyx sampai v4.0.0; README standar repo besar + CHANGELOG + CONTRIBUTING + SECURITY + Code of Conduct + template issue/PR + .editorconfig + docs/MIGRASI-3.0.md; deskripsi + topik repo GitHub diisi) |
 |---|---|---|
-| 0 | Persiapan: pelajari isi asli, tulis rencana ini, cek repo tujuan | `docs: rencana kerja Proxyx` |
-| 1 | Fondasi repo: struktur, README, LICENSE (MIT), .gitignore, pyproject, config sumber | `chore: fondasi repo Proxyx` |
+| 0 | Persiapan: pelajari isi asli, tulis rencana ini, cek repo tujuan | `docs: rencana kerja Proxyz` |
+| 1 | Fondasi repo: struktur, README, LICENSE (MIT), .gitignore, pyproject, config sumber | `chore: fondasi repo Proxyz` |
 | 2 | Harvester + checker async (sumber 35+, anonimitas, geo, skor) + tes + residential via API resmi | `feat: harvester & checker async` — SELESAI 2026-11-11 (tes 18/18, panen live 69.063 HTTP/9,8 dtk) |
 | 3 | Gateway rotating + REST API + dashboard + auto-healer | `feat: gateway rotating + API` — SELESAI 2026-11-11 (tes 28/28: forward HTTP, CONNECT, SOCKS5 upstream, sticky session, token) |
 | 4 | WARP + CLI/menu + ekspor (txt/json/csv/clash) + Docker + CI | `feat: warp, CLI, ekspor, docker` — SELESAI 2026-11-11 (tes 34/34; WARP live via CLI; gateway CLI live via dummy upstream; bug forward-HTTP CONNECT diperbaiki + tes regresi) |
@@ -71,10 +72,10 @@ jadi progresnya kelihatan bertahap di GitHub.
 ## 3. Struktur akhir (rencana)
 
 ```
-Proxyx/
-├── proxyx/
+Proxyz/
+├── proxyz/
 │   ├── __init__.py        # versi
-│   ├── __main__.py        # python -m proxyx
+│   ├── __main__.py        # python -m proxyz
 │   ├── sources.py         # daftar sumber proxy publik
 │   ├── harvester.py       # panen async dari semua sumber
 │   ├── checker.py         # cek hidup + anonimitas + geo + skor
@@ -103,11 +104,11 @@ Proxyx/
 
 ```bash
 pip install -r requirements.txt   # atau: pip install .
-python -m proxyx                  # menu interaktif
-python -m proxyx panen --jumlah 20 --negara ID
-python -m proxyx gateway --port 8888
-python -m proxyx warp
-python -m proxyx cek output/proxy_hidup.txt
+python -m proxyz                  # menu interaktif
+python -m proxyz panen --jumlah 20 --negara ID
+python -m proxyz gateway --port 8888
+python -m proxyz warp
+python -m proxyz cek output/proxy_hidup.txt
 pytest -q
 ```
 

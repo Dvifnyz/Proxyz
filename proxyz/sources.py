@@ -1,4 +1,4 @@
-"""Proxyx — daftar sumber proxy publik (satu sumber kebenaran).
+"""Proxyz — daftar sumber proxy publik (satu sumber kebenaran).
 
 Semua sumber dibaca dari SATU file: config/sources.json.
 Tidak ada daftar hardcode kedua (cacat repo asli: FAST_SOURCES terpisah

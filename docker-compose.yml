@@ -1,13 +1,13 @@
 services:
-  proxyx:
+  proxyz:
     build: .
-    container_name: proxyx-gateway
+    container_name: proxyz-gateway
     restart: unless-stopped
     ports:
       - "${GATEWAY_PORT:-8888}:8888"
     environment:
       - PYTHONUNBUFFERED=1
-      # - PROXYX_TOKEN=isi-token-bila-mau-pakai-token
+      # - PROXYZ_TOKEN=isi-token-bila-mau-pakai-token
       # - WEBSHARE_API_KEY=isi-api-key-webshare
     volumes:
       - ./output:/app/output

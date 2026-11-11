@@ -1,13 +1,13 @@
 """Tes v1.7.0: blacklist + tier kecepatan."""
-from proxyx.blacklist import (add_to_blacklist, filter_blacklisted,
+from proxyz.blacklist import (add_to_blacklist, filter_blacklisted,
                               is_blacklisted, load_blacklist,
                               remove_from_blacklist)
-from proxyx.models import Proxy
-from proxyx.tiers import filter_tier, tier_of
+from proxyz.models import Proxy
+from proxyz.tiers import filter_tier, tier_of
 
 
 def test_blacklist_crud(tmp_path, monkeypatch):
-    import proxyx.blacklist as bl
+    import proxyz.blacklist as bl
     monkeypatch.setattr(bl, "BLACKLIST_FILE", str(tmp_path / "blacklist.txt"))
     assert load_blacklist() == set()
     assert add_to_blacklist("1.2.3.4:8080")

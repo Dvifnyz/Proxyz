@@ -4,10 +4,10 @@ import threading
 import urllib.request
 from http.server import ThreadingHTTPServer
 
-from proxyx.gateway import make_handler
-from proxyx.models import Proxy
-from proxyx.pool import Pool
-from proxyx.report import build_report, report_markdown
+from proxyz.gateway import make_handler
+from proxyz.models import Proxy
+from proxyz.pool import Pool
+from proxyz.report import build_report, report_markdown
 
 
 def _pool():
@@ -33,7 +33,7 @@ def test_build_report_aggregates():
     assert data["top_sources"][0]["yield"] == 100
     assert data["bench_top"][0]["proxy"] == "1.1.1.1:8080"
     md = report_markdown(data)
-    assert "# Laporan Proxyx" in md and "1.1.1.1:8080" in md
+    assert "# Laporan Proxyz" in md and "1.1.1.1:8080" in md
 
 
 def test_build_report_empty():

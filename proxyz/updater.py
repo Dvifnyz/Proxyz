@@ -1,4 +1,4 @@
-"""Proxyx — updater AMAN.
+"""Proxyz — updater AMAN.
 
 Repo asli: `perform_update` menjalankan `git pull`, lalu fallback
 `git reset --hard origin/master` (menghapus perubahan lokal pengguna),
@@ -6,7 +6,7 @@ kemudian mengeksekusi `auto_run_commands` dari version.json REMOTE
 via shell=True — siapa pun yang menguasai repo bisa menjalankan
 perintah arbitrer di mesin pengguna.
 
-Proxyx tidak melakukan satu pun dari itu:
+Proxyz tidak melakukan satu pun dari itu:
 - Cek versi hanya MEMBACA GitHub Releases API (tidak mengeksekusi apa pun).
 - Update dilakukan via `pip install --upgrade` dari tag release
   (tanpa shell=True, tanpa git reset, tanpa perintah remote),
@@ -20,7 +20,7 @@ import sys
 import urllib.request
 
 RELEASES_API = "https://api.github.com/repos/Dvifnyz/Proxyz/releases/latest"
-UA = {"User-Agent": "Proxyx/1.0"}
+UA = {"User-Agent": "Proxyz/1.0"}
 
 
 def _parse_version(tag: str) -> tuple[int, ...]:
@@ -77,4 +77,4 @@ def update_via_pip(tag: str) -> tuple[bool, str]:
     if proc.returncode != 0:
         tail = (proc.stderr or proc.stdout or "")[-500:]
         return False, f"pip gagal (exit {proc.returncode}): {tail}"
-    return True, f"Proxyx diperbarui ke {tag}. Jalankan ulang gateway bila sedang jalan."
+    return True, f"Proxyz diperbarui ke {tag}. Jalankan ulang gateway bila sedang jalan."

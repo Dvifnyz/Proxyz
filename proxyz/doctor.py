@@ -1,9 +1,9 @@
-"""Proxyx — doctor: diagnosa mandiri sebelum bertanya.
+"""Proxyz — doctor: diagnosa mandiri sebelum bertanya.
 
 Memeriksa Python, config, sumber, pool, key residential, dan apakah
 gateway sedang jalan. Tidak mengubah apa pun, tidak mengirim data
 ke mana pun. Dipakai pengguna saat ada yang tidak jalan, dan oleh
-`proxyx update` sebelum update (bukan pengganti tes).
+`proxyz update` sebelum update (bukan pengganti tes).
 """
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ def run_doctor(base_dir: str | None = None, gateway_port: int | None = None,
 
     try:
         from .config import load_config
-        cfg = load_config(os.path.join(base, "config", "proxyx.json"))
+        cfg = load_config(os.path.join(base, "config", "proxyz.json"))
         add("Config", 1024 <= cfg["gateway_port"] <= 65535,
             f"port {cfg['gateway_port']}, healer {cfg['healer_interval']} dtk")
     except Exception as e:
@@ -49,7 +49,7 @@ def run_doctor(base_dir: str | None = None, gateway_port: int | None = None,
             n = sum(1 for line in f if line.strip())
         add("Pool", n > 0, f"{n} proxy di output/proxy_hidup.txt")
     else:
-        add("Pool", None, "belum ada — jalankan: python -m proxyx panen")
+        add("Pool", None, "belum ada — jalankan: python -m proxyz panen")
 
     try:
         from .residential import load_api_keys
@@ -94,7 +94,7 @@ def run_doctor(base_dir: str | None = None, gateway_port: int | None = None,
 
 
 def print_doctor(result: dict) -> None:
-    print("\n  🩺 Proxyx Doctor")
+    print("\n  🩺 Proxyz Doctor")
     for c in result["checks"]:
         mark = "✅" if c["ok"] is True else ("⚠️" if c["ok"] is None else "❌")
         print(f"  {mark} {c['name']}: {c['detail']}")

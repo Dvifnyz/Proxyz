@@ -1,4 +1,4 @@
-"""Proxyx — WARP: akun Cloudflare WARP resmi -> WireGuard + Sing-box.
+"""Proxyz — WARP: akun Cloudflare WARP resmi -> WireGuard + Sing-box.
 
 Diambil dari pola repo asli (warp_generator.py) yang sudah benar:
 registrasi via API resmi Cloudflare (sah, tanpa captcha). Diperbaiki:

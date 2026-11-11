@@ -1,6 +1,6 @@
 @echo off
-REM Proxyx — double-click di Windows, langsung jalan.
-python -m proxyx %*
+REM Proxyz — double-click di Windows, langsung jalan.
+python -m proxyz %*
 if errorlevel 1 (
   echo.
   echo Python belum terpasang? Download di https://www.python.org/downloads/

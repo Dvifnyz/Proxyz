@@ -1,4 +1,4 @@
-"""Proxyx — checker: uji proxy hidup + anonimitas + geo + skor.
+"""Proxyz — checker: uji proxy hidup + anonimitas + geo + skor.
 
 Satu mesin cek (repo asli punya tiga jalur yang saling duplikat).
 - HTTP  : request beneran lewat proxy ke api.ipify.org (HTTPS).
@@ -23,7 +23,7 @@ from .models import Proxy
 
 TEST_URL = "https://api.ipify.org?format=json"
 TEST_HOST = "api.ipify.org"
-UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Proxyx/1.0"}
+UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Proxyz/1.0"}
 IP_RE = re.compile(r"^\d+\.\d+\.\d+\.\d+$")
 VIA_HEADERS = ("via", "x-forwarded-for", "forwarded", "x-real-ip",
                "proxy-connection", "x-proxy-id", "x-cache")
@@ -162,7 +162,7 @@ async def check_socks(proxy: Proxy, host_ip: str, timeout: float = 6.0) -> Proxy
         if not ok:
             return None
         writer.write(b"GET / HTTP/1.1\r\nHost: api.ipify.org\r\n"
-                     b"User-Agent: Proxyx/1.0\r\nConnection: close\r\n\r\n")
+                     b"User-Agent: Proxyz/1.0\r\nConnection: close\r\n\r\n")
         await writer.drain()
         raw = await asyncio.wait_for(reader.read(-1), timeout=timeout)
         body = raw.split(b"\r\n\r\n", 1)[-1].decode(errors="ignore").strip()
@@ -239,7 +239,7 @@ def enrich_geo(proxies: list[Proxy], timeout: float = 8.0) -> list[Proxy]:
                                   for p in chunk]).encode()
             req = urllib.request.Request("http://ip-api.com/batch", data=payload,
                                          headers={"Content-Type": "application/json",
-                                                  "User-Agent": "Proxyx/1.0"}, method="POST")
+                                                  "User-Agent": "Proxyz/1.0"}, method="POST")
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 rows = json.loads(r.read().decode())
             by_ip = {row.get("query"): row for row in rows if row.get("status") == "success"}

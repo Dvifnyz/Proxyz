@@ -1,4 +1,4 @@
-"""Tes pool + gateway Proxyx (live, localhost saja)."""
+"""Tes pool + gateway Proxyz (live, localhost saja)."""
 import json
 import socket
 import threading
@@ -7,9 +7,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import pytest
 
-from proxyx.gateway import connect_via_proxy, make_handler
-from proxyx.models import Proxy
-from proxyx.pool import Pool
+from proxyz.gateway import connect_via_proxy, make_handler
+from proxyz.models import Proxy
+from proxyz.pool import Pool
 
 
 # ------------------------------------------------------------------ pool

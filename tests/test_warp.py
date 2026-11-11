@@ -5,7 +5,7 @@ import stat
 
 import pytest
 
-from proxyx import warp
+from proxyz import warp
 
 
 def _fake_response(monkeypatch):

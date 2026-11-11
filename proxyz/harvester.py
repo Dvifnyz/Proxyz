@@ -1,4 +1,4 @@
-"""Proxyx — harvester: panen proxy publik dari semua sumber, satu pipeline.
+"""Proxyz — harvester: panen proxy publik dari semua sumber, satu pipeline.
 
 Satu mesin panen (bukan tiga seperti repo asli). aiohttp bila tersedia,
 fallback urllib ber-thread bila tidak. Verifikasi TLS TETAP NYALA —
@@ -22,7 +22,7 @@ import urllib.request
 
 from .sources import is_fresh_source, load_sources, parse_proxies_from_text, with_country
 
-UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Proxyx/1.0"}
+UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Proxyz/1.0"}
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HEALTH_FILE = os.path.join(BASE_DIR, "output", ".source_health.json")
 SKIP_AFTER_FAILS = 3

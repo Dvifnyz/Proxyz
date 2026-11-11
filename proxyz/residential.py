@@ -1,4 +1,4 @@
-"""Proxyx — proxy residential: jalur resmi, bukan farm akun.
+"""Proxyz — proxy residential: jalur resmi, bukan farm akun.
 
 Kenapa begini (baca sebelum protes):
 -----------------------------------
@@ -10,11 +10,11 @@ suara + browser automation. Di lapangan cara itu rapuh dan pendek umur:
   - Tiap Webshare mengubah DOM / reCAPTCHA, hunter-nya rusak total.
   - Akun yang dibuat otomatis juga melanggar ToS Webshare.
 
-Proxyx mengambil jalur yang justru bikin residential-nya AWET:
+Proxyz mengambil jalur yang justru bikin residential-nya AWET:
   1. Kamu daftar SATU akun Webshare sendiri (manusia, captcha diisi
      sendiri sekali, 30 detik) di https://proxy.webshare.io/register
   2. Ambil API key dari dashboard (gratis, 10 proxy untuk akun free)
-  3. Proxyx menarik daftar proxymu lewat API RESMI Webshare dan
+  3. Proxyz menarik daftar proxymu lewat API RESMI Webshare dan
      memasukkannya ke pool yang sama dengan proxy publik — gateway
      memutar semuanya, residential diprioritaskan (skor +20).
   4. Punya proxy berbayar/residential dari penyedia lain? Tempel
@@ -39,7 +39,7 @@ from .models import Proxy
 
 WEBSHARE_API = "https://proxy.webshare.io/api/v2/proxy/list/?mode=direct&page_size=100"
 WEBSHARE_REGISTER = "https://proxy.webshare.io/register"
-UA = {"User-Agent": "Proxyx/1.0"}
+UA = {"User-Agent": "Proxyz/1.0"}
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MANUAL_FILE = os.path.join(BASE_DIR, "output", "proxy_manual.txt")
 KEY_FILE = os.path.join(BASE_DIR, "config", "webshare.json")

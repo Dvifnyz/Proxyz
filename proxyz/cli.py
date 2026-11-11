@@ -1,12 +1,12 @@
-"""Proxyx — CLI + menu interaktif.
+"""Proxyz — CLI + menu interaktif.
 
 Subcommand (lebih rapi dari 25 flag boolean repo asli):
-  python -m proxyx panen --jumlah 20 --negara ID
-  python -m proxyx gateway --port 8888
-  python -m proxyx warp [--jumlah N]
-  python -m proxyx residential [--api-key KEY | --signup]
-  python -m proxyx cek <file> [--jumlah N]
-  python -m proxyx            (tanpa argumen = menu interaktif)
+  python -m proxyz panen --jumlah 20 --negara ID
+  python -m proxyz gateway --port 8888
+  python -m proxyz warp [--jumlah N]
+  python -m proxyz residential [--api-key KEY | --signup]
+  python -m proxyz cek <file> [--jumlah N]
+  python -m proxyz            (tanpa argumen = menu interaktif)
 """
 from __future__ import annotations
 
@@ -169,7 +169,7 @@ def _cmd_residential(a):
             print()
             return
         if not key:
-            print("  Nanti bisa ditambah dengan: python -m proxyx residential --api-key KUNCIMU")
+            print("  Nanti bisa ditambah dengan: python -m proxyz residential --api-key KUNCIMU")
             return
         ok, info = validate_api_key(key)
         if ok:
@@ -188,7 +188,7 @@ def _cmd_residential(a):
             return
     keys = load_api_keys()
     if not keys:
-        print("  ✗ Belum ada API key. Jalankan: python -m proxyx residential --signup")
+        print("  ✗ Belum ada API key. Jalankan: python -m proxyz residential --signup")
         return
     all_proxies = []
     for i, key in enumerate(keys, 1):
@@ -220,12 +220,12 @@ def _cmd_test(a):
         h = urllib.request.ProxyHandler({"http": proxy, "https": proxy})
         opener = urllib.request.build_opener(h)
         req = urllib.request.Request("http://api.ipify.org",
-                                     headers={"User-Agent": "Proxyx/1.0"})
+                                     headers={"User-Agent": "Proxyz/1.0"})
         with opener.open(req, timeout=10) as r:
             gw_ip = r.read().decode().strip()
     except Exception as e:
         print(f"  ✗ Tidak bisa menjangkau gateway di 127.0.0.1:{cfg_port} ({e})")
-        print("    Jalankan dulu: python -m proxyx gateway")
+        print("    Jalankan dulu: python -m proxyz gateway")
         return
     print(f"  IP asli kamu : {direct or '(tidak terdeteksi)'}")
     print(f"  IP via gateway: {gw_ip or '(tidak terdeteksi)'}")
@@ -240,7 +240,7 @@ def _cmd_bench(a):
     from .gateway import load_pool_from_disk
     proxies = [p for p in load_pool_from_disk() if p.protocol == "http"][:a.jumlah]
     if not proxies:
-        print("  ✗ Pool kosong / tidak ada proxy HTTP. Panen dulu: python -m proxyx panen")
+        print("  ✗ Pool kosong / tidak ada proxy HTTP. Panen dulu: python -m proxyz panen")
         return
     print(f"\n  ⚡ Bench {len(proxies)} proxy HTTP (unduh 1 MB tiap proxy) ...")
     results = bench_pool(proxies, workers=a.workers)
@@ -275,7 +275,7 @@ def _cmd_laporan(a):
     path = os.path.join(OUT_DIR, "laporan.md")
     with open(path, "w", encoding="utf-8") as f:
         f.write(md)
-    print(f"\n  📋 Laporan Proxyx — {data['generated_at']}")
+    print(f"\n  📋 Laporan Proxyz — {data['generated_at']}")
     print(f"  Pool: {data['pool_total']} proxy | Tier: {data['by_tier']}")
     print(f"  Sumber mati: {data['dead_sources']} | Bench top: "
           f"{data['bench_top'][0]['proxy'] if data['bench_top'] else '-'}")
@@ -302,17 +302,17 @@ def _cmd_sync_9router(a):
     from .router import find_9router_db, sync_to_9router
     proxies = load_pool_from_disk()
     if not proxies:
-        print("  ✗ Pool kosong. Panen dulu: python -m proxyx panen")
+        print("  ✗ Pool kosong. Panen dulu: python -m proxyz panen")
         return
     db = a.db or find_9router_db()
     if not db:
         print("  ✗ DB 9Router tidak ditemukan. Beri jalurnya:")
-        print("    python -m proxyx sync-9router --db C:/path/ke/data.sqlite")
+        print("    python -m proxyz sync-9router --db C:/path/ke/data.sqlite")
         print("    (atau set env ROUTER_DB_PATH)")
         return
     if a.ganti and not a.yes:
         try:
-            jawab = input("  --ganti akan menghapus baris 'Proxyx' lama di DB. Lanjut? [y/N]: ").strip().lower()
+            jawab = input("  --ganti akan menghapus baris 'Proxyz' lama di DB. Lanjut? [y/N]: ").strip().lower()
         except (EOFError, KeyboardInterrupt):
             print()
             return
@@ -324,7 +324,7 @@ def _cmd_sync_9router(a):
         print(f"  ✗ {res.get('error')}")
         return
     print(f"  ✅ 9Router: {res['inserted']} ditambah, {res['skipped']} sudah ada"
-          + (f", {res['deleted']} baris Proxyx lama dihapus" if res['deleted'] else ""))
+          + (f", {res['deleted']} baris Proxyz lama dihapus" if res['deleted'] else ""))
     print(f"  💾 Backup DB: {res['backup']}")
 
 
@@ -339,8 +339,8 @@ def _cmd_install_service(a):
     for name, path in paths.items():
         print(f"     {name:20} {path}")
     print("\n  Linux (systemd):")
-    print(f"    sudo cp {paths['proxyx.service']} /etc/systemd/system/")
-    print("    sudo systemctl daemon-reload && sudo systemctl enable --now proxyx")
+    print(f"    sudo cp {paths['proxyz.service']} /etc/systemd/system/")
+    print("    sudo systemctl daemon-reload && sudo systemctl enable --now proxyz")
     print("\n  Windows (klik kanan install-service.bat > Run as administrator).")
     print("  Gateway akan jalan otomatis tiap mesin nyala / login.")
 
@@ -375,7 +375,7 @@ def _cmd_sources(a):
     from .harvester import health_report
     rows = health_report()
     if not rows:
-        print("  Belum ada riwayat panen. Jalankan `python -m proxyx panen` dulu.")
+        print("  Belum ada riwayat panen. Jalankan `python -m proxyz panen` dulu.")
         return
     print(f"\n  {'SUMBER':50} {'HASIL':>8} {'GAGAL':>6}  STATUS")
     for r in rows:
@@ -385,7 +385,7 @@ def _cmd_sources(a):
 
 
 def _menu():
-    print(f"\n  ⚡ PROXYX v{__version__} — panen, cek, gateway, WARP, residential")
+    print(f"\n  ⚡ PROXYZ v{__version__} — panen, cek, gateway, WARP, residential")
     pool_n = 0
     try:
         from .gateway import load_pool_from_disk
@@ -437,8 +437,8 @@ def _menu():
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="proxyx", description="Proxyx — panen proxy, gateway, WARP.")
-    p.add_argument("--version", action="version", version=f"proxyx {__version__}")
+    p = argparse.ArgumentParser(prog="proxyz", description="Proxyz — panen proxy, gateway, WARP.")
+    p.add_argument("--version", action="version", version=f"proxyz {__version__}")
     sub = p.add_subparsers(dest="cmd")
     sp = sub.add_parser("panen", help="panen + cek proxy hidup")
     sp.add_argument("--jumlah", type=int, default=20)
@@ -457,7 +457,7 @@ def build_parser() -> argparse.ArgumentParser:
     sc.add_argument("--jumlah", type=int, default=20)
     sc.set_defaults(func=_cmd_cek)
     sg = sub.add_parser("gateway", help="jalankan gateway rotating")
-    sg.add_argument("--port", type=int, default=0, help="0 = pakai config/proxyx.json")
+    sg.add_argument("--port", type=int, default=0, help="0 = pakai config/proxyz.json")
     sg.add_argument("--profil", default="", choices=["", "scraper", "cepat", "hemat"])
     sg.add_argument("--socks", type=int, default=0, help="nyalakan juga listener SOCKS5 di port ini")
     sg.add_argument("--no-healer", action="store_true")
@@ -465,7 +465,7 @@ def build_parser() -> argparse.ArgumentParser:
     s9 = sub.add_parser("sync-9router", help="sinkronkan pool ke DB SQLite 9Router (aman)")
     s9.add_argument("--db", default="")
     s9.add_argument("--ganti", action="store_true",
-                    help="hapus baris 'Proxyx' lama dulu (hanya milik Proxyx)")
+                    help="hapus baris 'Proxyz' lama dulu (hanya milik Proxyz)")
     s9.add_argument("--yes", action="store_true")
     s9.set_defaults(func=_cmd_sync_9router)
     st = sub.add_parser("test", help="leak test: IP asli vs IP via gateway")
@@ -479,7 +479,7 @@ def build_parser() -> argparse.ArgumentParser:
     sb.add_argument("--workers", type=int, default=10)
     sb.set_defaults(func=_cmd_bench)
     si = sub.add_parser("install-service", help="buat file service (systemd + Windows Task)")
-    si.add_argument("--port", type=int, default=0, help="0 = pakai config/proxyx.json")
+    si.add_argument("--port", type=int, default=0, help="0 = pakai config/proxyz.json")
     si.set_defaults(func=_cmd_install_service)
     sl = sub.add_parser("laporan", help="ringkasan kesehatan pool (output/laporan.md)")
     sl.set_defaults(func=_cmd_laporan)
@@ -504,6 +504,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv=None) -> None:
+    if os.path.basename(sys.argv[0]).startswith("proxyx"):
+        print("Peringatan: perintah 'proxyx' sudah berganti nama menjadi "
+              "'proxyz' (v3.0.0). Pakai 'proxyz' untuk seterusnya.",
+              file=sys.stderr)
     parser = build_parser()
     args = parser.parse_args(argv)
     if not getattr(args, "func", None):

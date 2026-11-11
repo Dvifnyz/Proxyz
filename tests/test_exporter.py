@@ -2,8 +2,8 @@
 import json
 import os
 
-from proxyx.exporter import export_all, export_clash
-from proxyx.models import Proxy
+from proxyz.exporter import export_all, export_clash
+from proxyz.models import Proxy
 
 
 def sample():
@@ -34,4 +34,4 @@ def test_export_clash_skips_socks4(tmp_path):
     text = open(path).read()
     assert "type: http" in text and "type: socks5" in text
     assert "3.3.3.3" not in text  # SOCKS4 tidak didukung Clash
-    assert "name: PROXYX" in text and "url-test" in text
+    assert "name: PROXYZ" in text and "url-test" in text

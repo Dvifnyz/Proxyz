@@ -1,14 +1,14 @@
-"""Proxyx — konfigurasi: SATU sumber yang benar-benar dibaca kode.
+"""Proxyz — konfigurasi: SATU sumber yang benar-benar dibaca kode.
 
 Repo asli punya variabel .env (GATEWAY_PORT, AUTO_HEALER_INTERVAL, ...)
 yang TIDAK DIBACA oleh kode Python mana pun — konfigurasi mati.
-Di Proxyx, semua setting dibaca dari sini:
+Di Proxyz, semua setting dibaca dari sini:
   1. default bawaan,
-  2. ditimpa config/proxyx.json (bila ada),
-  3. ditimpa environment (GATEWAY_PORT, PROXYX_TOKEN, ...).
+  2. ditimpa config/proxyz.json (bila ada),
+  3. ditimpa environment (GATEWAY_PORT, PROXYZ_TOKEN, ...).
 
 API key / token TIDAK PERNAH ditulis ke file config ini — token lewat
-env PROXYX_TOKEN, API key Webshare lewat env/config webshare.json.
+env PROXYZ_TOKEN, API key Webshare lewat env/config webshare.json.
 """
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ import json
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CONFIG_FILE = os.path.join(BASE_DIR, "config", "proxyx.json")
+CONFIG_FILE = os.path.join(BASE_DIR, "config", "proxyz.json")
 
 DEFAULTS = {
     "gateway_port": 8888,
@@ -31,19 +31,21 @@ DEFAULTS = {
     "session_ttl": 600,            # sticky session (detik)
     "rate_limit_per_min": 60,      # batas request /api/* per IP per menit (0 = bebas)
     "audit_log": True,             # tulis output/gateway-audit.jsonl
-    "schedule_interval_min": 60,   # jeda antar siklus `proxyx auto`
+    "schedule_interval_min": 60,   # jeda antar siklus `proxyz auto`
     "schedule_target": 20,         # target proxy hidup per siklus auto
 }
 
 ENV_MAP = {
     "GATEWAY_PORT": ("gateway_port", int),
+    # PROXYX_TOKEN = nama lama (v2.x), tetap dibaca; PROXYZ_TOKEN menang bila keduanya ada.
     "PROXYX_TOKEN": ("token", str),
+    "PROXYZ_TOKEN": ("token", str),
     "HEALER_INTERVAL": ("healer_interval", int),
     "MIN_HEALTHY": ("min_healthy", int),
     "CHECK_TIMEOUT": ("check_timeout", float),
 }
 
-# Profil gateway (baru di Proxyx — repo asli punya 3 profil di menu,
+# Profil gateway (baru di Proxyz — repo asli punya 3 profil di menu,
 # tapi hanya label; di sini tiap profil benar-benar mengubah perilaku):
 # - scraper: rotasi agresif, pool besar (tiap request ganti IP)
 # - cepat:  hanya proxy <=350 ms yang dipakai

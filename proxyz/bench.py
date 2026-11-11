@@ -1,4 +1,4 @@
-"""Proxyx — bench: ukur kecepatan unduh tiap proxy (KB/detik).
+"""Proxyz — bench: ukur kecepatan unduh tiap proxy (KB/detik).
 
 Mengunduh file uji dari Cloudflare (speed.cloudflare.com/__down)
 lewat tiap proxy, lalu diranking dari yang tercepat. Bukan sekadar
@@ -27,7 +27,7 @@ def _bench_one(proxy: Proxy, n_bytes: int, timeout: float) -> dict:
     t0 = time.monotonic()
     try:
         req = urllib.request.Request(SPEED_URL.format(n=n_bytes),
-                                     headers={"User-Agent": "Proxyx/1.0"})
+                                     headers={"User-Agent": "Proxyz/1.0"})
         with opener.open(req, timeout=timeout) as r:
             got = 0
             while True:

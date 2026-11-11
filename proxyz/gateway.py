@@ -1,16 +1,16 @@
-"""Proxyx — gateway: forward proxy lokal berputar + REST API + dashboard.
+"""Proxyz — gateway: forward proxy lokal berputar + REST API + dashboard.
 
 Perbedaan dari repo asli (core/server.py, 2.562 baris, 70% HTML):
 - Satu jalur socket terpadu untuk SEMUA upstream (HTTP dan SOCKS4/5,
   dengan/tanpa auth) — tidak ada lagi jalur socket mentah terpisah yang
   tidak menangani POST/PUT/DELETE.
 - Forward POST/PUT/DELETE/PATCH juga diteruskan (asli hanya GET/CONNECT).
-- Token opsional (env PROXYX_TOKEN): bila diisi, API + pemakaian proxy
+- Token opsional (env PROXYZ_TOKEN): bila diisi, API + pemakaian proxy
   wajib bawa token — asli tanpa autentikasi sama sekali.
 - Dashboard dipisah dan ringkas (bukan 1.795 baris HTML inline).
 - Healer paralel (bukan sequential 1-per-1) + evict berbasis skor pool.
 
-Cara pakai: python -m proxyx gateway --port 8888
+Cara pakai: python -m proxyz gateway --port 8888
   curl -x http://127.0.0.1:8888 http://api.ipify.org
   curl http://127.0.0.1:8888/api/status
 """
@@ -161,7 +161,7 @@ def start_healer(pool: Pool, interval: int = 90, min_healthy: int = 5,
                 opener = urllib.request.build_opener(h)
                 req = urllib.request.Request(
                     "http://api.ipify.org",
-                    headers={"User-Agent": "Proxyx/1.0"})
+                    headers={"User-Agent": "Proxyz/1.0"})
                 with opener.open(req, timeout=4) as r:
                     if re.fullmatch(r"\d+\.\d+\.\d+\.\d+",
                                     r.read().decode().strip() or ""):
@@ -197,7 +197,7 @@ def start_healer(pool: Pool, interval: int = 90, min_healthy: int = 5,
                 except Exception:
                     pass
 
-    t = threading.Thread(target=loop, daemon=True, name="proxyx-healer")
+    t = threading.Thread(target=loop, daemon=True, name="proxyz-healer")
     t.start()
     return stop
 
@@ -252,12 +252,12 @@ def load_pool_from_disk() -> list[Proxy]:
 
 # ------------------------------------------------------------------ HTTP API
 DASHBOARD_HTML = """<!doctype html><html lang="id"><head><meta charset="utf-8">
-<title>Proxyx — Gateway</title><style>
+<title>Proxyz — Gateway</title><style>
 body{font-family:system-ui,sans-serif;max-width:900px;margin:2em auto;padding:0 1em}
 table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:4px 8px;text-align:left}
 button{padding:6px 12px;margin-right:6px;cursor:pointer}
 </style></head><body>
-<h1>⚡ Proxyx Gateway</h1>
+<h1>⚡ Proxyz Gateway</h1>
 <p id="stats">memuat…</p>
 <p id="leak">Leak test: belum dijalankan.</p>
 <p><button onclick="aksi('rotate')">🔄 Rotasi</button>
@@ -337,7 +337,9 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None,
             auth = self.headers.get("Authorization", "")
             if auth == f"Bearer {token}":
                 return True
-            if self.headers.get("X-Proxyx-Token") == token:
+            if self.headers.get("X-Proxyz-Token") == token:
+                return True
+            if self.headers.get("X-Proxyx-Token") == token:  # header lama (v2.x)
                 return True
             q = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
             return q.get("token", [""])[0] == token
@@ -383,7 +385,7 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None,
             direct, gw_ip = "", ""
             try:
                 req = urllib.request.Request(
-                    "http://api.ipify.org", headers={"User-Agent": "Proxyx/1.0"})
+                    "http://api.ipify.org", headers={"User-Agent": "Proxyz/1.0"})
                 with urllib.request.urlopen(req, timeout=8) as r:
                     direct = _ip(r.read().decode())
             except Exception:
@@ -394,7 +396,7 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None,
                     h = urllib.request.ProxyHandler({"http": up.url, "https": up.url})
                     opener = urllib.request.build_opener(h)
                     req = urllib.request.Request(
-                        "http://api.ipify.org", headers={"User-Agent": "Proxyx/1.0"})
+                        "http://api.ipify.org", headers={"User-Agent": "Proxyz/1.0"})
                     with opener.open(req, timeout=10) as r:
                         gw_ip = _ip(r.read().decode())
                 except Exception:
@@ -421,7 +423,7 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None,
                     self._send(200, DASHBOARD_HTML.encode(), "text/html; charset=utf-8")
                 return True
             if not self._token_ok():
-                self._json(401, {"error": "token dibutuhkan (env PROXYX_TOKEN)"})
+                self._json(401, {"error": "token dibutuhkan (env PROXYZ_TOKEN)"})
                 return True
             if path == "/api/status" or path == "/api/stats":
                 self._json(200, pool.stats())
@@ -447,12 +449,12 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None,
                     self._json(200, {"status": "tidak ada refill_fn"})
             elif path == "/metrics":
                 s = pool.stats()
-                txt = ("# Proxyx metrics\n"
-                       f"proxyx_pool_size {s['pool']}\n"
-                       f"proxyx_requests_total {s['total_requests']}\n"
-                       f"proxyx_requests_success {s['success_requests']}\n"
-                       f"proxyx_requests_failed {s['failed_requests']}\n"
-                       f"proxyx_evicted_total {s['evicted']}\n")
+                txt = ("# Proxyz metrics\n"
+                       f"proxyz_pool_size {s['pool']}\n"
+                       f"proxyz_requests_total {s['total_requests']}\n"
+                       f"proxyz_requests_success {s['success_requests']}\n"
+                       f"proxyz_requests_failed {s['failed_requests']}\n"
+                       f"proxyz_evicted_total {s['evicted']}\n")
                 self._send(200, txt.encode(), "text/plain")
             elif path == "/api/leak-test":
                 self._json(200, self._leak_test())
@@ -753,7 +755,7 @@ def serve_socks5(pool: Pool, port: int,
         while not stop.is_set():
             srv.handle_request()
 
-    threading.Thread(target=_run, daemon=True, name="proxyx-socks5").start()
+    threading.Thread(target=_run, daemon=True, name="proxyz-socks5").start()
     print(f"  SOCKS5 jalan di 127.0.0.1:{port} (lewat pool gateway)")
     return stop
 
@@ -762,8 +764,10 @@ def serve(pool: Pool, port: int = 8888, token: str = "", refill_fn=None,
           healer: bool = True, healer_interval: int = 90,
           rate_limit_per_min: int = 60, audit_path: str | None = None,
           socks_port: int = 0):
-    """Jalankan gateway (blocking). Token dari env PROXYX_TOKEN bila ada."""
-    token = token or os.environ.get("PROXYX_TOKEN", "")
+    """Jalankan gateway (blocking). Token dari env PROXYZ_TOKEN bila ada
+    (PROXYX_TOKEN lama tetap dibaca sebagai fallback)."""
+    token = (token or os.environ.get("PROXYZ_TOKEN", "")
+             or os.environ.get("PROXYX_TOKEN", ""))
     handler = make_handler(pool, token=token, refill_fn=refill_fn,
                            rate_limit_per_min=rate_limit_per_min,
                            audit_path=audit_path)

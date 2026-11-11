@@ -1,12 +1,12 @@
-"""Proxyx — auto: panen + cek + ekspor berkala, tanpa henti.
+"""Proxyz — auto: panen + cek + ekspor berkala, tanpa henti.
 
-`proxyx auto` menjalankan satu siklus penuh (panen -> cek hidup ->
+`proxyz auto` menjalankan satu siklus penuh (panen -> cek hidup ->
 ekspor + backup) tiap N menit, selamanya, sampai Ctrl+C. Cocok untuk
 dijalankan sebagai service bersama gateway (atau via cron dengan
 `--sekali` untuk satu siklus saja).
 
 Fungsi panen/cek/ekspor bisa disuntikkan (dipakai tes) — default-nya
-fungsi asli Proxyx.
+fungsi asli Proxyz.
 """
 from __future__ import annotations
 

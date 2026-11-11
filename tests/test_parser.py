@@ -1,6 +1,6 @@
-"""Tes parser Proxyx: regex sumber + Proxy.from_string."""
-from proxyx.models import Proxy
-from proxyx.sources import parse_proxies_from_text
+"""Tes parser Proxyz: regex sumber + Proxy.from_string."""
+from proxyz.models import Proxy
+from proxyz.sources import parse_proxies_from_text
 
 
 def test_parse_plain_list():

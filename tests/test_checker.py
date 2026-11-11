@@ -1,12 +1,12 @@
-"""Tes checker Proxyx: klasifikasi anonimitas, skor, dan cek HTTP live
+"""Tes checker Proxyz: klasifikasi anonimitas, skor, dan cek HTTP live
 melawan proxy dummy di localhost (bukan internet — sandbox memblokir
 koneksi TCP langsung ke proxy publik, tapi localhost diizinkan)."""
 import threading
 
 import pytest
 
-from proxyx.checker import check_http, classify_anonymity, score_proxy
-from proxyx.models import Proxy
+from proxyz.checker import check_http, classify_anonymity, score_proxy
+from proxyz.models import Proxy
 
 HOST = "203.0.113.99"  # TEST-NET-3, tidak akan sama dengan IP egress dummy
 

@@ -4,21 +4,21 @@ import threading
 import urllib.request
 from http.server import ThreadingHTTPServer
 
-from proxyx import config, updater
-from proxyx.exporter import clash_yaml
-from proxyx.gateway import make_handler
-from proxyx.models import Proxy
-from proxyx.pool import Pool
+from proxyz import config, updater
+from proxyz.exporter import clash_yaml
+from proxyz.gateway import make_handler
+from proxyz.models import Proxy
+from proxyz.pool import Pool
 from tests.test_gateway import DummyHttpProxy, IpifyStandin, _start_server
 
 
 # ------------------------------------------------------------------ config
 def test_config_defaults_and_file(tmp_path, monkeypatch):
     monkeypatch.delenv("GATEWAY_PORT", raising=False)
-    monkeypatch.delenv("PROXYX_TOKEN", raising=False)
+    monkeypatch.delenv("PROXYZ_TOKEN", raising=False)
     cfg = config.load_config(str(tmp_path / "tidak-ada.json"))
     assert cfg["gateway_port"] == 8888 and cfg["healer_interval"] == 90
-    f = tmp_path / "proxyx.json"
+    f = tmp_path / "proxyz.json"
     f.write_text(json.dumps({"gateway_port": 9999, "tidak_dikenal": 1}))
     cfg = config.load_config(str(f))
     assert cfg["gateway_port"] == 9999 and "tidak_dikenal" not in cfg
@@ -32,7 +32,7 @@ def test_clash_yaml_string():
     out = clash_yaml([Proxy(protocol="http", ip="1.2.3.4", port=8080),
                       Proxy(protocol="socks4", ip="5.6.7.8", port=1080)])
     assert "1.2.3.4" in out and "5.6.7.8" not in out  # socks4 dilewati
-    assert "proxy-groups:" in out and "PROXYX" in out
+    assert "proxy-groups:" in out and "PROXYZ" in out
 
 
 # ------------------------------------------------------------------ updater
@@ -91,7 +91,7 @@ def test_gateway_leak_test_and_clash():
                 assert data["zero_leak"] is True
                 with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/clash.yaml", timeout=5) as r:
                     body = r.read().decode()
-                assert "127.0.0.1" in body and "PROXYX" in body
+                assert "127.0.0.1" in body and "PROXYZ" in body
             finally:
                 gw.shutdown()
         finally:

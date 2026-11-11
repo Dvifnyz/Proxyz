@@ -2,7 +2,7 @@
 import json
 import time
 
-from proxyx import harvester, residential
+from proxyz import harvester, residential
 
 
 # ------------------------------------------------------------------ health
@@ -69,7 +69,7 @@ def test_save_api_key_appends_and_dedups(tmp_path, monkeypatch):
 
 
 def test_fetch_all_webshare_multi_key(monkeypatch):
-    from proxyx.models import Proxy
+    from proxyz.models import Proxy
 
     def fake_fetch(key):
         if key == "mati":

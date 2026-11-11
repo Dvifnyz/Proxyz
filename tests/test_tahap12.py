@@ -1,5 +1,5 @@
 """Tes v1.6.0: scheduler otomatis."""
-from proxyx.scheduler import run_cycle, run_scheduler
+from proxyz.scheduler import run_cycle, run_scheduler
 
 
 def _fake_harvest():
