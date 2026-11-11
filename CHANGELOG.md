@@ -4,6 +4,23 @@ Semua perubahan penting Proxyz dicatat di sini, mengikuti
 [Keep a Changelog](https://keepachangelog.com/id/1.1.0/) dan
 [Semantic Versioning](https://semver.org/lang/id/).
 
+## [2.1.3] - 2026-11-11
+
+### Ditambahkan
+
+- README diterjemahkan penuh ke 12 bahasa di `docs/translations/`:
+  English, 中文 (Simplified), 한국어, 日本語, Русский, العربية,
+  Afrikaans, Español, Português, Deutsch, Français, हिन्दी.
+  README utama sekarang punya baris tautan bahasa di atas.
+- Pesan error literal di kolom pertama tabel Troubleshooting
+  sengaja TIDAK diterjemahkan di semua bahasa — program mencetaknya
+  dalam Bahasa Indonesia, jadi pengguna harus bisa mencocokkannya.
+
+### Diperbaiki
+
+- Daftar `docs/` di struktur proyek README: `MIGRASI` dihapus
+  (file-nya sudah dihapus di v2.1.2).
+
 ## [2.1.2] - 2026-11-11
 
 ### Dihapus

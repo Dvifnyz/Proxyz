@@ -16,6 +16,8 @@
 
 [📖 Dokumentasi](docs/API.md) · [📋 Changelog](CHANGELOG.md) · [🤝 Berkontribusi](CONTRIBUTING.md) · [🔒 Keamanan](SECURITY.md)
 
+Baca README ini dalam bahasa lain: [English](docs/translations/README.en.md) · [中文](docs/translations/README.zh-CN.md) · [한국어](docs/translations/README.ko.md) · [日本語](docs/translations/README.ja.md) · [Русский](docs/translations/README.ru.md) · [العربية](docs/translations/README.ar.md) · [Afrikaans](docs/translations/README.af.md) · [Español](docs/translations/README.es.md) · [Português](docs/translations/README.pt.md) · [Deutsch](docs/translations/README.de.md) · [Français](docs/translations/README.fr.md) · [हिन्दी](docs/translations/README.hi.md)
+
 </div>
 
 ## Highlights
@@ -266,7 +268,7 @@ Proxyz/
 │   ├── updater.py       # update aman via pip
 │   └── ...              # blacklist, tiers, config, installer
 ├── config/              # sources.json, proxyz.json, blacklist.txt
-├── docs/                # API, ARSITEKTUR, MIGRASI, STUDI
+├── docs/                # API, ARSITEKTUR, STUDI, translations (12 bahasa)
 ├── tests/               # 97 tes (pytest)
 ├── Dockerfile           # gateway di Docker
 └── README.md
