@@ -1,8 +1,8 @@
-"""Shim kompatibilitas: paket `proxyx` berganti nama menjadi `proxyz` di v3.0.0.
+"""Shim kompatibilitas: paket `proxyx` berganti nama menjadi `proxyz` di v2.1.0.
 
 Paket ini hanya meneruskan ke `proxyz`. Untuk kode baru, pakai
 `import proxyz` dan `python -m proxyz`. Shim ini dipertahankan sampai
-v4.0.0, lalu dihapus (lihat docs/MIGRASI-3.0.md).
+v3.0.0, lalu dihapus (lihat docs/MIGRASI-2.1.md).
 """
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ import sys
 import warnings
 
 warnings.warn(
-    "Paket 'proxyx' sudah berganti nama menjadi 'proxyz' (v3.0.0). "
+    "Paket 'proxyx' sudah berganti nama menjadi 'proxyz' (v2.1.0). "
     "Ganti `import proxyx` dengan `import proxyz`.",
     DeprecationWarning, stacklevel=2)
 

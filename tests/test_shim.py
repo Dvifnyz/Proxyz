@@ -1,4 +1,4 @@
-"""Tes v3.0.0: shim kompatibilitas `proxyx` (deprecated, hapus di v4.0.0)."""
+"""Tes v2.1.0: shim kompatibilitas `proxyx` (deprecated, hapus di v3.0.0)."""
 import subprocess
 import sys
 
@@ -28,5 +28,5 @@ def test_shim_cli_still_runs():
                          capture_output=True, text=True, timeout=30,
                          cwd=".")
     assert out.returncode == 0
-    assert "proxyz 3.0.0" in out.stdout
+    assert "proxyz 2.1.0" in out.stdout
     assert "proxyx" in out.stderr and "proxyz" in out.stderr

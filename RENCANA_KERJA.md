@@ -57,7 +57,8 @@
 | 13 | v1.8.0 — Laporan | SELESAI 2026-11-11 (tes 74/74; live laporan jalan, 1 sumber terdeteksi mati) |
 | 14 | v1.9.0 — Doctor | SELESAI 2026-11-11 (tes 78/78; live: Sehat, 2 peringatan, 0 error) |
 | 15 | **v2.0.0 — Rilis mayor stabil** | SELESAI 2026-11-11 (tes 79/79; migrasi legacy webshare.json otomatis + docs/API.md + doctor; tanpa captcha solver / farm akun — tetap) |
-| 16 | **v3.0.0 — Rename Proxyx -> Proxyz + standar repo besar** | SELESAI 2026-11-11 (tes 82/82; rename penuh paket/CLI/config/env/header + shim deprecated proxyx sampai v4.0.0; README standar repo besar + CHANGELOG + CONTRIBUTING + SECURITY + Code of Conduct + template issue/PR + .editorconfig + docs/MIGRASI-3.0.md; deskripsi + topik repo GitHub diisi) |
+| 16 | **v2.1.0 — Rename Proxyx -> Proxyz + standar repo besar** | SELESAI 2026-11-11 (tes 83/83; rename penuh paket/CLI/config/env/header + shim deprecated proxyx sampai v3.0.0; README standar repo besar + CHANGELOG + CONTRIBUTING + SECURITY + Code of Conduct + template issue/PR + .editorconfig + docs/MIGRASI-2.1.md; deskripsi + topik repo GitHub diisi) |
+| 17 | **v2.1.0 (perbaikan) — versi 3.0.0 ditarik, README v2** | SELESAI 2026-11-11 (tes 83/83; v3.0.0 dihapus dari tag & rilis karena rename hanya update minor; README ditulis ulang dari referensi FastAPI & uv: Highlights, instalasi multi-cara, diagram arsitektur, contoh output, FAQ, Troubleshooting, Roadmap, struktur proyek; docs/ARSITEKTUR.md baru) |
 |---|---|---|
 | 0 | Persiapan: pelajari isi asli, tulis rencana ini, cek repo tujuan | `docs: rencana kerja Proxyz` |
 | 1 | Fondasi repo: struktur, README, LICENSE (MIT), .gitignore, pyproject, config sumber | `chore: fondasi repo Proxyz` |

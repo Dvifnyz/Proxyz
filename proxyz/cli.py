@@ -506,7 +506,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv=None) -> None:
     if os.path.basename(sys.argv[0]).startswith("proxyx"):
         print("Peringatan: perintah 'proxyx' sudah berganti nama menjadi "
-              "'proxyz' (v3.0.0). Pakai 'proxyz' untuk seterusnya.",
+              "'proxyz' (v2.1.0). Pakai 'proxyz' untuk seterusnya.",
               file=sys.stderr)
     parser = build_parser()
     args = parser.parse_args(argv)

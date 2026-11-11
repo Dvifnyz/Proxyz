@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "proxyz"
-version = "3.0.0"
+version = "2.1.0"
 description = "Panen proxy gratis, cek anonimitas, gateway lokal berputar, dan WARP — lebih cepat dan lebih lengkap."
 readme = "README.md"
 license = { text = "MIT" }

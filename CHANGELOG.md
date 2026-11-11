@@ -4,13 +4,17 @@ Semua perubahan penting Proxyz dicatat di sini, mengikuti
 [Keep a Changelog](https://keepachangelog.com/id/1.1.0/) dan
 [Semantic Versioning](https://semver.org/lang/id/).
 
-## [3.0.0] - 2026-11-11
+## [2.1.0] - 2026-11-11
+
+> Catatan: versi ini sempat terbit sebentar sebagai v3.0.0 lalu
+> ditarik — rename nama saja, bukan perubahan mayor, jadi versinya
+> diperbaiki ke v2.1.0. Tag & rilis v3.0.0 sudah dihapus.
 
 ### Diubah (breaking)
 
 - **Nama tool diganti dari Proxyx menjadi Proxyz** (paket, CLI,
   config, env, header). Perintah lama `proxyx` dan `import proxyx`
-  masih jalan sampai v4.0.0 sebagai shim deprecated (lihat
+  masih jalan sampai v3.0.0 sebagai shim deprecated (lihat
   [docs/MIGRASI-3.0.md](docs/MIGRASI-3.0.md)).
 - `config/proxyx.json` -> `config/proxyz.json`.
 - Env `PROXYX_TOKEN` -> `PROXYZ_TOKEN` (nama lama tetap dibaca).

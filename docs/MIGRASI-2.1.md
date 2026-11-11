@@ -1,12 +1,12 @@
-# Migrasi ke Proxyz v3.0.0
+# Migrasi ke Proxyz v2.1.0
 
-Di v3.0.0 nama tool diganti dari **Proxyx** menjadi **Proxyz**
+Di v2.1.0 nama tool diganti dari **Proxyx** menjadi **Proxyz**
 (sesuai nama repo `Dvifnyz/Proxyz`). Ini panduan migrasinya —
 kebanyakan pengguna tidak perlu melakukan apa pun.
 
 ## Yang berubah
 
-| Lama (v2.x) | Baru (v3.0.0) |
+| Lama (≤ v2.0.0) | Baru (v2.1.0) |
 |---|---|
 | `python -m proxyx ...` | `python -m proxyz ...` |
 | perintah `proxyx` | perintah `proxyz` |
@@ -19,7 +19,7 @@ kebanyakan pengguna tidak perlu melakukan apa pun.
 
 ## Yang tetap jalan (kompatibilitas)
 
-Sampai **v4.0.0**, yang lama tetap berfungsi:
+Sampai **v3.0.0**, yang lama tetap berfungsi:
 
 - Perintah `proxyx ...` masih jalan (menampilkan peringatan sekali).
 - `python -m proxyx ...` masih jalan (peringatan ke stderr).
@@ -30,12 +30,12 @@ Sampai **v4.0.0**, yang lama tetap berfungsi:
 - `proxyz sync-9router --ganti` membersihkan baris nama lama
   `Proxyx` juga.
 
-Setelah v4.0.0, semua yang lama dihapus.
+Setelah v3.0.0, semua yang lama dihapus.
 
 ## Langkah migrasi (disarankan)
 
 ```bash
-python -m proxyz update          # tarik v3.0.0
+python -m proxyz update          # tarik v2.1.0
 mv config/proxyx.json config/proxyz.json   # bila kamu punya file config lama
 # ganti PROXYX_TOKEN -> PROXYZ_TOKEN di env / service kamu
 # ganti `proxyx` -> `proxyz` di script / systemd unit / cron kamu
