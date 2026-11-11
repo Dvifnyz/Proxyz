@@ -256,6 +256,23 @@ def _cmd_bench(a):
     print(f"  💾 Tersimpan: {path}")
 
 
+def _cmd_laporan(a):
+    from .gateway import load_pool_from_disk
+    from .harvester import health_report
+    from .report import build_report, load_bench_results, report_markdown
+    data = build_report(load_pool_from_disk(), health_report(),
+                        load_bench_results())
+    md = report_markdown(data)
+    path = os.path.join(OUT_DIR, "laporan.md")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(md)
+    print(f"\n  📋 Laporan Proxyx — {data['generated_at']}")
+    print(f"  Pool: {data['pool_total']} proxy | Tier: {data['by_tier']}")
+    print(f"  Sumber mati: {data['dead_sources']} | Bench top: "
+          f"{data['bench_top'][0]['proxy'] if data['bench_top'] else '-'}")
+    print(f"  💾 Tersimpan: {path}")
+
+
 def _cmd_auto(a):
     from .config import load_config
     from .scheduler import LOG_PATH, run_scheduler
@@ -455,6 +472,8 @@ def build_parser() -> argparse.ArgumentParser:
     si = sub.add_parser("install-service", help="buat file service (systemd + Windows Task)")
     si.add_argument("--port", type=int, default=0, help="0 = pakai config/proxyx.json")
     si.set_defaults(func=_cmd_install_service)
+    sl = sub.add_parser("laporan", help="ringkasan kesehatan pool (output/laporan.md)")
+    sl.set_defaults(func=_cmd_laporan)
     sa = sub.add_parser("auto", help="panen + cek + ekspor berkala, tanpa henti")
     sa.add_argument("--interval", type=float, default=0, help="menit antar siklus (0 = config)")
     sa.add_argument("--jumlah", type=int, default=0, help="target hidup per siklus (0 = config)")

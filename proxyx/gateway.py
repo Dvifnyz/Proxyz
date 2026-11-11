@@ -468,6 +468,11 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None,
             elif path == "/api/clash.yaml":
                 from .exporter import clash_yaml
                 self._send(200, clash_yaml(pool.snapshot()).encode(), "text/yaml")
+            elif path == "/api/report":
+                from .harvester import health_report
+                from .report import build_report, load_bench_results
+                self._json(200, build_report(pool.snapshot(), health_report(),
+                                             load_bench_results(), pool.stats()))
             elif path in ("/proxy.pac", "/pac", "/wpad.dat"):
                 port = self.server.server_address[1]
                 pac = (f'function FindProxyForURL(url, host) {{ '
