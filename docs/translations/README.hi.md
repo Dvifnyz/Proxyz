@@ -1,4 +1,4 @@
-> यह [मुख्य README](../../README.md) का इंडोनेशियाई (Bahasa Indonesia) से अनुवाद है। मूल इंडोनेशियाई संस्करण ही मान्य है।
+> यह [मुख्य README](../../README.md) का अंग्रेज़ी (English) से अनुवाद है। मूल अंग्रेज़ी संस्करण ही मान्य है।
 
 <div align="center">
 
@@ -18,7 +18,7 @@
 
 [📖 दस्तावेज़](../../docs/API.md) · [📋 बदलाव-लॉग](../../CHANGELOG.md) · [🤝 योगदान करें](../../CONTRIBUTING.md) · [🔒 सुरक्षा](../../SECURITY.md)
 
-इस README को अन्य भाषाओं में पढ़ें: [English](../../docs/translations/README.en.md) · [中文](../../docs/translations/README.zh-CN.md) · [한국어](../../docs/translations/README.ko.md) · [日本語](../../docs/translations/README.ja.md) · [Русский](../../docs/translations/README.ru.md) · [العربية](../../docs/translations/README.ar.md) · [Afrikaans](../../docs/translations/README.af.md) · [Español](../../docs/translations/README.es.md) · [Português](../../docs/translations/README.pt.md) · [Deutsch](../../docs/translations/README.de.md) · [Français](../../docs/translations/README.fr.md) · [हिन्दी](../../docs/translations/README.hi.md)
+इस README को अन्य भाषाओं में पढ़ें: [English](../../README.md) · [中文](../../docs/translations/README.zh-CN.md) · [한국어](../../docs/translations/README.ko.md) · [日本語](../../docs/translations/README.ja.md) · [Русский](../../docs/translations/README.ru.md) · [العربية](../../docs/translations/README.ar.md) · [Afrikaans](../../docs/translations/README.af.md) · [Español](../../docs/translations/README.es.md) · [Português](../../docs/translations/README.pt.md) · [Deutsch](../../docs/translations/README.de.md) · [Français](../../docs/translations/README.fr.md) · [हिन्दी](../../docs/translations/README.hi.md) · [Bahasa Indonesia](../../docs/translations/README.id.md)
 
 </div>
 
@@ -55,7 +55,7 @@
 - [रोडमैप](#रोडमैप)
 - [विकास](#विकास)
 - [सुरक्षा](#सुरक्षा)
-- [लाइसेंस और धन्यवाद](#लाइसेंस-और-धन्यवाद)
+- [लाइसेंस](#लाइसेंस)
 
 ## इंस्टॉलेशन
 
@@ -272,7 +272,7 @@ Proxyz/
 │   ├── updater.py       # update aman via pip
 │   └── ...              # blacklist, tiers, config, installer
 ├── config/              # sources.json, proxyz.json, blacklist.txt
-├── docs/                # API, ARSITEKTUR, STUDI, translations (12 bahasa)
+├── docs/                # API, ARSITEKTUR, translations (13 languages)
 ├── tests/               # 97 tes (pytest)
 ├── Dockerfile           # gateway di Docker
 └── README.md
@@ -358,14 +358,8 @@ python -m proxyz doctor
 Webshare API key स्थानीय रूप से मोड 0600 में रखी जाती है, और
 अपडेटर कभी सर्वर से कमांड नहीं चलाता।
 
-## लाइसेंस और धन्यवाद
+## लाइसेंस
 
 लाइसेंस [MIT](../../LICENSE)।
-
-[itzluthfi](https://github.com/itzluthfi) को धन्यवाद —
-[petani-proxy](https://github.com/itzluthfi/petani-proxy) के निर्माता,
-जो इस टूल के अध्ययन और प्रेरणा का स्रोत रहा। इस README की संरचना
-के संदर्भ: [FastAPI](https://github.com/fastapi/fastapi) और
-[uv](https://github.com/astral-sh/uv)।
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Dvifnyz/Proxyz&type=Date)](https://star-history.com/#Dvifnyz/Proxyz&Date)

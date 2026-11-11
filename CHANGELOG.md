@@ -1,162 +1,180 @@
 # Changelog
 
-Semua perubahan penting Proxyz dicatat di sini, mengikuti
-[Keep a Changelog](https://keepachangelog.com/id/1.1.0/) dan
-[Semantic Versioning](https://semver.org/lang/id/).
+All notable changes to Proxyz are documented here, following
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
+[Semantic Versioning](https://semver.org/).
+
+## [2.1.4] - 2026-11-11
+
+### Changed
+
+- English is now the primary language of all documentation. The main
+  README is English; the other 13 languages (including Indonesian)
+  are optional translations in `docs/translations/`.
+- `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md`,
+  `CODE_OF_CONDUCT.md`, issue/PR templates, `docs/API.md`,
+  `docs/ARSITEKTUR.md`, and `RENCANA_KERJA.md` are now in English.
+
+### Removed
+
+- All thanks/credits to other projects and all README-structure
+  references (itzluthfi, petani-proxy, FastAPI, uv) — removed from
+  every markdown file in the project.
+- `docs/STUDI_PETANI_PROXY.md` deleted.
 
 ## [2.1.3] - 2026-11-11
 
-### Ditambahkan
+### Added
 
-- README diterjemahkan penuh ke 12 bahasa di `docs/translations/`:
+- README fully translated into 12 languages in `docs/translations/`:
   English, 中文 (Simplified), 한국어, 日本語, Русский, العربية,
   Afrikaans, Español, Português, Deutsch, Français, हिन्दी.
-  README utama sekarang punya baris tautan bahasa di atas.
-- Pesan error literal di kolom pertama tabel Troubleshooting
-  sengaja TIDAK diterjemahkan di semua bahasa — program mencetaknya
-  dalam Bahasa Indonesia, jadi pengguna harus bisa mencocokkannya.
+  The main README now has a language links row at the top.
+- Literal error messages in the first column of the Troubleshooting
+  table are deliberately NOT translated in any language — the program
+  prints them in Indonesian, so users need to be able to match them.
 
-### Diperbaiki
+### Fixed
 
-- Daftar `docs/` di struktur proyek README: `MIGRASI` dihapus
-  (file-nya sudah dihapus di v2.1.2).
+- `docs/` listing in the README project structure: `MIGRASI` removed
+  (the file was already deleted in v2.1.2).
 
 ## [2.1.2] - 2026-11-11
 
-### Dihapus
+### Removed
 
-- Shim kompatibilitas `proxyx` dihapus total: paket `proxyx/`,
-  perintah `proxyx`, `python -m proxyx`, `import proxyx`, fallback
-  env `PROXYX_TOKEN`, header `X-Proxyx-Token`, dan pembersihan
-  baris 9Router bertanda `Proxyx`. Cuma ada satu nama sekarang:
-  Proxyz. `docs/MIGRASI-2.1.md` ikut dihapus (sudah tidak ada
-  yang dimigrasikan).
-- File `.coverage` yang sempat ke-commit ikut dihapus dari git
-  (sudah ada di `.gitignore`).
+- Compatibility shim `proxyx` removed entirely: the `proxyx/`
+  package, the `proxyx` command, `python -m proxyx`, `import proxyx`,
+  the `PROXYX_TOKEN` env fallback, the `X-Proxyx-Token` header, and
+  cleanup of 9Router rows tagged `Proxyx`. There is only one name
+  now: Proxyz. `docs/MIGRASI-2.1.md` was removed along with it
+  (nothing left to migrate).
+- The `.coverage` file that had been committed was also removed
+  from git (it is already in `.gitignore`).
 
 ## [2.1.1] - 2026-11-11
 
-### Diperbaiki
+### Fixed
 
-- Audit kode penuh (ruff, vulture, pylint, coverage): 139 temuan
-  ruff dibersihkan sampai 0, duplikasi kode dihapus, kode mati
-  dihapus.
-- Blok `try/except ImportError` aiohttp yang diduplikat checker.py
-  dan harvester.py dipindah ke `proxyz/compat.py` (dipakai bareng).
-- 11 import tak terpakai dihapus, 14 `try/except/pass` diganti
-  `contextlib.suppress`, 3 `try/except/continue` sekarang nge-log
-  (debug) biar sumber/key yang gagal ketahuan.
-- `subprocess.run` di updater & tes sekarang eksplisit `check=False`
-  (returncode memang diperiksa sendiri).
-- Link rusak di CHANGELOG: `docs/MIGRASI-3.0.md` -> `docs/MIGRASI-2.1.md`.
+- Full code audit (ruff, vulture, pylint, coverage): 139 ruff
+  findings cleaned down to 0, duplicate code removed, dead code
+  removed.
+- The duplicated aiohttp `try/except ImportError` blocks in checker.py
+  and harvester.py were moved to `proxyz/compat.py` (shared).
+- 11 unused imports removed, 14 `try/except/pass` replaced with
+  `contextlib.suppress`, 3 `try/except/continue` now log (debug)
+  so failed sources/keys can be traced.
+- `subprocess.run` in the updater & tests is now explicitly
+  `check=False` (the return code is checked manually).
+- Broken link in CHANGELOG: `docs/MIGRASI-3.0.md` -> `docs/MIGRASI-2.1.md`.
 
-### Ditambahkan
+### Added
 
-- Tes baru: smoke test CLI — semua 15 subcommand `--help` jalan
-  (sebelumnya cli.py cuma 7% coverage). Total tes 83 -> 100.
-- Config ruff masuk `pyproject.toml` (dengan alasan tiap aturan
-  yang dimatiin), ruff + vulture masuk extra `dev`.
+- New tests: CLI smoke test — all 15 subcommand `--help` run
+  (previously cli.py was at 7% coverage). Total tests 83 -> 100.
+- Ruff config moved into `pyproject.toml` (with a reason for each
+  disabled rule), ruff + vulture added to the `dev` extra.
 
 ## [2.1.0] - 2026-11-11
 
-> Catatan: versi ini sempat terbit sebentar sebagai v3.0.0 lalu
-> ditarik — rename nama saja, bukan perubahan mayor, jadi versinya
-> diperbaiki ke v2.1.0. Tag & rilis v3.0.0 sudah dihapus.
+> Note: this version was briefly published as v3.0.0, then withdrawn —
+> a rename only, not a major change, so the version was corrected
+> to v2.1.0. The v3.0.0 tag & release were deleted.
 
-### Diubah (breaking)
+### Changed (breaking)
 
-- **Nama tool diganti dari Proxyx menjadi Proxyz** (paket, CLI,
-  config, env, header). Perintah lama `proxyx` sempat dipertahankan
-  sebagai shim deprecated, lalu dihapus di v2.1.2.
+- **Tool renamed from Proxyx to Proxyz** (package, CLI,
+  config, env, header). The old `proxyx` command was kept briefly
+  as a deprecated shim, then removed in v2.1.2.
 - `config/proxyx.json` -> `config/proxyz.json`.
 - Env `PROXYX_TOKEN` -> `PROXYZ_TOKEN`.
 - Header `X-Proxyx-Token` -> `X-Proxyz-Token`.
-- Baris 9Router kini ditandai `Proxyz`.
+- 9Router rows are now tagged `Proxyz`.
 
-### Ditambahkan
+### Added
 
-- README standar repo besar, CHANGELOG, CONTRIBUTING, SECURITY,
-  Code of Conduct, template issue/PR.
-- Deskripsi & topik repo GitHub.
+- Big-repo standard README, CHANGELOG, CONTRIBUTING, SECURITY,
+  Code of Conduct, issue/PR templates.
+- GitHub repo description & topics.
 
 ## [2.0.0] - 2026-11-11
 
-### Ditambahkan
+### Added
 
-- API publik dibekukan & didokumentasikan (`docs/API.md`).
-- Migrasi otomatis `config/webshare.json` format lama `{"api_key"}`
-  ke `{"api_keys"}`.
+- Public API frozen & documented (`docs/API.md`).
+- Automatic migration of `config/webshare.json` from the old
+  `{"api_key"}` format to `{"api_keys"}`.
 
 ## [1.9.0] - 2026-11-11
 
-### Ditambahkan
+### Added
 
-- `proxyz doctor`: diagnosa instalasi (Python, config, sumber, pool,
-  key Webshare, blacklist, output, disk, gateway).
+- `proxyz doctor`: installation diagnostics (Python, config, sources,
+  pool, Webshare key, blacklist, output, disk, gateway).
 
 ## [1.8.0] - 2026-11-11
 
-### Ditambahkan
+### Added
 
-- `proxyz laporan` (`output/laporan.md`) + endpoint `/api/report`.
+- `proxyz laporan` (`output/laporan.md`) + `/api/report` endpoint.
 
 ## [1.7.0] - 2026-11-11
 
-### Ditambahkan
+### Added
 
-- `proxyz blacklist add|remove|list`; blacklist dipakai saat panen & cek.
+- `proxyz blacklist add|remove|list`; blacklist used during harvest & check.
 - `proxyz panen --tier cepat|sedang|lambat`.
 
 ## [1.6.0] - 2026-11-11
 
-### Ditambahkan
+### Added
 
-- `proxyz auto`: siklus panen -> cek -> ekspor berkala; `--sekali`
-  untuk cron.
+- `proxyz auto`: periodic harvest -> check -> export cycle; `--sekali`
+  for cron.
 
 ## [1.5.0] - 2026-11-11
 
-### Ditambahkan
+### Added
 
-- Rate limit API (60/menit per IP, 429 + Retry-After) + audit JSONL.
-- Listener SOCKS5 (`gateway --socks 1080`); UDP ASSOCIATE ditolak.
+- API rate limit (60/min per IP, 429 + Retry-After) + JSONL audit.
+- SOCKS5 listener (`gateway --socks 1080`); UDP ASSOCIATE rejected.
 
 ## [1.4.0] - 2026-11-11
 
-### Ditambahkan
+### Added
 
-- `proxyz sync-9router` (aman: insert-only, backup, dedup).
-- Profil gateway `scraper` / `cepat` / `hemat`.
-- Backup pool otomatis (maks 5) tiap ekspor.
+- `proxyz sync-9router` (safe: insert-only, backup, dedup).
+- Gateway profiles `scraper` / `cepat` / `hemat`.
+- Automatic pool backup (max 5) on every export.
 
 ## [1.3.0] - 2026-11-11
 
-### Ditambahkan
+### Added
 
-- `proxyz bench` + endpoint `/api/bench`.
-- Dashboard v2 (tombol leak test + uji kecepatan, warna skor).
+- `proxyz bench` + `/api/bench` endpoint.
+- Dashboard v2 (leak test + speed test buttons, score colors).
 - `proxyz install-service` (systemd + Windows Task).
 
 ## [1.2.0] - 2026-11-11
 
-### Ditambahkan
+### Added
 
-- `config/proxyz.json` yang benar-benar dibaca kode.
+- `config/proxyz.json` actually read by the code.
 - `/api/leak-test` + `proxyz test`; `/api/clash.yaml`.
-- `proxyz update` (aman, via pip, fallback ke tags).
+- `proxyz update` (safe, via pip, falls back to tags).
 
 ## [1.1.0] - 2026-11-11
 
-### Ditambahkan
+### Added
 
-- Skor kesehatan sumber + backoff 1 jam; `proxyz sources`.
-- Residential multi-akun; signup semi-otomatis (validasi key live).
-- Healer probe HTTP beneran (bukan cuma TCP).
+- Source health score + 1-hour backoff; `proxyz sources`.
+- Multi-account residential; semi-automatic signup (live key validation).
+- Real HTTP healer probe (not just TCP).
 
 ## [1.0.0] - 2026-11-11
 
-### Ditambahkan
+### Added
 
-- Rilis pertama: harvester 35 sumber, checker async, gateway rotating
-  + REST API + dashboard + PAC, WARP, ekspor TXT/JSON/CSV/Clash,
-  residential via API resmi Webshare, Docker + CI.
+- First release: 35-source harvester, async checker, rotating gateway
+  + REST API + dashboard + PAC, WARP, TXT/JSON/CSV/Clash export,
+  residential via the official Webshare API, Docker + CI.

@@ -1,21 +1,21 @@
-## Ringkasan
+## Summary
 
-Jelaskan perubahan ini dalam 1-3 kalimat.
+Describe this change in 1-3 sentences.
 
-## Jenis perubahan
+## Type of change
 
-- [ ] Fitur baru
-- [ ] Perbaikan bug
-- [ ] Dokumentasi
+- [ ] New feature
+- [ ] Bug fix
+- [ ] Documentation
 - [ ] Refactor / chore
 
 ## Checklist
 
-- [ ] `pytest -q` hijau
-- [ ] Tes baru ditambahkan (untuk fitur/bugfix)
-- [ ] README / CHANGELOG diperbarui bila perlu
-- [ ] Tidak ada rahasia (API key, token, password) yang ter-commit
+- [ ] `pytest -q` green
+- [ ] New tests added (for features/bugfixes)
+- [ ] README / CHANGELOG updated if needed
+- [ ] No secrets (API key, token, password) committed
 
-## Issue terkait
+## Related issue
 
-Closes # (bila ada)
+Closes # (if any)

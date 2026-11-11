@@ -27,7 +27,7 @@ def test_main_module_version():
                          capture_output=True, text=True, timeout=30,
                          check=False)
     assert out.returncode == 0
-    assert out.stdout.strip().startswith("proxyz 2.1.3")
+    assert out.stdout.strip().startswith("proxyz 2.1.4")
 
 
 def test_no_proxyx_package():

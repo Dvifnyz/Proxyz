@@ -1,4 +1,4 @@
-> このファイルは[メイン README（インドネシア語）](../../README.md)の翻訳です。正式なのはインドネシア語版です。
+> このファイルは[メイン README（英語）](../../README.md)の翻訳です。正式なのは英語版です。
 
 <div align="center">
 
@@ -18,7 +18,7 @@
 
 [📖 ドキュメント](../../docs/API.md) · [📋 変更履歴](../../CHANGELOG.md) · [🤝 コントリビューション](../../CONTRIBUTING.md) · [🔒 セキュリティ](../../SECURITY.md)
 
-この README を他の言語で読む: [English](../../docs/translations/README.en.md) · [中文](../../docs/translations/README.zh-CN.md) · [한국어](../../docs/translations/README.ko.md) · [日本語](../../docs/translations/README.ja.md) · [Русский](../../docs/translations/README.ru.md) · [العربية](../../docs/translations/README.ar.md) · [Afrikaans](../../docs/translations/README.af.md) · [Español](../../docs/translations/README.es.md) · [Português](../../docs/translations/README.pt.md) · [Deutsch](../../docs/translations/README.de.md) · [Français](../../docs/translations/README.fr.md) · [हिन्दी](../../docs/translations/README.hi.md)
+この README を他の言語で読む: [English](../../README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh-CN.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [Afrikaans](README.af.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [हिन्दी](README.hi.md)
 
 </div>
 
@@ -48,7 +48,7 @@
 - [ロードマップ](#ロードマップ)
 - [開発](#開発)
 - [セキュリティ](#セキュリティ)
-- [ライセンスと謝辞](#ライセンスと謝辞)
+- [ライセンス](#ライセンス)
 
 ## インストール
 
@@ -246,7 +246,7 @@ Proxyz/
 │   ├── updater.py       # update aman via pip
 │   └── ...              # blacklist, tiers, config, installer
 ├── config/              # sources.json, proxyz.json, blacklist.txt
-├── docs/                # API, ARSITEKTUR, STUDI, translations (12 bahasa)
+├── docs/                # API, ARSITEKTUR, translations (13 languages)
 ├── tests/               # 97 tes (pytest)
 ├── Dockerfile           # gateway di Docker
 └── README.md
@@ -313,10 +313,8 @@ python -m proxyz doctor
 
 脆弱性を公開 issue で報告しないでください — [SECURITY.md](../../SECURITY.md) を読んでください。要するに、ゲートウェイは localhost のみにバインドされ、トークンが設定ファイルに書き込まれることは決してなく、Webshare の API キーはローカルにモード 0600 で保存され、アップデーターがサーバーからコマンドを実行することは決してありません。
 
-## ライセンスと謝辞
+## ライセンス
 
 ライセンス [MIT](../../LICENSE)。
-
-[itzluthfi](https://github.com/itzluthfi) 氏に感謝します — [petani-proxy](https://github.com/itzluthfi/petani-proxy) の作者であり、このツールの調査資料とインスピレーションの源です。この README の構成の参考: [FastAPI](https://github.com/fastapi/fastapi) と [uv](https://github.com/astral-sh/uv)。
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Dvifnyz/Proxyz&type=Date)](https://star-history.com/#Dvifnyz/Proxyz&Date)

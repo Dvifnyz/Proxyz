@@ -1,4 +1,4 @@
-> 이 문서는 메인 README(인도네시아어)의 번역본입니다. [인도네시아어 버전](../../README.md)이 기준이 됩니다.
+> 이 문서는 메인 README(영어)의 번역본입니다. [영어 버전](../../README.md)이 기준이 됩니다.
 
 <div align="center">
 
@@ -18,7 +18,7 @@
 
 [📖 문서](../../docs/API.md) · [📋 변경 로그](../../CHANGELOG.md) · [🤝 기여하기](../../CONTRIBUTING.md) · [🔒 보안](../../SECURITY.md)
 
-이 README를 다른 언어로 읽기: [English](README.en.md) · [中文](README.zh-CN.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [Afrikaans](README.af.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [हिन्दी](README.hi.md)
+이 README를 다른 언어로 읽기: [English](../../README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh-CN.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [Afrikaans](README.af.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [हिन्दी](README.hi.md)
 
 </div>
 
@@ -55,7 +55,7 @@
 - [로드맵](#로드맵)
 - [개발](#개발)
 - [보안](#보안)
-- [라이선스 및 감사의 말](#라이선스-및-감사의-말)
+- [라이선스](#라이선스)
 
 ## 설치
 
@@ -271,7 +271,7 @@ Proxyz/
 │   ├── updater.py       # update aman via pip
 │   └── ...              # blacklist, tiers, config, installer
 ├── config/              # sources.json, proxyz.json, blacklist.txt
-├── docs/                # API, ARSITEKTUR, STUDI, translations (12 bahasa)
+├── docs/                # API, ARSITEKTUR, translations (13 languages)
 ├── tests/               # 97 tes (pytest)
 ├── Dockerfile           # gateway di Docker
 └── README.md
@@ -355,14 +355,8 @@ localhost에만 바인딩되고, 토큰은 설정 파일에 절대 기록되지 
 Webshare API 키는 모드 0600으로 로컬에 저장되고, 업데이터는 서버에서
 오는 명령을 절대 실행하지 않습니다.
 
-## 라이선스 및 감사의 말
+## 라이선스
 
 라이선스 [MIT](../../LICENSE).
-
-[itzluthfi](https://github.com/itzluthfi)님께 감사드립니다 —
-[petani-proxy](https://github.com/itzluthfi/petani-proxy)의 제작자로,
-이 도구의 학습 자료이자 영감이 되었습니다. 이 README의 구조는
-[FastAPI](https://github.com/fastapi/fastapi)와
-[uv](https://github.com/astral-sh/uv)를 참고했습니다.
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Dvifnyz/Proxyz&type=Date)](https://star-history.com/#Dvifnyz/Proxyz&Date)

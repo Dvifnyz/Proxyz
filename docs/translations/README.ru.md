@@ -1,4 +1,4 @@
-> Это перевод [основного README (на индонезийском языке)](../../README.md). Действующей является версия на индонезийском языке.
+> Это перевод [основного README (на английском языке)](../../README.md). Действующей является версия на английском языке.
 
 <div align="center">
 
@@ -18,7 +18,7 @@
 
 [📖 Документация](../../docs/API.md) · [📋 Журнал изменений](../../CHANGELOG.md) · [🤝 Участие](../../CONTRIBUTING.md) · [🔒 Безопасность](../../SECURITY.md)
 
-Читать этот README на других языках: [English](../../docs/translations/README.en.md) · [中文](../../docs/translations/README.zh-CN.md) · [한국어](../../docs/translations/README.ko.md) · [日本語](../../docs/translations/README.ja.md) · [Русский](../../docs/translations/README.ru.md) · [العربية](../../docs/translations/README.ar.md) · [Afrikaans](../../docs/translations/README.af.md) · [Español](../../docs/translations/README.es.md) · [Português](../../docs/translations/README.pt.md) · [Deutsch](../../docs/translations/README.de.md) · [Français](../../docs/translations/README.fr.md) · [हिन्दी](../../docs/translations/README.hi.md)
+Читать этот README на других языках: [English](../../README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh-CN.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [Afrikaans](README.af.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [हिन्दी](README.hi.md)
 
 </div>
 
@@ -48,7 +48,7 @@
 - [Дорожная карта](#дорожная-карта)
 - [Разработка](#разработка)
 - [Безопасность](#безопасность)
-- [Лицензия и благодарности](#лицензия-и-благодарности)
+- [Лицензия](#лицензия)
 
 ## Установка
 
@@ -246,7 +246,7 @@ Proxyz/
 │   ├── updater.py       # update aman via pip
 │   └── ...              # blacklist, tiers, config, installer
 ├── config/              # sources.json, proxyz.json, blacklist.txt
-├── docs/                # API, ARSITEKTUR, STUDI, translations (12 bahasa)
+├── docs/                # API, ARSITEKTUR, translations (13 languages)
 ├── tests/               # 97 tes (pytest)
 ├── Dockerfile           # gateway di Docker
 └── README.md
@@ -313,10 +313,8 @@ python -m proxyz doctor
 
 Не сообщайте об уязвимостях через публичные issue — читайте [SECURITY.md](../../SECURITY.md). Вкратце: шлюз слушает только localhost, токен никогда не записывается в файл конфигурации, API-ключ Webshare хранится локально в режиме 0600, а updater никогда не выполняет команды с сервера.
 
-## Лицензия и благодарности
+## Лицензия
 
 Лицензия [MIT](../../LICENSE).
-
-Спасибо [itzluthfi](https://github.com/itzluthfi) — автору [petani-proxy](https://github.com/itzluthfi/petani-proxy), ставшего материалом для изучения и источником вдохновения для этого инструмента. Структура этого README опирается на [FastAPI](https://github.com/fastapi/fastapi) и [uv](https://github.com/astral-sh/uv).
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Dvifnyz/Proxyz&type=Date)](https://star-history.com/#Dvifnyz/Proxyz&Date)

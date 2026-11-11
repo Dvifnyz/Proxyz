@@ -1,4 +1,4 @@
-Hierdie is 'n vertaling van die [hoof-README](../../README.md) (Indonesies). Die Indonesiese weergawe is die geldende een.
+Hierdie is 'n vertaling van die [hoof-README](../../README.md) (Engels). Die Engelse weergawe is die geldende een.
 
 <div align="center">
 
@@ -18,7 +18,7 @@ Hierdie is 'n vertaling van die [hoof-README](../../README.md) (Indonesies). Die
 
 [📖 Dokumentasie](../../docs/API.md) · [📋 Changelog](../../CHANGELOG.md) · [🤝 Dra by](../../CONTRIBUTING.md) · [🔒 Sekuriteit](../../SECURITY.md)
 
-Lees hierdie README in 'n ander taal: [English](../../docs/translations/README.en.md) · [中文](../../docs/translations/README.zh-CN.md) · [한국어](../../docs/translations/README.ko.md) · [日本語](../../docs/translations/README.ja.md) · [Русский](../../docs/translations/README.ru.md) · [العربية](../../docs/translations/README.ar.md) · [Afrikaans](../../docs/translations/README.af.md) · [Español](../../docs/translations/README.es.md) · [Português](../../docs/translations/README.pt.md) · [Deutsch](../../docs/translations/README.de.md) · [Français](../../docs/translations/README.fr.md) · [हिन्दी](../../docs/translations/README.hi.md)
+Lees hierdie README in 'n ander taal: [English](../../README.md) · [中文](../../docs/translations/README.zh-CN.md) · [한국어](../../docs/translations/README.ko.md) · [日本語](../../docs/translations/README.ja.md) · [Русский](../../docs/translations/README.ru.md) · [العربية](../../docs/translations/README.ar.md) · [Afrikaans](../../docs/translations/README.af.md) · [Español](../../docs/translations/README.es.md) · [Português](../../docs/translations/README.pt.md) · [Deutsch](../../docs/translations/README.de.md) · [Français](../../docs/translations/README.fr.md) · [हिन्दी](../../docs/translations/README.hi.md) · [Bahasa Indonesia](../../docs/translations/README.id.md)
 
 </div>
 
@@ -55,7 +55,7 @@ Lees hierdie README in 'n ander taal: [English](../../docs/translations/README.e
 - [Padkaart](#padkaart)
 - [Ontwikkeling](#ontwikkeling)
 - [Sekuriteit](#sekuriteit)
-- [Lisensie en dankie](#lisensie-en-dankie)
+- [Lisensie](#lisensie)
 
 ## Installasie
 
@@ -273,7 +273,7 @@ Proxyz/
 │   ├── updater.py       # update aman via pip
 │   └── ...              # blacklist, tiers, config, installer
 ├── config/              # sources.json, proxyz.json, blacklist.txt
-├── docs/                # API, ARSITEKTUR, STUDI, translations (12 bahasa)
+├── docs/                # API, ARSITEKTUR, translations (13 languages)
 ├── tests/               # 97 tes (pytest)
 ├── Dockerfile           # gateway di Docker
 └── README.md
@@ -358,15 +358,8 @@ die token word nooit in die config-lêer geskryf nie, die Webshare
 API-sleutel word plaaslik in modus 0600 gestoor, en die updater loop
 nooit opdragte vanaf die bediener nie.
 
-## Lisensie en dankie
+## Lisensie
 
 Lisensie [MIT](../../LICENSE).
-
-Dankie aan
-[itzluthfi](https://github.com/itzluthfi) — skepper van
-[petani-proxy](https://github.com/itzluthfi/petani-proxy), wat die
-studiemateriaal en inspirasie vir hierdie tool was. Struktuurverwysings
-vir hierdie README: [FastAPI](https://github.com/fastapi/fastapi) en
-[uv](https://github.com/astral-sh/uv).
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Dvifnyz/Proxyz&type=Date)](https://star-history.com/#Dvifnyz/Proxyz&Date)

@@ -1,9 +1,9 @@
-# Berkontribusi ke Proxyz
+# Contributing to Proxyz
 
-Terima kasih sudah mau berkontribusi! Panduan singkat ini supaya PR
-kamu cepat diterima.
+Thank you for wanting to contribute! This short guide will help get
+your PR accepted quickly.
 
-## Cara mulai
+## Getting started
 
 ```bash
 git clone https://github.com/Dvifnyz/Proxyz.git
@@ -14,65 +14,65 @@ pytest -q
 python -m proxyz doctor
 ```
 
-## Aturan dasar
+## Ground rules
 
-1. **Satu PR, satu perubahan.** Jangan campur fitur baru dengan
-   refactor besar.
-2. **Tes dulu.** Setiap fitur/bugfix baru wajib disertai tes di
-   `tests/` dan `pytest -q` harus hijau.
-3. **Jangan merusak API publik** (lihat `docs/API.md`) tanpa diskusi
-   dulu di issue.
-4. **Jangan commit rahasia**: API key, token, password, private key,
-   file `config/webshare.json`, `output/`, atau `.env`.
-5. **Tulis commit yang jelas**, format: `type: ringkasan singkat`
-   (`feat:`, `fix:`, `docs:`, `test:`, `chore:`). Contoh:
-   `feat: tambah filter negara untuk SOCKS5`.
+1. **One PR, one change.** Don't mix a new feature with a large
+   refactor.
+2. **Test first.** Every new feature/bugfix must come with tests in
+   `tests/` and `pytest -q` must be green.
+3. **Don't break the public API** (see `docs/API.md`) without
+   discussing it in an issue first.
+4. **Don't commit secrets**: API keys, tokens, passwords, private keys,
+   the `config/webshare.json` file, `output/`, or `.env`.
+5. **Write clear commits**, format: `type: short summary`
+   (`feat:`, `fix:`, `docs:`, `test:`, `chore:`). Example:
+   `feat: add country filter for SOCKS5`.
 
-## Menambah sumber panen baru
+## Adding a new harvest source
 
-1. Tambah URL ke `config/sources.json` (kelompok `http` / `socks4` /
-   `socks5`).
-2. Pastikan formatnya `ip:port` per baris (atau JSON `proxies` —
-   lihat `proxyz/sources.py`).
-3. Jalankan `pytest -q` dan satu panen live untuk memastikan sumber
-   itu mengembalikan hasil.
+1. Add the URL to `config/sources.json` (the `http` / `socks4` /
+   `socks5` group).
+2. Make sure the format is one `ip:port` per line (or JSON `proxies` —
+   see `proxyz/sources.py`).
+3. Run `pytest -q` and one live harvest to confirm the source
+   returns results.
 
-## Menambah perintah CLI baru
+## Adding a new CLI command
 
-1. Tulis fungsi di `proxyz/cli.py` + daftarkan di `build_parser()`.
-2. Tambah baris ke tabel perintah di `README.md`.
-3. Tambah tes di `tests/test_*.py`.
+1. Write the function in `proxyz/cli.py` + register it in `build_parser()`.
+2. Add a row to the commands table in `README.md`.
+3. Add tests in `tests/test_*.py`.
 
-## Yang tidak akan diterima
+## What will not be accepted
 
-- Pemecah captcha otomatis, farm akun massal, bypass Turnstile /
-  anti-bot, dan segala bentuk pembuatan akun otomatis.
-- Kode yang mematikan verifikasi TLS, mengeksekusi perintah dari
-  server, atau menyimpan kredensial hardcode.
-- Perubahan yang menghapus data pengguna tanpa konfirmasi
-  (mis. `DELETE` tanpa backup).
+- Automatic captcha solvers, mass account farms, Turnstile /
+  anti-bot bypasses, and any form of automated account creation.
+- Code that disables TLS verification, executes commands from
+  a server, or stores hardcoded credentials.
+- Changes that delete user data without confirmation
+  (e.g. `DELETE` without a backup).
 
 ## Lint & audit
 
-Sebelum ngirim PR, jalanin ini (ruff sama vulture ada di extra `dev`):
+Before sending a PR, run this (ruff and vulture are in the `dev` extra):
 
 ```bash
-ruff check proxyz/ tests/     # harus 0 error; aturannya di pyproject.toml
-python -m vulture proxyz/ --min-confidence 80   # harus kosong
-pytest -q                     # harus hijau
+ruff check proxyz/ tests/     # must be 0 errors; rules are in pyproject.toml
+python -m vulture proxyz/ --min-confidence 80   # must be empty
+pytest -q                     # must be green
 ```
 
-Dua aturan sengaja dimatiin di config (baca alasannya di pyproject):
-`BLE001`/`S110` (error jaringan = proxy mati, bukan bug) sama
-`S101` (assert adalah cara kerja pytest).
+Two rules are deliberately disabled in the config (read the reasons in pyproject):
+`BLE001`/`S110` (a network error = dead proxy, not a bug) and
+`S101` (asserts are how pytest works).
 
-## Melaporkan bug
+## Reporting bugs
 
-Pakai template issue "Bug report": sertakan versi Proxyz
-(`proxyz --version`), perintah yang dijalankan, output
-`proxyz doctor`, dan log yang relevan — **tanpa API key/token**.
+Use the "Bug report" issue template: include your Proxyz version
+(`proxyz --version`), the command you ran, the output of
+`proxyz doctor`, and any relevant logs — **without API keys/tokens**.
 
-## Lisensi
+## License
 
-Dengan mengirim PR, kamu menyetujui kontribusi kamu dilisensikan
-di bawah lisensi MIT yang sama dengan proyek ini.
+By submitting a PR, you agree that your contribution is licensed
+under the same MIT license as this project.

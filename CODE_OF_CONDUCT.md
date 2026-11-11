@@ -1,12 +1,12 @@
-# Kode Etik
+# Code of Conduct
 
-Proxyz mengikuti semangat
+Proxyz follows the spirit of the
 [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/):
 
-- Bersikap hormat dan inklusif di issue, PR, dan diskusi.
-- Kritik kodenya, bukan orangnya.
-- Tidak ada ujaran kebencian, pelecehan, atau konten yang merendahkan.
-- Laporkan perilaku yang melanggar ke pemilik repo.
+- Be respectful and inclusive in issues, PRs, and discussions.
+- Criticize the code, not the person.
+- No hate speech, harassment, or demeaning content.
+- Report violating behavior to the repo owner.
 
-Pelanggaran dapat berujung pada peringatan sampai pemblokiran dari
-repo ini.
+Violations can lead to warnings up to being blocked from
+this repo.

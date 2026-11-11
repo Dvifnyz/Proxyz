@@ -1,4 +1,4 @@
-> 这是主 README（印尼语）的翻译版本。以[印尼语版本](../../README.md)为准。
+> 这是主 README（英语）的翻译版本。以[英语版本](../../README.md)为准。
 
 <div align="center">
 
@@ -18,7 +18,7 @@
 
 [📖 文档](../../docs/API.md) · [📋 更新日志](../../CHANGELOG.md) · [🤝 参与贡献](../../CONTRIBUTING.md) · [🔒 安全](../../SECURITY.md)
 
-用其他语言阅读本 README：[English](README.en.md) · [中文](README.zh-CN.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [Afrikaans](README.af.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [हिन्दी](README.hi.md)
+用其他语言阅读本 README：[English](../../README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh-CN.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [Afrikaans](README.af.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [हिन्दी](README.hi.md)
 
 </div>
 
@@ -55,7 +55,7 @@
 - [路线图](#路线图)
 - [开发](#开发)
 - [安全](#安全)
-- [许可证与致谢](#许可证与致谢)
+- [许可证](#许可证)
 
 ## 安装
 
@@ -268,7 +268,7 @@ Proxyz/
 │   ├── updater.py       # update aman via pip
 │   └── ...              # blacklist, tiers, config, installer
 ├── config/              # sources.json, proxyz.json, blacklist.txt
-├── docs/                # API, ARSITEKTUR, STUDI, translations (12 bahasa)
+├── docs/                # API, ARSITEKTUR, translations (13 languages)
 ├── tests/               # 97 tes (pytest)
 ├── Dockerfile           # gateway di Docker
 └── README.md
@@ -347,14 +347,8 @@ python -m proxyz doctor
 令牌永不写入配置文件，Webshare API 密钥以 0600 权限本地保存，
 更新器永不执行来自服务器的命令。
 
-## 许可证与致谢
+## 许可证
 
 许可证 [MIT](../../LICENSE)。
-
-感谢
-[itzluthfi](https://github.com/itzluthfi)——[petani-proxy](https://github.com/itzluthfi/petani-proxy)
-的作者，该项目是本工具的学习材料与灵感来源。本 README 的结构
-参考了 [FastAPI](https://github.com/fastapi/fastapi) 和
-[uv](https://github.com/astral-sh/uv)。
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Dvifnyz/Proxyz&type=Date)](https://star-history.com/#Dvifnyz/Proxyz&Date)

@@ -1,49 +1,49 @@
-# Kebijakan Keamanan
+# Security Policy
 
-## Melaporkan kerentanan
+## Reporting a vulnerability
 
-**Jangan laporkan kerentanan lewat issue publik.**
+**Do not report vulnerabilities via a public issue.**
 
-Kirim laporan ke pemilik repo lewat GitHub
-([buka issue privat / hubungi pemilik repo Dvifnyz](https://github.com/Dvifnyz))
-dengan:
+Send the report to the repo owner via GitHub
+([open a private issue / contact repo owner Dvifnyz](https://github.com/Dvifnyz))
+with:
 
-- deskripsi kerentanan dan dampaknya,
-- langkah reproduksi (bila ada),
-- versi Proxyz yang dipakai (`proxyz --version`).
+- a description of the vulnerability and its impact,
+- reproduction steps (if any),
+- the Proxyz version used (`proxyz --version`).
 
-Kami akan menanggapi dan memperbaiki secepatnya, lalu mencatatnya di
+We will respond and fix it as soon as possible, then record it in the
 CHANGELOG.
 
-## Yang sudah dijaga di Proxyz
+## What is already protected in Proxyz
 
-- **Gateway hanya bind `127.0.0.1`** — tidak terekspos ke LAN/internet
-  secara default.
-- **Token opsional** (`PROXYZ_TOKEN`) untuk API & pemakaian proxy;
-  token tidak pernah ditulis ke file config.
-- **Rate limit** API (60/menit per IP) + audit log
+- **Gateway only binds `127.0.0.1`** — not exposed to LAN/internet
+  by default.
+- **Optional token** (`PROXYZ_TOKEN`) for API & proxy usage;
+  the token is never written to a config file.
+- **API rate limit** (60/min per IP) + audit log
   (`output/gateway-audit.jsonl`).
-- **Verifikasi TLS tetap nyala** (system CA store); tidak ada
-  `verify=False` / `ssl=False` di mana pun.
-- **Updater aman**: update hanya via `pip` dari release GitHub —
-  tidak pernah menjalankan perintah dari server.
-- **API key Webshare** disimpan lokal mode `0600` dan tidak pernah
-  di-commit (`.gitignore`).
-- **Sinkronisasi 9Router** tidak pernah menghapus data orang lain:
-  insert-only, backup dulu, `--ganti` hanya menghapus baris
-  bertanda Proxyz.
+- **TLS verification stays on** (system CA store); no
+  `verify=False` / `ssl=False` anywhere.
+- **Safe updater**: updates only via `pip` from GitHub releases —
+  never runs commands from a server.
+- **Webshare API key** stored locally with mode `0600` and never
+  committed (`.gitignore`).
+- **9Router sync** never deletes other people's data:
+  insert-only, backup first, `--ganti` only deletes rows
+  tagged Proxyz.
 
-## Yang di luar cakupan
+## Out of scope
 
-- Proxy publik gratis itu sendiri (bukan milik Proxyz; kualitas dan
-  keamanannya di luar kendali tool ini). Jangan kirim data sensitif
-  lewat proxy publik yang tidak kamu kenal.
-- Akun Webshare / Cloudflare pengguna (jaga API key kamu sendiri).
-- Kerentanan di dependency pihak ketiga — laporkan ke proyek terkait,
-  atau beri tahu kami supaya kami bisa menaikkan versinya.
+- The free public proxies themselves (not owned by Proxyz; their
+  quality and security are outside this tool's control). Don't send
+  sensitive data through a public proxy you don't know.
+- The user's Webshare / Cloudflare account (look after your own API key).
+- Vulnerabilities in third-party dependencies — report them to the
+  relevant project, or let us know so we can bump the version.
 
-## Hal yang tidak akan kami bangun
+## What we will not build
 
-Pemecah captcha otomatis, farm akun massal, dan bypass anti-bot —
-bukan karena tidak bisa, tapi karena itu membuat akun pengguna cepat
-di-banned dan repo ini berisiko ditutup.
+Automatic captcha solvers, mass account farms, and anti-bot bypasses —
+not because we can't, but because they get user accounts banned fast
+and put this repo at risk of being taken down.

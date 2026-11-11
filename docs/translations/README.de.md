@@ -1,4 +1,4 @@
-> Dies ist eine Übersetzung der [Haupt-README](../../README.md) (Bahasa Indonesia). Die indonesische Version ist maßgeblich.
+> Dies ist eine Übersetzung der [Haupt-README](../../README.md) (Englisch). Die englische Version ist maßgeblich.
 
 <div align="center">
 
@@ -18,7 +18,7 @@
 
 [📖 Dokumentation](../../docs/API.md) · [📋 Changelog](../../CHANGELOG.md) · [🤝 Mitwirken](../../CONTRIBUTING.md) · [🔒 Sicherheit](../../SECURITY.md)
 
-Diese README in anderen Sprachen lesen: [English](../../docs/translations/README.en.md) · [中文](../../docs/translations/README.zh-CN.md) · [한국어](../../docs/translations/README.ko.md) · [日本語](../../docs/translations/README.ja.md) · [Русский](../../docs/translations/README.ru.md) · [العربية](../../docs/translations/README.ar.md) · [Afrikaans](../../docs/translations/README.af.md) · [Español](../../docs/translations/README.es.md) · [Português](../../docs/translations/README.pt.md) · [Deutsch](../../docs/translations/README.de.md) · [Français](../../docs/translations/README.fr.md) · [हिन्दी](../../docs/translations/README.hi.md)
+Diese README in anderen Sprachen lesen: [English](../../README.md) · [中文](../../docs/translations/README.zh-CN.md) · [한국어](../../docs/translations/README.ko.md) · [日本語](../../docs/translations/README.ja.md) · [Русский](../../docs/translations/README.ru.md) · [العربية](../../docs/translations/README.ar.md) · [Afrikaans](../../docs/translations/README.af.md) · [Español](../../docs/translations/README.es.md) · [Português](../../docs/translations/README.pt.md) · [Deutsch](../../docs/translations/README.de.md) · [Français](../../docs/translations/README.fr.md) · [हिन्दी](../../docs/translations/README.hi.md) · [Bahasa Indonesia](../../docs/translations/README.id.md)
 
 </div>
 
@@ -55,7 +55,7 @@ Diese README in anderen Sprachen lesen: [English](../../docs/translations/README
 - [Roadmap](#roadmap)
 - [Entwicklung](#entwicklung)
 - [Sicherheit](#sicherheit)
-- [Lizenz & Danksagungen](#lizenz--danksagungen)
+- [Lizenz](#lizenz)
 
 ## Installation
 
@@ -272,7 +272,7 @@ Proxyz/
 │   ├── updater.py       # update aman via pip
 │   └── ...              # blacklist, tiers, config, installer
 ├── config/              # sources.json, proxyz.json, blacklist.txt
-├── docs/                # API, ARSITEKTUR, STUDI, translations (12 bahasa)
+├── docs/                # API, ARSITEKTUR, translations (13 languages)
 ├── tests/               # 97 tes (pytest)
 ├── Dockerfile           # gateway di Docker
 └── README.md
@@ -358,15 +358,8 @@ lesen. Kurz gesagt: Gateway bindet nur an localhost, Token werden nie
 in Config-Dateien geschrieben, Webshare-API-Keys werden lokal mit Modus
 0600 gespeichert, und der Updater führt nie Befehle vom Server aus.
 
-## Lizenz & Danksagungen
+## Lizenz
 
 Lizenz [MIT](../../LICENSE).
-
-Danke an
-[itzluthfi](https://github.com/itzluthfi) — Ersteller von
-[petani-proxy](https://github.com/itzluthfi/petani-proxy), das als
-Studienmaterial und Inspiration für dieses Tool diente. Struktur-Referenzen
-für diese README: [FastAPI](https://github.com/fastapi/fastapi) und
-[uv](https://github.com/astral-sh/uv).
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Dvifnyz/Proxyz&type=Date)](https://star-history.com/#Dvifnyz/Proxyz&Date)

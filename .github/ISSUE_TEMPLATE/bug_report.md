@@ -1,35 +1,35 @@
 ---
 name: Bug report
-about: Laporkan bug di Proxyz
+about: Report a bug in Proxyz
 title: "[bug] "
 labels: bug
 ---
 
-## Deskripsi
+## Description
 
-Jelaskan bug-nya dengan singkat dan jelas.
+Describe the bug briefly and clearly.
 
-## Langkah reproduksi
+## Steps to reproduce
 
 ```bash
-# perintah yang dijalankan
+# command run
 python -m proxyz ...
 ```
 
-## Yang terjadi
+## What happened
 
-## Yang seharusnya terjadi
+## What should have happened
 
-## Lingkungan
+## Environment
 
-- Versi Proxyz (`proxyz --version`):
+- Proxyz version (`proxyz --version`):
 - Python (`python --version`):
 - OS:
 
-## Output `proxyz doctor`
+## `proxyz doctor` output
 
 ```
-(paste di sini)
+(paste here)
 ```
 
-> Jangan tempel API key, token, atau password apa pun.
+> Don't paste any API key, token, or password.

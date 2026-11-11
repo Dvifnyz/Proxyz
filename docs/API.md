@@ -1,10 +1,11 @@
-# Proxyz API — Stabil sejak v2.0.0
+# Proxyz API — Stable since v2.0.0
 
-Fungsi-fungsi di bawah ini adalah API publik Proxyz. Sejak v2.0.0
-tandatangan dan perilaku dasarnya DIJAMIN stabil antar rilis minor
-(2.x). Perubahan yang merusak hanya terjadi di rilis mayor berikutnya.
+The functions below are Proxyz's public API. Since v2.0.0
+their signatures and basic behavior are GUARANTEED stable across
+minor releases (2.x). Breaking changes only happen in the next
+major release.
 
-## Panen & cek
+## Harvest & check
 
 ```python
 from proxyz.harvester import harvest, build_jobs, health_report
@@ -14,10 +15,10 @@ kandidat = harvest(protocols=["http"], country="ID")  # list[dict]
 hidup = check_pool_sync(kandidat, target=20)          # list[Proxy]
 ```
 
-- `harvest()` mengembalikan kandidat (dict `protocol/ip/port/source`),
-  sudah difilter blacklist.
-- `check_pool_sync(cands, target=N)` mengembalikan `list[Proxy]` hidup,
-  diurutkan skor tertinggi dulu.
+- `harvest()` returns candidates (dict `protocol/ip/port/source`),
+  already blacklist-filtered.
+- `check_pool_sync(cands, target=N)` returns a `list[Proxy]` of live
+  proxies, sorted by highest score first.
 
 ## Model & pool
 
@@ -44,11 +45,11 @@ serve(pool, port=8888, token="", refill_fn=None,
       rate_limit_per_min=60, audit_path=None, socks_port=0)
 ```
 
-Endpoint REST: `/api/status`, `/api/proxies`, `/api/random`,
+REST endpoints: `/api/status`, `/api/proxies`, `/api/random`,
 `/api/rotate`, `/api/refill`, `/api/leak-test`, `/api/bench`,
 `/api/report`, `/api/clash.yaml`, `/metrics`, `/proxy.pac`.
 
-## Ekspor, bench, 9Router, laporan
+## Export, bench, 9Router, report
 
 ```python
 from proxyz.exporter import export_all, export_clash, clash_yaml
@@ -59,7 +60,7 @@ from proxyz.scheduler import run_cycle, run_scheduler
 from proxyz.doctor import run_doctor
 ```
 
-## Konfigurasi
+## Configuration
 
 ```python
 from proxyz.config import load_config, apply_profile, PROFILES
@@ -67,12 +68,12 @@ cfg = load_config()  # default -> config/proxyz.json -> env
 cfg = apply_profile(cfg, "cepat")  # scraper | cepat | hemat
 ```
 
-## Migrasi 2.0.0
+## Migration 2.0.0
 
-- `config/webshare.json` format lama `{"api_key": "..."}` dimigrasi
-  otomatis ke `{"api_keys": [...]}` saat pertama dibaca. Tidak ada
-  tindakan manual; key tidak berubah.
-- `proxyz panen --jumlah` default tetap 20; `gateway --port 0`
-  berarti "pakai config".
-- Yang TIDAK PERNAH ada dan tetap tidak ada: pemecah captcha
-  otomatis, farm akun massal, bypass anti-bot.
+- The old `config/webshare.json` format `{"api_key": "..."}` is
+  migrated automatically to `{"api_keys": [...]}` on first read. No
+  manual action; the key does not change.
+- `proxyz panen --jumlah` default stays 20; `gateway --port 0`
+  means "use config".
+- What NEVER existed and still does not: automatic captcha
+  solver, mass account farm, anti-bot bypass.

@@ -1,4 +1,4 @@
-> هذه ترجمة [لملف README الرئيسي (باللغة الإندونيسية)](../../README.md). النسخة الإندونيسية هي المعتمدة.
+> هذه ترجمة [لملف README الرئيسي (باللغة الإنجليزية)](../../README.md). النسخة الإنجليزية هي المعتمدة.
 
 <div align="center">
 
@@ -18,7 +18,7 @@
 
 [📖 التوثيق](../../docs/API.md) · [📋 سجل التغييرات](../../CHANGELOG.md) · [🤝 المساهمة](../../CONTRIBUTING.md) · [🔒 الأمان](../../SECURITY.md)
 
-اقرأ ملف README هذا بلغات أخرى: [English](../../docs/translations/README.en.md) · [中文](../../docs/translations/README.zh-CN.md) · [한국어](../../docs/translations/README.ko.md) · [日本語](../../docs/translations/README.ja.md) · [Русский](../../docs/translations/README.ru.md) · [العربية](../../docs/translations/README.ar.md) · [Afrikaans](../../docs/translations/README.af.md) · [Español](../../docs/translations/README.es.md) · [Português](../../docs/translations/README.pt.md) · [Deutsch](../../docs/translations/README.de.md) · [Français](../../docs/translations/README.fr.md) · [हिन्दी](../../docs/translations/README.hi.md)
+اقرأ ملف README هذا بلغات أخرى: [English](../../README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh-CN.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [Afrikaans](README.af.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [हिन्दी](README.hi.md)
 
 </div>
 
@@ -48,7 +48,7 @@
 - [خارطة الطريق](#خارطة-الطريق)
 - [التطوير](#التطوير)
 - [الأمان](#الأمان)
-- [الترخيص والشكر](#الترخيص-والشكر)
+- [الترخيص](#الترخيص)
 
 ## التثبيت
 
@@ -246,7 +246,7 @@ Proxyz/
 │   ├── updater.py       # update aman via pip
 │   └── ...              # blacklist, tiers, config, installer
 ├── config/              # sources.json, proxyz.json, blacklist.txt
-├── docs/                # API, ARSITEKTUR, STUDI, translations (12 bahasa)
+├── docs/                # API, ARSITEKTUR, translations (13 languages)
 ├── tests/               # 97 tes (pytest)
 ├── Dockerfile           # gateway di Docker
 └── README.md
@@ -313,10 +313,8 @@ python -m proxyz doctor
 
 لا تُبلِغ عن الثغرات عبر issue عام — اقرأ [SECURITY.md](../../SECURITY.md). باختصار: البوابة مرتبطة بـ localhost فقط، والرمز المميز لا يُكتب أبدًا في ملف الإعدادات، ومفتاح Webshare API يُخزَّن محليًا بالوضع 0600، والمحدِّث لا ينفّذ أبدًا أوامر من الخادم.
 
-## الترخيص والشكر
+## الترخيص
 
 الترخيص [MIT](../../LICENSE).
-
-شكرًا لـ [itzluthfi](https://github.com/itzluthfi) — صانع [petani-proxy](https://github.com/itzluthfi/petani-proxy) الذي كان مادة الدراسة ومصدر إلهام هذه الأداة. والمرجع في بنية ملف README هذا: [FastAPI](https://github.com/fastapi/fastapi) و[uv](https://github.com/astral-sh/uv).
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Dvifnyz/Proxyz&type=Date)](https://star-history.com/#Dvifnyz/Proxyz&Date)

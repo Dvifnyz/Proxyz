@@ -1,4 +1,4 @@
-> This is a translation of the main README (Indonesian). The [Indonesian version](../../README.md) is authoritative.
+> This is a translation of the main README (English). The [English version](../../README.md) is authoritative.
 
 <div align="center">
 
@@ -18,7 +18,7 @@
 
 [📖 Documentation](../../docs/API.md) · [📋 Changelog](../../CHANGELOG.md) · [🤝 Contributing](../../CONTRIBUTING.md) · [🔒 Security](../../SECURITY.md)
 
-Read this README in other languages: [English](README.en.md) · [中文](README.zh-CN.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [Afrikaans](README.af.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [हिन्दी](README.hi.md)
+Read this README in other languages: [English](../../README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh-CN.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [Afrikaans](README.af.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [हिन्दी](README.hi.md)
 
 </div>
 
@@ -55,7 +55,7 @@ Read this README in other languages: [English](README.en.md) · [中文](README.
 - [Roadmap](#roadmap)
 - [Development](#development)
 - [Security](#security)
-- [License & acknowledgements](#license--acknowledgements)
+- [License](#license)
 
 ## Installation
 
@@ -270,7 +270,7 @@ Proxyz/
 │   ├── updater.py       # update aman via pip
 │   └── ...              # blacklist, tiers, config, installer
 ├── config/              # sources.json, proxyz.json, blacklist.txt
-├── docs/                # API, ARSITEKTUR, STUDI, translations (12 bahasa)
+├── docs/                # API, ARSITEKTUR, translations (13 languages)
 ├── tests/               # 97 tes (pytest)
 ├── Dockerfile           # gateway di Docker
 └── README.md
@@ -354,15 +354,8 @@ Don't report vulnerabilities via public issues — read
 the token is never written to the config file, the Webshare API key is stored
 locally with mode 0600, and the updater never runs commands from a server.
 
-## License & acknowledgements
+## License
 
 License [MIT](../../LICENSE).
-
-Thanks to
-[itzluthfi](https://github.com/itzluthfi) — creator of
-[petani-proxy](https://github.com/itzluthfi/petani-proxy), the study
-material and inspiration for this tool. This README's structure
-references [FastAPI](https://github.com/fastapi/fastapi) and
-[uv](https://github.com/astral-sh/uv).
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Dvifnyz/Proxyz&type=Date)](https://star-history.com/#Dvifnyz/Proxyz&Date)

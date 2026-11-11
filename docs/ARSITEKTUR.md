@@ -1,10 +1,10 @@
-# Arsitektur Proxyz
+# Proxyz Architecture
 
-Dokumen ini menjelaskan cara kerja bagian dalam Proxyz — untuk
-kontributor dan pengguna yang ingin paham kenapa tool ini dibangun
-begini.
+This document explains how Proxyz works internally — for
+contributors and users who want to understand why the tool is
+built this way.
 
-## Gambaran besar
+## Big picture
 
 ```mermaid
 flowchart LR
@@ -18,100 +18,100 @@ flowchart LR
     G --> U[Pengguna\nbrowser / aplikasi]
 ```
 
-## Komponen
+## Components
 
 ### Harvester (`proxyz/harvester.py`)
 
-- Mengambil daftar proxy dari 35 sumber di `config/sources.json`
-  (17 HTTP, 8 SOCKS4, 10 SOCKS5) — sumber segar dicek lebih dulu.
-- Semua sumber dihitung `Proxy` + `ProxySet` — dedup ketat: satu
-  `ip:port` + protokol hanya dihitung sekali.
-- Skor kesehatan tiap sumber disimpan di
-  `output/.source_health.json`. Sumber yang gagal 3x beruntun
-  diistirahatkan 1 jam (backoff).
-- Fetch memakai `aiohttp` dengan fallback `urllib` ber-thread.
-  `trust_env=True` supaya proxy egress sandbox/korporat tetap jalan.
+- Fetches proxy lists from 35 sources in `config/sources.json`
+  (17 HTTP, 8 SOCKS4, 10 SOCKS5) — fresh sources are checked first.
+- All sources count `Proxy` + `ProxySet` — strict dedup: one
+  `ip:port` + protocol is counted only once.
+- Each source's health score is stored in
+  `output/.source_health.json`. A source that fails 3x in a row
+  is rested for 1 hour (backoff).
+- Fetching uses `aiohttp` with a threaded `urllib` fallback.
+  `trust_env=True` so sandbox/corporate egress proxies still work.
 
 ### Checker (`proxyz/checker.py`)
 
-- Async batch (default 100 worker, timeout 5 detik).
-- Menilai: status hidup/mati, anonimitas (elite / anonymous /
-  transparent), latensi, dan negara/ISP.
-- GeoIP diambil **batch** lewat `ip-api.com/batch` (100 IP/request)
-  — bukan satu request per proxy seperti repo asli.
-- Handshake SOCKS4/5 ditulis tangan (asyncio), tanpa library
-  tambahan.
-- Skor akhir 0–100: kombinasi latensi, anonimitas, dan kestabilan.
+- Async batch (default 100 workers, 5-second timeout).
+- Scores: alive/dead status, anonymity (elite / anonymous /
+  transparent), latency, and country/ISP.
+- GeoIP is fetched in **batch** via `ip-api.com/batch` (100 IPs/request)
+  — not one request per proxy like the original repo.
+- The SOCKS4/5 handshake is hand-written (asyncio), with no extra
+  library.
+- Final score 0–100: a combination of latency, anonymity, and stability.
 
 ### Pool (`proxyz/pool.py`)
 
-- Menyimpan proxy hidup dalam memori + di disk (`output/`).
-- Rotasi round-robin; proxy residential diprioritaskan.
-- Sticky session: header `X-Session-ID` mengunci satu proxy
-  selama `session_ttl` (default 600 detik).
-- Tier kecepatan: `cepat` (≤350 ms), `sedang` (≤800 ms),
-  `lambat` (di atas itu) — dipakai `panen --tier` dan profil
-  gateway.
+- Stores live proxies in memory + on disk (`output/`).
+- Round-robin rotation; residential proxies are prioritized.
+- Sticky session: the `X-Session-ID` header pins one proxy
+  for `session_ttl` (default 600 seconds).
+- Speed tiers: `cepat` (≤350 ms), `sedang` (≤800 ms),
+  `lambat` (above that) — used by `panen --tier` and gateway
+  profiles.
 
 ### Gateway (`proxyz/gateway.py`)
 
-- Satu jalur socket untuk HTTP/SOCKS4/SOCKS5, dengan/tanpa auth.
-- Forward GET/POST/PUT/DELETE/PATCH + CONNECT relay.
-- Listener SOCKS5 opsional (`--socks 1080`): hanya CONNECT;
-  BIND/UDP ditolak (0x07).
-- Auto-healer: probe HTTP beneran tiap `healer_interval`
-  (default 90 detik); proxy mati dibuang, pool diisi ulang bila
-  `min_healthy` tidak tercapai.
-- Keamanan: bind `127.0.0.1` saja; token opsional
-  (`PROXYZ_TOKEN`); rate limit 60/menit per IP (429 +
-  `Retry-After`); audit JSONL di `output/gateway-audit.jsonl`.
-- REST API + dashboard + `/metrics` + PAC (lihat README).
+- One socket path for HTTP/SOCKS4/SOCKS5, with or without auth.
+- Forwards GET/POST/PUT/DELETE/PATCH + CONNECT relay.
+- Optional SOCKS5 listener (`--socks 1080`): CONNECT only;
+  BIND/UDP rejected (0x07).
+- Auto-healer: real HTTP probes every `healer_interval`
+  (default 90 seconds); dead proxies are discarded, the pool is
+  refilled when `min_healthy` is not reached.
+- Security: binds `127.0.0.1` only; optional token
+  (`PROXYZ_TOKEN`); rate limit 60/min per IP (429 +
+  `Retry-After`); JSONL audit in `output/gateway-audit.jsonl`.
+- REST API + dashboard + `/metrics` + PAC (see README).
 
 ### WARP (`proxyz/warp.py`)
 
-- Daftar ke API resmi Cloudflare
-  (`api.cloudflareclient.com/v0a2158/reg`), kunci dibuat dengan
+- Registers with the official Cloudflare API
+  (`api.cloudflareclient.com/v0a2158/reg`), keys generated with
   `cryptography` (fallback `wg genkey`).
-- Menghasilkan `.conf` WireGuard + JSON Sing-box, file mode 0600.
+- Generates WireGuard `.conf` + Sing-box JSON, file mode 0600.
 
 ### Residential (`proxyz/residential.py`)
 
-- Mengambil daftar proxy lewat API resmi Webshare
-  (`proxy.webshare.io/api/v2/proxy/list/`) dengan
+- Fetches proxy lists via the official Webshare API
+  (`proxy.webshare.io/api/v2/proxy/list/`) with
   `Authorization: Token <key>`.
-- Multi-akun: semua key digabung ke satu pool.
-- Signup semi-otomatis: buka browser, buat password, pengguna isi
-  captcha sekali dan tempel API key — key divalidasi live sebelum
-  disimpan.
-- Import manual dari `output/proxy_manual.txt`.
+- Multi-account: all keys are merged into one pool.
+- Semi-automatic signup: opens a browser, creates a password, the
+  user fills in the captcha once and pastes the API key — the key
+  is validated live before being saved.
+- Manual import from `output/proxy_manual.txt`.
 
 ### 9Router (`proxyz/router.py`)
 
-- Menulis pool ke tabel `proxyPools` SQLite 9Router.
-- Aman: backup DB dulu, insert-only secara default, dedup
-  berdasarkan `proxyUrl`, `--ganti` hanya menghapus baris yang
-  ditandai `Proxyz` (milik tool ini sendiri).
+- Writes the pool to the 9Router SQLite `proxyPools` table.
+- Safe: backs up the DB first, insert-only by default, dedup
+  by `proxyUrl`, `--ganti` only deletes rows tagged
+  `Proxyz` (belonging to this tool itself).
 
-### Pendukung
+### Supporting
 
-| Modul | Fungsi |
+| Module | Function |
 |---|---|
-| `bench.py` | Ranking kecepatan unduh (1 MB via Cloudflare) |
-| `report.py` | Laporan pool (Markdown + JSON) |
-| `scheduler.py` | Mode `auto`: panen → cek → ekspor berkala |
-| `doctor.py` | Diagnosa instalasi |
-| `updater.py` | Update via `pip` dari Release GitHub (fallback tags) |
-| `installer.py` | Membuat file service (systemd + Windows Task) |
-| `exporter.py` | Ekspor TXT/JSON/CSV/Clash, atomik + backup (maks 5) |
+| `bench.py` | Download-speed ranking (1 MB via Cloudflare) |
+| `report.py` | Pool report (Markdown + JSON) |
+| `scheduler.py` | `auto` mode: harvest → check → export periodically |
+| `doctor.py` | Installation diagnostics |
+| `updater.py` | Update via `pip` from GitHub Release (fallback tags) |
+| `installer.py` | Creates service files (systemd + Windows Task) |
+| `exporter.py` | TXT/JSON/CSV/Clash export, atomic + backup (max 5) |
 
-## Prinsip desain
+## Design principles
 
-1. **Jangan pernah bohong soal data** — proxy mati dibuang,
-   skor dihitung dari pengukuran nyata, bukan angka palsu.
-2. **Jangan pernah hapus data orang lain** — sync 9Router
-   insert-only; `--ganti` hanya menyentuh baris milik tool.
-3. **Jangan pernah matikan keamanan demi kemudahan** — TLS
-   tetap nyala, gateway bind localhost, updater tidak
-   menjalankan perintah dari server.
-4. **Satu jalur kode, bukan tiga** — repo asli punya 3 checker
-   yang saling duplikat; Proxyz punya satu pipeline.
+1. **Never lie about data** — dead proxies are discarded,
+   scores are computed from real measurements, not fake numbers.
+2. **Never delete other people's data** — 9Router sync is
+   insert-only; `--ganti` only touches rows belonging to the tool.
+3. **Never turn off security for convenience** — TLS
+   stays on, gateway binds localhost, the updater does not
+   run commands from the server.
+4. **One code path, not three** — the original repo had 3 checkers
+   duplicating each other; Proxyz has one pipeline.
