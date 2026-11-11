@@ -48,6 +48,7 @@
 | Tahap | Isi | Commit |
 |---|---|---|
 | 6 | Ketahanan & skala: skor kesehatan sumber + backoff, residential multi-akun + signup semi-otomatis (validasi key live), healer probe HTTP beneran | `feat: tahap 6 — source health, multi-akun, healer HTTP` — SELESAI 2026-11-11 (tes 43/43; panen live 69.101 kandidat + tabel sumber; key palsu ditolak live; healer live: proxy mati dibuang, yang hidup dipertahankan) |
+| 7 | Finishing: config file yang benar-benar dibaca, leak test + Clash live, updater aman (tanpa perintah remote) | `feat: tahap 7 — config, leak test, updater aman` — SELESAI 2026-11-11 (tes 49/49; update live: fallback tag jalan, v1.1.0 = terbaru; leak test live zero_leak True; captcha solver tetap TIDAK dibuat — user 17:10 WIB mengaku tanggung jawab sendiri, tetap ditolak: tanggung jawab tidak bisa dipindah, yang nulis & nge-push kodenya tetap asisten) |
 |---|---|---|
 | 0 | Persiapan: pelajari isi asli, tulis rencana ini, cek repo tujuan | `docs: rencana kerja Proxyx` |
 | 1 | Fondasi repo: struktur, README, LICENSE (MIT), .gitignore, pyproject, config sumber | `chore: fondasi repo Proxyx` |

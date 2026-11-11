@@ -304,6 +304,44 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None):
             country = self.headers.get("X-Country")
             return sid, country
 
+        def _leak_test(self) -> dict:
+            """Bandingkan IP langsung vs IP lewat gateway (1 proxy pool).
+            zero_leak=True bila keduanya ada, berbeda, dan IP gateway valid.
+            ipify asli mengembalikan IP polos; standin tes mengembalikan
+            JSON {"ip": ...} — keduanya diterima."""
+            def _ip(text: str) -> str:
+                text = (text or "").strip()
+                try:
+                    data = json.loads(text)
+                    if isinstance(data, dict) and isinstance(data.get("ip"), str):
+                        text = data["ip"]
+                except Exception:
+                    pass
+                m = re.fullmatch(r"\d+\.\d+\.\d+\.\d+", text)
+                return text if m else ""
+
+            direct, gw_ip = "", ""
+            try:
+                req = urllib.request.Request(
+                    "http://api.ipify.org", headers={"User-Agent": "Proxyx/1.0"})
+                with urllib.request.urlopen(req, timeout=8) as r:
+                    direct = _ip(r.read().decode())
+            except Exception:
+                pass
+            up = pool.next()
+            if up:
+                try:
+                    h = urllib.request.ProxyHandler({"http": up.url, "https": up.url})
+                    opener = urllib.request.build_opener(h)
+                    req = urllib.request.Request(
+                        "http://api.ipify.org", headers={"User-Agent": "Proxyx/1.0"})
+                    with opener.open(req, timeout=10) as r:
+                        gw_ip = _ip(r.read().decode())
+                except Exception:
+                    pass
+            ok = bool(direct and gw_ip and direct != gw_ip)
+            return {"direct_ip": direct, "gateway_ip": gw_ip, "zero_leak": ok}
+
         # -- API --
         def _handle_api(self) -> bool:
             parsed = urllib.parse.urlparse(self.path)
@@ -312,7 +350,8 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None):
                 if path == "/" and "text/html" not in (self.headers.get("Accept") or ""):
                     self._json(200, {**pool.stats(), "endpoints": [
                         "/api/status", "/api/proxies", "/api/random",
-                        "/api/rotate", "/api/refill", "/metrics", "/proxy.pac"]})
+                        "/api/rotate", "/api/refill", "/api/leak-test",
+                        "/api/clash.yaml", "/metrics", "/proxy.pac"]})
                 else:
                     self._send(200, DASHBOARD_HTML.encode(), "text/html; charset=utf-8")
                 return True
@@ -345,6 +384,11 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None):
                        f"proxyx_requests_failed {s['failed_requests']}\n"
                        f"proxyx_evicted_total {s['evicted']}\n")
                 self._send(200, txt.encode(), "text/plain")
+            elif path == "/api/leak-test":
+                self._json(200, self._leak_test())
+            elif path == "/api/clash.yaml":
+                from .exporter import clash_yaml
+                self._send(200, clash_yaml(pool.snapshot()).encode(), "text/yaml")
             elif path in ("/proxy.pac", "/pac", "/wpad.dat"):
                 port = self.server.server_address[1]
                 pac = (f'function FindProxyForURL(url, host) {{ '

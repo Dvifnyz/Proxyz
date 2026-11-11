@@ -37,9 +37,8 @@ def export_csv(proxies: list[Proxy], path: str) -> str:
     return _atomic(path, "\n".join(lines) + "\n")
 
 
-def export_clash(proxies: list[Proxy], path: str) -> str:
-    """Clash YAML: tiap proxy jadi entri + satu grup `PROXYX` (url-test).
-    Hanya HTTP & SOCKS5 yang didukung Clash (SOCKS4 dilewati)."""
+def clash_yaml(proxies: list[Proxy]) -> str:
+    """Clash YAML sebagai string (dipakai file ekspor + endpoint live)."""
     lines = ["proxies:"]
     names = []
     for i, p in enumerate(proxies):
@@ -62,7 +61,13 @@ def export_clash(proxies: list[Proxy], path: str) -> str:
     lines.append("    proxies:")
     for n in names:
         lines.append(f"      - {n}")
-    return _atomic(path, "\n".join(lines) + "\n")
+    return "\n".join(lines) + "\n"
+
+
+def export_clash(proxies: list[Proxy], path: str) -> str:
+    """Clash YAML: tiap proxy jadi entri + satu grup `PROXYX` (url-test).
+    Hanya HTTP & SOCKS5 yang didukung Clash (SOCKS4 dilewati)."""
+    return _atomic(path, clash_yaml(proxies))
 
 
 def export_all(proxies: list[Proxy], out_dir: str) -> dict[str, str]:

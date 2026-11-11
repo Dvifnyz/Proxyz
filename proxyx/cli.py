@@ -72,20 +72,26 @@ def _cmd_cek(a):
 
 def _cmd_gateway(a):
     from .checker import check_pool_sync
+    from .config import load_config
     from .gateway import load_pool_from_disk, serve
     from .pool import Pool
+    cfg = load_config()
+    port = a.port if a.port else cfg["gateway_port"]
+    token = cfg.get("token", "")
     pool = Pool(load_pool_from_disk())
-    print(f"  Pool awal: {len(pool)} proxy")
+    print(f"  Pool awal: {len(pool)} proxy (config: {cfg['healer_interval']} dtk healer, "
+          f"min {cfg['min_healthy']})")
     if len(pool) == 0:
         print("  Pool kosong — panen dulu ...")
-        hidup = _panen(10, "", "all", False)
+        hidup = _panen(cfg["healer_target"], "", "all", False)
         pool.add(hidup)
 
     def refill(target: int = 10):
         kandidat = harvest()
         return check_pool_sync(kandidat, target=target)
 
-    serve(pool, port=a.port, healer=not a.no_healer, refill_fn=refill)
+    serve(pool, port=port, healer=not a.no_healer, refill_fn=refill, token=token,
+          healer_interval=cfg["healer_interval"])
 
 
 def _cmd_warp(a):
@@ -158,6 +164,60 @@ def _cmd_residential(a):
         export_all(all_proxies + manual, OUT_DIR)
 
 
+def _cmd_test(a):
+    """Leak test: IP asli vs IP lewat gateway yang sedang jalan."""
+    from .checker import get_host_ip
+    import re
+    import urllib.request
+    cfg_port = a.port
+    direct = get_host_ip()
+    gw_ip = ""
+    try:
+        proxy = f"http://127.0.0.1:{cfg_port}"
+        h = urllib.request.ProxyHandler({"http": proxy, "https": proxy})
+        opener = urllib.request.build_opener(h)
+        req = urllib.request.Request("http://api.ipify.org",
+                                     headers={"User-Agent": "Proxyx/1.0"})
+        with opener.open(req, timeout=10) as r:
+            gw_ip = r.read().decode().strip()
+    except Exception as e:
+        print(f"  ✗ Tidak bisa menjangkau gateway di 127.0.0.1:{cfg_port} ({e})")
+        print("    Jalankan dulu: python -m proxyx gateway")
+        return
+    print(f"  IP asli kamu : {direct or '(tidak terdeteksi)'}")
+    print(f"  IP via gateway: {gw_ip or '(tidak terdeteksi)'}")
+    if direct and gw_ip and direct != gw_ip and re.fullmatch(r"\d+\.\d+\.\d+\.\d+", gw_ip):
+        print("  ✅ ZERO LEAK — IP aslimu tidak bocor.")
+    else:
+        print("  ⚠️  Hasil tidak meyakinkan — periksa pool gateway / koneksi.")
+
+
+def _cmd_update(a):
+    from .updater import check_update, update_via_pip
+    info = check_update(__version__)
+    if info.get("error"):
+        print(f"  ✗ {info['error']}")
+        return
+    print(f"  Versi sekarang: {info['current']} | terbaru: {info['latest']}")
+    if not info["update_available"]:
+        print("  ✅ Kamu sudah memakai versi terbaru.")
+        return
+    print(f"  Rilis: {info.get('url', '')}")
+    if info.get("notes"):
+        print(f"  Catatan: {info['notes'][:200]}")
+    if not a.yes:
+        try:
+            jawab = input("  Update sekarang? [y/N]: ").strip().lower()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            return
+        if jawab != "y":
+            print("  Dibatalkan.")
+            return
+    ok, msg = update_via_pip(info["latest"])
+    print(f"  {'✅' if ok else '✗'} {msg}")
+
+
 def _cmd_sources(a):
     from .harvester import health_report
     rows = health_report()
@@ -204,10 +264,8 @@ def _menu():
         elif pilih == "4":
             _cmd_residential(argparse.Namespace(api_key="", signup=False))
         elif pilih == "5":
-            from .checker import get_host_ip
-            import urllib.request
-            print(f"\n  IP asli kamu: {get_host_ip()}")
-            print("  (bandingkan lewat gateway: curl -x http://127.0.0.1:8888 http://api.ipify.org)")
+            from .config import load_config
+            _cmd_test(argparse.Namespace(port=load_config()["gateway_port"]))
         elif pilih == "0":
             print("\n  Dadah 👋\n")
             return
@@ -237,9 +295,15 @@ def build_parser() -> argparse.ArgumentParser:
     sc.add_argument("--jumlah", type=int, default=20)
     sc.set_defaults(func=_cmd_cek)
     sg = sub.add_parser("gateway", help="jalankan gateway rotating")
-    sg.add_argument("--port", type=int, default=8888)
+    sg.add_argument("--port", type=int, default=0, help="0 = pakai config/proxyx.json")
     sg.add_argument("--no-healer", action="store_true")
     sg.set_defaults(func=_cmd_gateway)
+    st = sub.add_parser("test", help="leak test: IP asli vs IP via gateway")
+    st.add_argument("--port", type=int, default=8888)
+    st.set_defaults(func=_cmd_test)
+    su = sub.add_parser("update", help="cek & pasang rilis terbaru (aman, via pip)")
+    su.add_argument("--yes", action="store_true", help="update tanpa konfirmasi")
+    su.set_defaults(func=_cmd_update)
     sw = sub.add_parser("warp", help="buat profil WARP WireGuard")
     sw.add_argument("--jumlah", type=int, default=1)
     sw.set_defaults(func=_cmd_warp)

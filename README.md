@@ -8,7 +8,7 @@ Ia mengambil ide intinya — panen sumber publik, cek, gateway lokal, WARP —
 lalu membangunnya ulang dengan mesin async, checker yang mengukur anonimitas
 dan skor, gateway yang mendukung SOCKS5 upstream, dan auto-healer.
 
-> Status: ✅ **v1.1.0 rilis** — Tahap 6 selesai, tes 43/43.
+> Status: ✅ **v1.2.0 rilis** — Tahap 7 selesai, tes 49/49.
 > Detail tahapan di [RENCANA_KERJA.md](RENCANA_KERJA.md).
 
 ## Kenapa Proxyx?
@@ -51,6 +51,26 @@ curl -x http://127.0.0.1:8888 http://api.ipify.org
 import requests
 proxies = {"http": "http://127.0.0.1:8888", "https": "http://127.0.0.1:8888"}
 print(requests.get("https://api.ipify.org?format=json", proxies=proxies, timeout=10).json())
+```
+
+## Konfigurasi
+
+Semua setting dibaca dari `config/proxyx.json` (ditambah env bila ada).
+Jangan tulis token di file ini — token lewat env `PROXYX_TOKEN`.
+
+```json
+{"gateway_port": 8888, "healer_interval": 90, "min_healthy": 5,
+ "check_timeout": 5.0, "check_workers": 100, "check_target": 20,
+ "max_latency_ms": 1200, "session_ttl": 600}
+```
+
+## Tes kebocoran & update
+
+```bash
+python -m proxyx test              # IP asli vs IP via gateway (zero-leak?)
+python -m proxyx update            # cek rilis terbaru, update via pip (aman)
+curl http://127.0.0.1:8888/api/leak-test
+curl http://127.0.0.1:8888/api/clash.yaml   # langganan Clash live dari pool
 ```
 
 ## Fitur
