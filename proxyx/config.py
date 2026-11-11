@@ -29,6 +29,10 @@ DEFAULTS = {
     "check_target": 20,            # target proxy hidup default saat panen
     "max_latency_ms": 1200,        # di atas ini dianggap terlalu lambat
     "session_ttl": 600,            # sticky session (detik)
+    "rate_limit_per_min": 60,      # batas request /api/* per IP per menit (0 = bebas)
+    "audit_log": True,             # tulis output/gateway-audit.jsonl
+    "schedule_interval_min": 60,   # jeda antar siklus `proxyx auto`
+    "schedule_target": 20,         # target proxy hidup per siklus auto
 }
 
 ENV_MAP = {

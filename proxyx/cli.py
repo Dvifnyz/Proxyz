@@ -102,8 +102,12 @@ def _cmd_gateway(a):
         kandidat = harvest()
         return check_pool_sync(kandidat, target=target)
 
+    audit_path = os.path.join(OUT_DIR, "gateway-audit.jsonl") if cfg.get("audit_log") else None
     serve(pool, port=port, healer=not a.no_healer, refill_fn=refill, token=token,
-          healer_interval=cfg["healer_interval"])
+          healer_interval=cfg["healer_interval"],
+          rate_limit_per_min=cfg.get("rate_limit_per_min", 60),
+          audit_path=audit_path,
+          socks_port=getattr(a, "socks", 0) or 0)
 
 
 def _cmd_warp(a):
@@ -381,6 +385,7 @@ def build_parser() -> argparse.ArgumentParser:
     sg = sub.add_parser("gateway", help="jalankan gateway rotating")
     sg.add_argument("--port", type=int, default=0, help="0 = pakai config/proxyx.json")
     sg.add_argument("--profil", default="", choices=["", "scraper", "cepat", "hemat"])
+    sg.add_argument("--socks", type=int, default=0, help="nyalakan juga listener SOCKS5 di port ini")
     sg.add_argument("--no-healer", action="store_true")
     sg.set_defaults(func=_cmd_gateway)
     s9 = sub.add_parser("sync-9router", help="sinkronkan pool ke DB SQLite 9Router (aman)")

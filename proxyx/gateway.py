@@ -125,8 +125,24 @@ def connect_via_proxy(upstream: Proxy, host: str, port: int,
 
 
 # ------------------------------------------------------------------ healer
+def _audit(audit_path: str | None, event: str, detail: dict | None = None) -> None:
+    """Satu baris JSON ke file audit (bila diaktifkan). Gagal tulis = diam."""
+    if not audit_path:
+        return
+    try:
+        from datetime import datetime, timezone
+        rec = {"ts": datetime.now(timezone.utc).isoformat(), "event": event}
+        if detail:
+            rec.update(detail)
+        with open(audit_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(rec) + "\n")
+    except Exception:
+        pass
+
+
 def start_healer(pool: Pool, interval: int = 90, min_healthy: int = 5,
-                 target: int = 10, refill_fn=None, stop_event: threading.Event | None = None):
+                 target: int = 10, refill_fn=None, stop_event: threading.Event | None = None,
+                 audit_path: str | None = None):
     """Thread daemon: probe pool paralel (TCP 2 dtk), buang yang mati,
     isi ulang bila di bawah ambang (cooldown refill 60 dtk)."""
     import concurrent.futures
@@ -169,12 +185,15 @@ def start_healer(pool: Pool, interval: int = 90, min_healthy: int = 5,
                 dead = [d for d in ex.map(probe, snap) if d]
             if dead:
                 pool.prune(dead)
+                _audit(audit_path, "healer_prune", {"dead": dead, "pool": len(pool)})
             if len(pool) < min_healthy and refill_fn and time.time() - last_refill > 60:
                 last_refill = time.time()
                 try:
                     fresh = refill_fn(target=target)
                     if fresh:
                         pool.add(fresh)
+                        _audit(audit_path, "healer_refill",
+                               {"added": len(fresh), "pool": len(pool)})
                 except Exception:
                     pass
 
@@ -284,7 +303,13 @@ muat(); setInterval(muat, 5000);
 </script></body></html>"""
 
 
-def make_handler(pool: Pool, token: str = "", refill_fn=None):
+def make_handler(pool: Pool, token: str = "", refill_fn=None,
+                 rate_limit_per_min: int = 0, audit_path: str | None = None):
+    # Rate limit per IP untuk /api/* (token bucket sederhana, jendela 60 dtk).
+    # 0 = tidak dibatasi. Forward proxy TIDAK di-rate-limit (itu produknya).
+    _rl: dict[str, list] = {}
+    _rl_lock = threading.Lock()
+
     class Handler(BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.1"
 
@@ -292,6 +317,20 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None):
             pass
 
         # -- util --
+        def _rate_limited(self) -> tuple[bool, int]:
+            if not rate_limit_per_min:
+                return False, 0
+            ip = self.client_address[0]
+            now = time.time()
+            with _rl_lock:
+                window, count = _rl.get(ip, (now, 0))
+                if now - window >= 60:
+                    window, count = now, 0
+                if count >= rate_limit_per_min:
+                    return True, int(60 - (now - window)) + 1
+                _rl[ip] = (window, count + 1)
+            return False, 0
+
         def _token_ok(self) -> bool:
             if not token:
                 return True
@@ -367,6 +406,11 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None):
         def _handle_api(self) -> bool:
             parsed = urllib.parse.urlparse(self.path)
             path = parsed.path
+            if path.startswith("/api/"):
+                limited, retry = self._rate_limited()
+                if limited:
+                    self._json(429, {"error": "rate limit", "retry_after": retry})
+                    return True
             if path in ("/", "/dashboard", "/gui", "/ui"):
                 if path == "/" and "text/html" not in (self.headers.get("Accept") or ""):
                     self._json(200, {**pool.stats(), "endpoints": [
@@ -388,11 +432,16 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None):
                 self._json(200, p.to_dict() if p else {})
             elif path == "/api/rotate":
                 p = pool.force_rotate()
+                _audit(audit_path, "api_rotate",
+                       {"client": self.client_address[0],
+                        "proxy": p.hostport if p else None})
                 self._json(200, p.to_dict() if p else {})
             elif path == "/api/refill":
                 if refill_fn:
                     threading.Thread(target=lambda: pool.add(refill_fn(target=10) or []),
                                      daemon=True).start()
+                    _audit(audit_path, "api_refill",
+                           {"client": self.client_address[0]})
                     self._json(200, {"status": "refill dimulai"})
                 else:
                     self._json(200, {"status": "tidak ada refill_fn"})
@@ -606,17 +655,125 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None):
     return Handler
 
 
+def _pump(src: socket.socket, dst: socket.socket) -> None:
+    """Teruskan byte satu arah sampai EOF (dipakai relay SOCKS5)."""
+    try:
+        while True:
+            chunk = src.recv(65536)
+            if not chunk:
+                break
+            dst.sendall(chunk)
+    except Exception:
+        pass
+    finally:
+        try:
+            dst.shutdown(socket.SHUT_WR)
+        except Exception:
+            pass
+
+
+def serve_socks5(pool: Pool, port: int,
+                 stop_event: threading.Event | None = None) -> threading.Event:
+    """Listener SOCKS5 (tanpa auth) yang meneruskan tiap koneksi lewat
+    satu proxy dari pool (HTTP/SOCKS4/SOCKS5 upstream). BIND dan UDP
+    ASSOCIATE ditolak (0x07) — hanya CONNECT yang didukung.
+    Berjalan di thread daemon; kembalikan event untuk menghentikannya."""
+    import socketserver
+
+    stop = stop_event or threading.Event()
+
+    class Socks5Handler(socketserver.BaseRequestHandler):
+        def handle(self):
+            conn = self.request
+            conn.settimeout(30)
+            try:
+                head = conn.recv(2)
+                if len(head) < 2 or head[0] != 0x05:
+                    return
+                nmethods = head[1]
+                conn.recv(nmethods)  # metode yang ditawarkan klien
+                conn.sendall(b"\x05\x00")  # no auth
+                req = conn.recv(4)
+                if len(req) < 4 or req[0] != 0x05:
+                    return
+                cmd, atyp = req[1], req[3]
+                if cmd != 0x01:
+                    conn.sendall(b"\x05\x07\x00\x01\x00\x00\x00\x00\x00\x00")
+                    return
+                if atyp == 0x01:
+                    raw = conn.recv(4)
+                    host = socket.inet_ntoa(raw)
+                elif atyp == 0x03:
+                    n = conn.recv(1)[0]
+                    host = conn.recv(n).decode(errors="ignore")
+                elif atyp == 0x04:
+                    raw = conn.recv(16)
+                    host = socket.inet_ntop(socket.AF_INET6, raw)
+                else:
+                    conn.sendall(b"\x05\x08\x00\x01\x00\x00\x00\x00\x00\x00")
+                    return
+                dport = int.from_bytes(conn.recv(2), "big")
+                up = pool.next()
+                if up is None:
+                    conn.sendall(b"\x05\x01\x00\x01\x00\x00\x00\x00\x00\x00")
+                    return
+                try:
+                    upstream_sock = connect_via_proxy(up, host, dport, timeout=15)
+                except Exception:
+                    pool.mark_failed(up)
+                    conn.sendall(b"\x05\x05\x00\x01\x00\x00\x00\x00\x00\x00")
+                    return
+                pool.mark_success(up)
+                conn.sendall(b"\x05\x00\x00\x01\x00\x00\x00\x00\x00\x00")
+                t1 = threading.Thread(target=_pump, args=(conn, upstream_sock), daemon=True)
+                t2 = threading.Thread(target=_pump, args=(upstream_sock, conn), daemon=True)
+                t1.start(); t2.start()
+                t1.join(); t2.join()
+            except Exception:
+                pass
+            finally:
+                try:
+                    conn.close()
+                except Exception:
+                    pass
+
+    class Server(socketserver.ThreadingTCPServer):
+        allow_reuse_address = True
+        daemon_threads = True
+
+    srv = Server(("127.0.0.1", port), Socks5Handler)
+
+    def _run():
+        srv.timeout = 0.5
+        while not stop.is_set():
+            srv.handle_request()
+
+    threading.Thread(target=_run, daemon=True, name="proxyx-socks5").start()
+    print(f"  SOCKS5 jalan di 127.0.0.1:{port} (lewat pool gateway)")
+    return stop
+
+
 def serve(pool: Pool, port: int = 8888, token: str = "", refill_fn=None,
-          healer: bool = True, healer_interval: int = 90):
+          healer: bool = True, healer_interval: int = 90,
+          rate_limit_per_min: int = 60, audit_path: str | None = None,
+          socks_port: int = 0):
     """Jalankan gateway (blocking). Token dari env PROXYX_TOKEN bila ada."""
     token = token or os.environ.get("PROXYX_TOKEN", "")
-    handler = make_handler(pool, token=token, refill_fn=refill_fn)
+    handler = make_handler(pool, token=token, refill_fn=refill_fn,
+                           rate_limit_per_min=rate_limit_per_min,
+                           audit_path=audit_path)
     srv = ThreadingHTTPServer(("127.0.0.1", port), handler)
     stop = None
     if healer:
-        stop = start_healer(pool, interval=healer_interval, refill_fn=refill_fn)
+        stop = start_healer(pool, interval=healer_interval, refill_fn=refill_fn,
+                            audit_path=audit_path)
+    socks_stop = None
+    if socks_port:
+        socks_stop = serve_socks5(pool, socks_port)
     print(f"  Gateway jalan di http://127.0.0.1:{port} "
-          f"({len(pool)} proxy, token={'ON' if token else 'OFF'})")
+          f"({len(pool)} proxy, token={'ON' if token else 'OFF'}, "
+          f"rate-limit {rate_limit_per_min}/mnt"
+          f"{', SOCKS5 :' + str(socks_port) if socks_port else ''})")
     print(f"  Tes: curl -x http://127.0.0.1:{port} http://api.ipify.org")
     print(f"  Dashboard: http://127.0.0.1:{port}/dashboard   (Ctrl+C berhenti)")
     try:
@@ -626,5 +783,7 @@ def serve(pool: Pool, port: int = 8888, token: str = "", refill_fn=None,
     finally:
         if stop:
             stop.set()
+        if socks_stop:
+            socks_stop.set()
         srv.server_close()
     return srv
