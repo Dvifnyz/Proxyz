@@ -52,7 +52,7 @@
 | 2 | Harvester + checker async (sumber 35+, anonimitas, geo, skor) + tes + residential via API resmi | `feat: harvester & checker async` — SELESAI 2026-11-11 (tes 18/18, panen live 69.063 HTTP/9,8 dtk) |
 | 3 | Gateway rotating + REST API + dashboard + auto-healer | `feat: gateway rotating + API` — SELESAI 2026-11-11 (tes 28/28: forward HTTP, CONNECT, SOCKS5 upstream, sticky session, token) |
 | 4 | WARP + CLI/menu + ekspor (txt/json/csv/clash) + Docker + CI | `feat: warp, CLI, ekspor, docker` — SELESAI 2026-11-11 (tes 34/34; WARP live via CLI; gateway CLI live via dummy upstream; bug forward-HTTP CONNECT diperbaiki + tes regresi) |
-| 5 | Verifikasi akhir (tes + panen live + gateway live), push final, laporan | `chore: rilis v1.0.0` |
+| 5 | Verifikasi akhir (tes + panen live + gateway live), push final, laporan | `chore: rilis v1.0.0` — SELESAI 2026-11-11 (tes 34/34; `pip install .` di venv bersih OK; tidak ada rahasia bocor; Docker tidak bisa dites di sandbox — CI GitHub yang menguji build-nya) |
 
 Setiap tahap di-push ke `Dvifnyz/Proxyz` begitu selesai dan lolos tes,
 jadi progresnya kelihatan bertahap di GitHub.
