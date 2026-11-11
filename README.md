@@ -1,80 +1,51 @@
-<div align="center">
+# Proxyz
 
-# ⚡ Proxyz
-
-**Panen proxy publik, gateway rotating, WARP & residential — cepat, aman, open source.**
+Tool proxy buat panen proxy publik, ngecek mana yang hidup, terus
+disajiin lewat gateway lokal. Ada WARP sama residential juga.
 
 [![Release](https://img.shields.io/github/v/release/Dvifnyz/Proxyz)](https://github.com/Dvifnyz/Proxyz/releases)
 [![CI](https://github.com/Dvifnyz/Proxyz/actions/workflows/ci.yml/badge.svg)](https://github.com/Dvifnyz/Proxyz/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/github/license/Dvifnyz/Proxyz)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/)
-[![Stars](https://img.shields.io/github/stars/Dvifnyz/Proxyz)](https://github.com/Dvifnyz/Proxyz/stargazers)
-[![Last commit](https://img.shields.io/github/last-commit/Dvifnyz/Proxyz)](https://github.com/Dvifnyz/Proxyz/commits/main)
-[![Issues](https://img.shields.io/github/issues/Dvifnyz/Proxyz)](https://github.com/Dvifnyz/Proxyz/issues)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Tests](https://img.shields.io/badge/tests-83%20passed-brightgreen)](#pengembangan)
 
-[📖 Dokumentasi](docs/API.md) · [📋 Changelog](CHANGELOG.md) · [🤝 Berkontribusi](CONTRIBUTING.md) · [🔒 Keamanan](SECURITY.md)
+Dulu namanya Proxyx, ganti jadi Proxyz di v2.1.0 biar sama kayak
+nama repo. Perintah lama (`proxyx`, `python -m proxyx`,
+`import proxyx`) masih jalan sampai v3.0.0, cuma ngasih peringatan.
+Panduan pindah: [docs/MIGRASI-2.1.md](docs/MIGRASI-2.1.md).
 
-</div>
+## Kenapa gue bikin ini
 
-> **Nama baru di v2.1.0:** tool ini sebelumnya bernama **Proxyx**.
-> Perintah `proxyx` dan `import proxyx` masih jalan sampai v3.0.0,
-> tapi sudah deprecated — pakai `proxyz`. Panduan migrasi:
-> [docs/MIGRASI-2.1.md](docs/MIGRASI-2.1.md).
+Gue bedah repo [petani-proxy-nya itzluthfi](https://github.com/itzluthfi/petani-proxy)
+tanggal 11 November 2026, sekitar 8.600 baris. Idenya bagus — panen
+proxy, gateway, WARP — tapi pas dibaca isinya banyak yang ngaco:
+TLS dimatiin, updater-nya ngejalanin perintah dari server, gateway
+tanpa auth, Docker-nya langsung exit karena flag-nya nggak ada di
+argparse, ada tiga checker yang saling duplikat.
 
-## Highlights
+Jadi gue tulis ulang dari nol. Yang benernya diambil, yang rusaknya
+diperbaiki. Catatan lengkap bedahnya ada di
+[docs/STUDI_PETANI_PROXY.md](docs/STUDI_PETANI_PROXY.md).
 
-- 🌾 **Panen massal, satu pipeline** — 35 sumber publik (HTTP, SOCKS4,
-  SOCKS5), ~70 ribu kandidat dalam hitungan detik.
-- ✅ **Cek yang jujur** — anonimitas (elite/anonymous/transparent),
-  latensi, negara/ISP (GeoIP batch), skor 0–100. Yang mati dibuang,
-  bukan disembunyikan.
-- 🔄 **Gateway rotating** — HTTP + SOCKS5, sticky session, routing
-  per negara, auto-healer, token, rate limit, audit log.
-- ☁️ **WARP gratis** — profil WireGuard via API resmi Cloudflare.
-- 🏠 **Residential** — Webshare via API resmi (multi-akun), tanpa
-  farm akun dan tanpa solver captcha.
-- 📊 **Observabilitas** — kesehatan sumber, bench kecepatan, leak
-  test, laporan, doctor, scheduler otomatis.
-- 🔒 **Aman dari desain** — TLS tetap nyala, updater via pip (tanpa
-  perintah remote), gateway bind localhost saja.
+Yang sengaja nggak gue bikin: pemecah captcha otomatis sama farm
+akun massal. Bukan karena nggak bisa — karena akun hasil farm itu
+umurnya pendek. Cepet di-ban, IP-nya ikut mati, tool-nya jadi
+nggak kepake. Yang main bersih itu yang awet.
 
-## Daftar isi
+## Install
 
-- [Instalasi](#instalasi)
-- [Mulai cepat](#mulai-cepat)
-- [Arsitektur](#arsitektur)
-- [Fitur](#fitur)
-- [Perintah](#perintah)
-- [Gateway & API](#gateway--api)
-- [Proxy residential](#proxy-residential)
-- [Konfigurasi](#konfigurasi)
-- [Struktur proyek](#struktur-proyek)
-- [FAQ](#faq)
-- [Troubleshooting](#troubleshooting)
-- [Roadmap](#roadmap)
-- [Pengembangan](#pengembangan)
-- [Keamanan](#keamanan)
-- [Lisensi & ucapan terima kasih](#lisensi--ucapan-terima-kasih)
-
-## Instalasi
-
-**Syarat:** Python 3.9+.
-
-### Dengan pip
+Butuh Python 3.9 ke atas.
 
 ```bash
 pip install proxyz
 ```
 
-### Dengan pipx (disarankan untuk CLI)
+Atau pakai pipx biar nggak ngotorin environment:
 
 ```bash
 pipx install proxyz
 ```
 
-### Dari source
+Dari source:
 
 ```bash
 git clone https://github.com/Dvifnyz/Proxyz.git
@@ -82,16 +53,14 @@ cd Proxyz
 pip install -e .
 ```
 
-### Dengan Docker
+Docker:
 
 ```bash
 docker build -t proxyz .
 docker run -p 8888:8888 proxyz
 ```
 
-Lihat [docs/API.md](docs/API.md) untuk API Python-nya.
-
-## Mulai cepat
+## Cara pakai
 
 ```bash
 python -m proxyz panen --jumlah 20     # panen + cek 20 proxy hidup
@@ -99,9 +68,9 @@ python -m proxyz gateway               # gateway di http://127.0.0.1:8888
 curl -x http://127.0.0.1:8888 http://api.ipify.org
 ```
 
-Tanpa argumen, `python -m proxyz` membuka menu interaktif.
+Tanpa argumen, `python -m proxyz` ngebuka menu interaktif.
 
-Contoh output nyata:
+Ini output beneran dari mesin gue, 11 November 2026:
 
 ```
 $ python -m proxyz sources
@@ -112,67 +81,14 @@ $ python -m proxyz sources
   https://raw.githubusercontent.com/TheSpeedX/PROXY-     5354      0  aktif
 ```
 
-```
-$ python -m proxyz doctor
-
-  🩺 Proxyz Doctor
-  ✅ Python: 3.12.3
-  ✅ Config: port 8888, healer 90 dtk
-  ✅ Sumber panen: 35 URL (http, socks4, socks5)
-  ✅ Sehat (2 peringatan, 0 error).
-```
-
-## Arsitektur
-
-```mermaid
-flowchart LR
-    S[35 sumber publik] --> H[Harvester\nasync + health/backoff]
-    H --> C[Checker\nanonimitas, latensi, GeoIP]
-    C --> P[Pool\nrotasi + sticky + tier]
-    P --> G[Gateway HTTP/SOCKS5\n+ REST API + dashboard]
-    P --> R[9Router\nSQLite sync]
-    W[WARP API\nCloudflare] --> G
-    WS[Webshare API\nresidential] --> P
-    G --> U[Pengguna\nbrowser / aplikasi]
-```
-
-Penjelasan tiap komponen: [docs/ARSITEKTUR.md](docs/ARSITEKTUR.md).
-
-## Fitur
-
-### Panen & cek
-
-- 35 sumber (17 HTTP, 8 SOCKS4, 10 SOCKS5), sumber segar dicek dulu.
-- Skor kesehatan per sumber (`proxyz sources`); sumber yang gagal
-  3x beruntun diistirahatkan 1 jam.
-- Filter: negara (`--negara ID`), protokol, tier kecepatan
-  (`--tier cepat` ≤350 ms, `sedang` ≤800 ms).
-- Blacklist (`proxyz blacklist add 1.2.3.4:8080`) — proxy yang
-  diblacklist tidak pernah lolos panen/cek.
-
-### Gateway
-
-- Forward HTTP/HTTPS (CONNECT) + SOCKS5 listener (`--socks 1080`).
-- Rotasi round-robin, residential diprioritaskan, sticky session
-  10 menit (`X-Session-ID`), routing negara (`X-Country: ID`).
-- Auto-healer: probe HTTP beneran tiap 90 detik, buang yang mati,
-  isi ulang bila pool menipis.
-- Token opsional (`PROXYZ_TOKEN`), rate limit 60/menit per IP,
-  audit log `output/gateway-audit.jsonl`.
-- Dashboard web: tabel pool, tombol leak test & uji kecepatan.
-
-### Observabilitas
-
-- `proxyz bench` — ranking kecepatan unduh nyata (1 MB via Cloudflare).
-- `proxyz test` / `/api/leak-test` — IP asli vs IP via gateway.
-- `proxyz laporan` — ringkasan pool (Markdown + `/api/report`).
-- `proxyz auto` — siklus panen → cek → ekspor berkala.
-- `proxyz doctor` — diagnosa instalasi.
-- `proxyz update` — cek rilis GitHub, update via pip (aman).
+Satu kali panen dapat 68.986 kandidat. Yang hidup berapa? Tergantung
+hari. Proxy gratisan itu mayoritas mati — itu normal, bukan bug.
+Jangan kaget kalau dapat 0 di jaringan yang ngeblok TCP langsung
+(misalnya sandbox). Di laptop biasa harusnya jalan.
 
 ## Perintah
 
-| Perintah | Fungsi |
+| Perintah | Buat apa |
 |---|---|
 | `proxyz panen [--jumlah 20] [--negara ID] [--protokol all] [--tier cepat] [--geo]` | Panen + cek proxy hidup, ekspor ke `output/` |
 | `proxyz cek <file> [--jumlah 20]` | Cek daftar proxy dari file |
@@ -190,14 +106,22 @@ Penjelasan tiap komponen: [docs/ARSITEKTUR.md](docs/ARSITEKTUR.md).
 | `proxyz update [--yes]` | Cek rilis terbaru, update via pip |
 | `proxyz doctor [--no-gateway]` | Diagnosa instalasi (config, sumber, pool, gateway) |
 
-## Gateway & API
+## Gateway
 
-Gateway mendengarkan di `127.0.0.1:8888` (localhost saja — sengaja
-tidak di-expose ke LAN). Pakai di browser/aplikasi lewat
-`http://127.0.0.1:8888` sebagai proxy, atau lewat SOCKS5 di port yang
-ditentukan `--socks`.
+Gateway dengerin di `127.0.0.1:8888`. Sengaja localhost doang.
+Kalau mau diakses dari HP atau komputer lain, pasang reverse proxy
+sendiri dan nyalain token.
 
-| Endpoint | Fungsi |
+Pakainya gampang: set proxy di browser/aplikasi ke
+`http://127.0.0.1:8888`, atau SOCKS5 di port yang dikasih `--socks`.
+Rotasi jalan sendiri (round-robin), residential diprioritaskan,
+dan proxy mati dibuang otomatis sama healer tiap 90 detik.
+
+Buat yang butuh sesi nempel di satu proxy, kirim header
+`X-Session-ID: <id>` — proxy-nya dikunci 10 menit. Buat routing
+per negara, header `X-Country: ID`.
+
+| Endpoint | Buat apa |
 |---|---|
 | `GET /api/status` | Statistik pool & gateway |
 | `GET /api/proxies` | Daftar proxy di pool |
@@ -209,36 +133,37 @@ ditentukan `--socks`.
 | `GET /api/report` | Laporan pool (JSON) |
 | `GET /api/clash.yaml` | Langganan Clash live dari pool |
 | `GET /metrics` | Metrik Prometheus |
-| `GET /proxy.pac` | File PAC untuk browser |
+| `GET /proxy.pac` | File PAC buat browser |
 | `GET /dashboard` | Dashboard web (tabel pool, leak test, bench) |
 
-**Autentikasi (opsional):** isi env `PROXYZ_TOKEN`, lalu kirim
-`Authorization: Bearer <token>` (atau header `X-Proxyz-Token`).
+Token opsional: isi env `PROXYZ_TOKEN`, terus kirim
+`Authorization: Bearer <token>` atau header `X-Proxyz-Token`.
+API dibatasi 60 request/menit per IP. Aktivitas rotate/refill/healer
+dicatat di `output/gateway-audit.jsonl`.
 
-## Proxy residential
+## Residential
 
-Butuh IP rumahan (residential)? Jalur resminya:
+Butuh IP rumahan? Jalur resminya gini:
 
 ```bash
-python -m proxyz residential --signup   # buka browser + siapkan password;
-                                        # isi captcha sendiri sekali,
+python -m proxyz residential --signup   # buka browser, isi captcha sendiri sekali,
                                         # tempel API key -> divalidasi live
 python -m proxyz residential --api-key KUNCIMU   # tambah akun lain
 ```
 
-Multi-akun didukung — semua key digabung ke satu pool. Atau tempel
-proxy manual (`proto://user:pass@ip:port`) ke
-`output/proxy_manual.txt`; gateway ikut memakainya dan residential
-diprioritaskan di pool.
+Webshare ngasih 10 IP gratis per akun, dan multi-akun didukung —
+semua key digabung ke satu pool. Atau tempel proxy manual
+(`proto://user:pass@ip:port`) ke `output/proxy_manual.txt`,
+gateway ikut makainya.
 
-> Proxyz **tidak** menyediakan pemecah captcha otomatis, farm akun
-> massal, atau bypass anti-bot. Akun hasil farm cepat di-banned dan
-> IP-nya mati — itu yang membuat tool berumur pendek.
+Kenapa daftarnya manual? Karena akun yang dibikin bot (captcha
+dipecah otomatis) cepet di-ban. Daftar sekali, 30 detik, key-nya
+dipakai selamanya sama Proxyz.
 
-## Konfigurasi
+## Config
 
-Semua setting di `config/proxyz.json` (ditambah env bila ada).
-Token **jangan** ditulis di file ini — pakai env `PROXYZ_TOKEN`.
+Semua setting ada di `config/proxyz.json`. Token jangan ditulis
+di file itu — pakai env `PROXYZ_TOKEN`.
 
 ```json
 {"gateway_port": 8888, "healer_interval": 90, "min_healthy": 5,
@@ -249,123 +174,82 @@ Token **jangan** ditulis di file ini — pakai env `PROXYZ_TOKEN`.
 ```
 
 Profil gateway (`--profil`): `scraper` (rotasi agresif, pool 30),
-`cepat` (hanya proxy ≤350 ms), `hemat` (pool kecil, sesi 30 menit).
+`cepat` (cuma proxy ≤350 ms), `hemat` (pool kecil, sesi 30 menit).
 
-## Struktur proyek
+## Sering ditanya
 
-```
-Proxyz/
-├── proxyz/              # paket utama
-│   ├── cli.py           # CLI + menu interaktif
-│   ├── harvester.py     # panen 35 sumber + skor kesehatan
-│   ├── checker.py       # cek hidup, anonimitas, GeoIP batch
-│   ├── pool.py          # rotasi, sticky session, tier
-│   ├── gateway.py       # gateway HTTP/SOCKS5 + REST + dashboard
-│   ├── warp.py          # WARP via API Cloudflare
-│   ├── residential.py   # Webshare API resmi + signup semi-otomatis
-│   ├── router.py        # sinkronisasi 9Router (SQLite)
-│   ├── bench.py         # uji kecepatan unduh
-│   ├── scheduler.py     # mode auto berkala
-│   ├── report.py        # laporan pool
-│   ├── doctor.py        # diagnosa instalasi
-│   ├── updater.py       # update aman via pip
-│   └── ...              # blacklist, tiers, config, installer
-├── proxyx/              # shim deprecated (hapus di v3.0.0)
-├── config/              # sources.json, proxyz.json, blacklist.txt
-├── docs/                # API, ARSITEKTUR, MIGRASI, STUDI
-├── tests/               # 83 tes (pytest)
-├── Dockerfile           # gateway di Docker
-└── README.md
-```
-
-## FAQ
-
-**Apakah Proxyz legal?**
-Ya — tool ini hanya memakai sumber proxy publik dan API resmi
-(Webshare, Cloudflare). Yang tetap menjadi tanggung jawab pengguna:
-jangan kirim data sensitif lewat proxy publik yang tidak dikenal,
-dan patuhi ToS layanan yang dipakai.
+**Ini legal nggak?**
+Tool-nya legal — cuma pakai sumber proxy publik sama API resmi
+(Webshare, Cloudflare). Yang jadi tanggung jawab kamu: jangan kirim
+data sensitif lewat proxy publik yang nggak kamu kenal, dan patuhi
+ToS layanan yang kamu pakai.
 
 **Kenapa `panen` dapat 0 proxy hidup?**
-Proxy gratisan mayoritas mati — itu normal. Coba lagi nanti, ganti
-jaringan, atau pakai `--negara` lain. Jalankan `proxyz doctor` untuk
-memastikan instalasi kamu sehat.
+Coba lagi nanti, ganti jaringan, atau pakai `--negara` lain.
+Jalankan `proxyz doctor` buat mastiin instalasi kamu sehat.
 
-**Kenapa residential harus daftar manual?**
-Karena Webshare memberi 10 IP gratis per akun, dan akun yang dibuat
-bot (captcha dipecah otomatis) cepat di-banned — IP-nya ikut mati.
-Daftar sekali (30 detik), key-nya dipakai selamanya oleh Proxyz.
+**Bisa jalan di Windows?**
+Bisa. Python 3.9 ke atas, semua perintah sama. Buat auto-jalan
+pas login, pakai `proxyz install-service` (bikin Task Scheduler).
 
-**Apakah Proxyz bisa jalan di Windows?**
-Ya. Python 3.9+ dan semua perintah sama. Untuk auto-jalan saat
-login, pakai `proxyz install-service` (membuat Task Scheduler).
-
-**Apakah gateway bisa diakses dari HP / komputer lain?**
-Tidak — sengaja hanya `127.0.0.1`. Kalau butuh diakses dari LAN,
-jalankan di depan reverse proxy kamu sendiri dengan token aktif.
-
-**Di mana API key Webshare saya disimpan?**
-Di `config/webshare.json` lokal (mode 0600), tidak pernah di-commit.
-Hapus file itu bila key bocor, lalu buat key baru di dashboard
+**API key Webshare gue disimpen di mana?**
+Di `config/webshare.json` lokal (mode 0600), nggak pernah di-commit.
+Kalau key bocor, hapus file itu terus bikin key baru di dashboard
 Webshare.
 
-## Troubleshooting
+## Kalau error
 
-| Gejala | Penyebab & perbaikan |
+| Gejala | Biasanya kenapa |
 |---|---|
-| `pool kosong — panen dulu` | Jalankan `proxyz panen` dulu, atau gateway akan panen sendiri saat start |
-| `502` saat browsing via gateway | Semua proxy di pool mati — healer akan isi ulang; atau `proxyz panen` ulang |
-| `401 token dibutuhkan` | Isi `PROXYZ_TOKEN` di env dan kirim `Authorization: Bearer <token>` |
-| `429 rate limit` | Tunggu ~1 menit, atau naikkan `rate_limit_per_min` di config |
+| `pool kosong — panen dulu` | Jalankan `proxyz panen` dulu, atau biarin gateway panen sendiri pas start |
+| `502` pas browsing lewat gateway | Semua proxy di pool mati — healer bakal isi ulang, atau `proxyz panen` ulang |
+| `401 token dibutuhkan` | Isi `PROXYZ_TOKEN` di env, kirim `Authorization: Bearer <token>` |
+| `429 rate limit` | Tunggu sekitar 1 menit, atau naikin `rate_limit_per_min` di config |
 | `proxyz update` 404 | Belum ada Release di GitHub — updater otomatis fallback ke tags |
-| Gateway tidak bisa diakses | Pastikan tidak ada proses lain di port 8888; cek `proxyz doctor` |
-| `0 hidup` terus-menerus | Jaringan memblokir TCP langsung ke proxy (mis. sandbox) — coba di laptop/PC biasa |
+| Gateway nggak bisa diakses | Cek ada proses lain di port 8888 nggak; jalankan `proxyz doctor` |
+| `0 hidup` terus-menerus | Jaringan ngeblok TCP langsung ke proxy (misalnya sandbox) — coba di laptop/PC biasa |
 
-Masih buntu? Jalankan `proxyz doctor` dan sertakan output-nya saat
-membuka issue.
+Masih buntu? Jalankan `proxyz doctor` dan sertain output-nya pas
+buka issue.
 
-## Roadmap
+## Rencana ke depan
 
-- [ ] Dukungan IPv6 untuk checker & gateway
-- [ ] Sumber panen dari komunitas (PR dipersilakan)
-- [ ] Mode `proxyz serve` — gateway + auto dalam satu proses
-- [ ] Ekspor Surge / Shadowrocket
-- [ ] Dashboard v3 — grafik latensi & riwayat pool
-- [ ] Hapus shim `proxyx` di v3.0.0
+- IPv6 buat checker & gateway
+- `proxyz serve` — gateway + auto dalam satu proses
+- Ekspor Surge / Shadowrocket
+- Dashboard v3 — grafik latensi & riwayat pool
+- Hapus shim `proxyx` di v3.0.0
 
 Punya ide lain? Buka [issue fitur](.github/ISSUE_TEMPLATE/feature_request.md).
 
-## Pengembangan
+## Ngembangin
 
 ```bash
 git clone https://github.com/Dvifnyz/Proxyz.git
 cd Proxyz
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
-pytest -q            # 83 tes
+pytest -q            # 83 tes, semuanya hijau
 python -m proxyz doctor
 ```
 
-Lihat [CONTRIBUTING.md](CONTRIBUTING.md) untuk panduan kontribusi
-(gaya commit, cara menambah sumber, cara menambah perintah).
+Panduan kontribusi ada di [CONTRIBUTING.md](CONTRIBUTING.md).
+API Python-nya di [docs/API.md](docs/API.md), arsitektur di
+[docs/ARSITEKTUR.md](docs/ARSITEKTUR.md).
 
 ## Keamanan
 
-Jangan laporkan kerentanan lewat issue publik — baca
-[SECURITY.md](SECURITY.md). Ringkasnya: gateway hanya bind localhost,
-token tidak pernah ditulis ke file config, API key Webshare disimpan
-lokal mode 0600, dan updater tidak pernah menjalankan perintah dari
-server.
+Nemu celah? Jangan buka issue publik — baca
+[SECURITY.md](SECURITY.md) dulu. Singkatnya: gateway cuma bind
+localhost, token nggak pernah ditulis ke file config, API key
+Webshare disimpen lokal mode 0600, dan updater nggak pernah
+ngejalanin perintah dari server.
 
-## Lisensi & ucapan terima kasih
+## Terima kasih
+
+Makasih buat
+[itzluthfi](https://github.com/itzluthfi) yang repo
+[petani-proxy](https://github.com/itzluthfi/petani-proxy)-nya jadi
+bahan bedah tool ini.
 
 Lisensi [MIT](LICENSE).
-
-Terima kasih kepada
-[itzluthfi](https://github.com/itzluthfi) — pembuat
-[petani-proxy](https://github.com/itzluthfi/petani-proxy) yang
-menjadi bahan studi dan inspirasi tool ini. Referensi struktur
-README ini: [FastAPI](https://github.com/fastapi/fastapi) dan
-[uv](https://github.com/astral-sh/uv).
-
-[![Star History Chart](https://api.star-history.com/svg?repos=Dvifnyz/Proxyz&type=Date)](https://star-history.com/#Dvifnyz/Proxyz&Date)

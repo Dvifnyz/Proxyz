@@ -1,8 +1,8 @@
-# Migrasi ke Proxyz v2.1.0
+# Pindah ke Proxyz v2.1.0
 
-Di v2.1.0 nama tool diganti dari **Proxyx** menjadi **Proxyz**
-(sesuai nama repo `Dvifnyz/Proxyz`). Ini panduan migrasinya —
-kebanyakan pengguna tidak perlu melakukan apa pun.
+Di v2.1.0 nama tool diganti dari **Proxyx** jadi **Proxyz**,
+biar sama kayak nama repo. Kebanyakan pengguna nggak perlu
+ngapa-ngapain.
 
 ## Yang berubah
 
@@ -17,34 +17,32 @@ kebanyakan pengguna tidak perlu melakukan apa pun.
 | header `X-Proxyx-Token` | header `X-Proxyz-Token` |
 | baris 9Router `Proxyx [...]` | baris 9Router `Proxyz [...]` |
 
-## Yang tetap jalan (kompatibilitas)
+## Yang lama masih jalan
 
 Sampai **v3.0.0**, yang lama tetap berfungsi:
 
-- Perintah `proxyx ...` masih jalan (menampilkan peringatan sekali).
+- Perintah `proxyx ...` masih jalan (ngasih peringatan sekali).
 - `python -m proxyx ...` masih jalan (peringatan ke stderr).
 - `import proxyx` / `from proxyx.gateway import ...` masih jalan
   (peringatan `DeprecationWarning`).
 - Env `PROXYX_TOKEN` dan header `X-Proxyx-Token` tetap dibaca
-  (kalah bila `PROXYZ_TOKEN` juga diisi).
-- `proxyz sync-9router --ganti` membersihkan baris nama lama
+  (kalah kalau `PROXYX_TOKEN` juga diisi).
+- `proxyz sync-9router --ganti` bersihin baris nama lama
   `Proxyx` juga.
 
 Setelah v3.0.0, semua yang lama dihapus.
 
-## Langkah migrasi (disarankan)
+## Kalau mau pindah sekarang
 
 ```bash
 python -m proxyz update          # tarik v2.1.0
-mv config/proxyx.json config/proxyz.json   # bila kamu punya file config lama
+mv config/proxyx.json config/proxyz.json   # kalau kamu punya file config lama
 # ganti PROXYX_TOKEN -> PROXYZ_TOKEN di env / service kamu
 # ganti `proxyx` -> `proxyz` di script / systemd unit / cron kamu
-python -m proxyz doctor          # pastikan semuanya sehat
+python -m proxyz doctor          # pastiin semuanya sehat
 ```
 
-## Yang tidak berubah
-
-- Perilaku semua perintah, format file `output/`, dan API Python
-  (selain nama paket) tetap sama.
-- Tidak ada data yang hilang: pool, blacklist, kesehatan sumber,
-  dan key Webshare tidak disentuh rename ini.
+Yang nggak berubah: perilaku semua perintah, format file
+`output/`, sama API Python (selain nama paket). Nggak ada data
+yang hilang: pool, blacklist, kesehatan sumber, sama key Webshare
+nggak disentuh rename ini.

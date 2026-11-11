@@ -1,64 +1,38 @@
-# Berkontribusi ke Proxyz
+# Berkontribusi
 
-Terima kasih sudah mau berkontribusi! Panduan singkat ini supaya PR
-kamu cepat diterima.
+Mau bantu? Gas. Caranya:
 
-## Cara mulai
+1. Fork, bikin branch, kerjain satu hal aja per PR.
+2. Tiap fitur/bugfix baru harus ada tesnya. `pytest -q` harus hijau.
+3. Jangan commit rahasia apa pun: API key, token, password,
+   private key, file `config/webshare.json`, `output/`, `.env`.
+4. Commit message yang jelas: `feat: ...`, `fix: ...`, `docs: ...`.
 
-```bash
-git clone https://github.com/Dvifnyz/Proxyz.git
-cd Proxyz
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -e ".[dev]"
-pytest -q
-python -m proxyz doctor
-```
+## Nambah sumber panen
 
-## Aturan dasar
+Masukin URL-nya ke `config/sources.json` (kelompok `http` / `socks4` /
+`socks5`). Pastiin formatnya `ip:port` per baris. Terus jalanin
+`pytest -q` sama satu panen live buat mastiin sumber itu ngasih hasil.
 
-1. **Satu PR, satu perubahan.** Jangan campur fitur baru dengan
-   refactor besar.
-2. **Tes dulu.** Setiap fitur/bugfix baru wajib disertai tes di
-   `tests/` dan `pytest -q` harus hijau.
-3. **Jangan merusak API publik** (lihat `docs/API.md`) tanpa diskusi
-   dulu di issue.
-4. **Jangan commit rahasia**: API key, token, password, private key,
-   file `config/webshare.json`, `output/`, atau `.env`.
-5. **Tulis commit yang jelas**, format: `type: ringkasan singkat`
-   (`feat:`, `fix:`, `docs:`, `test:`, `chore:`). Contoh:
-   `feat: tambah filter negara untuk SOCKS5`.
+## Nambah perintah
 
-## Menambah sumber panen baru
+Tulis fungsinya di `proxyz/cli.py`, daftarin di `build_parser()`,
+tambahin baris ke tabel perintah di README, tambahin tes di `tests/`.
 
-1. Tambah URL ke `config/sources.json` (kelompok `http` / `socks4` /
-   `socks5`).
-2. Pastikan formatnya `ip:port` per baris (atau JSON `proxies` —
-   lihat `proxyz/sources.py`).
-3. Jalankan `pytest -q` dan satu panen live untuk memastikan sumber
-   itu mengembalikan hasil.
-
-## Menambah perintah CLI baru
-
-1. Tulis fungsi di `proxyz/cli.py` + daftarkan di `build_parser()`.
-2. Tambah baris ke tabel perintah di `README.md`.
-3. Tambah tes di `tests/test_*.py`.
-
-## Yang tidak akan diterima
+## Yang nggak akan gue terima
 
 - Pemecah captcha otomatis, farm akun massal, bypass Turnstile /
   anti-bot, dan segala bentuk pembuatan akun otomatis.
-- Kode yang mematikan verifikasi TLS, mengeksekusi perintah dari
-  server, atau menyimpan kredensial hardcode.
-- Perubahan yang menghapus data pengguna tanpa konfirmasi
-  (mis. `DELETE` tanpa backup).
+- Kode yang matiin verifikasi TLS, ngejalanin perintah dari server,
+  atau nyimpen kredensial hardcode.
+- Perubahan yang ngehapus data pengguna tanpa konfirmasi (misalnya
+  `DELETE` tanpa backup).
 
-## Melaporkan bug
+## Nemu bug?
 
-Pakai template issue "Bug report": sertakan versi Proxyz
-(`proxyz --version`), perintah yang dijalankan, output
-`proxyz doctor`, dan log yang relevan — **tanpa API key/token**.
+Buka issue pakai template bug report: sertain versi Proxyz
+(`proxyz --version`), perintah yang dijalanin, output
+`proxyz doctor`, sama log yang relevan. Jangan tempel API key/token.
 
-## Lisensi
-
-Dengan mengirim PR, kamu menyetujui kontribusi kamu dilisensikan
-di bawah lisensi MIT yang sama dengan proyek ini.
+Dengan ngirim PR, kamu setuju kontribusi kamu dilisensikan di bawah
+lisensi MIT yang sama kayak proyek ini.

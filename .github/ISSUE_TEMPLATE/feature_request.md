@@ -1,17 +1,15 @@
 ---
 name: Feature request
-about: Usulkan fitur baru untuk Proxyz
+about: Usulin fitur baru buat Proxyz
 title: "[fitur] "
 labels: enhancement
 ---
 
-## Masalah yang ingin diselesaikan
+## Masalahnya apa
 
-## Usulan solusi
+## Usulan solusinya
 
-## Alternatif yang dipertimbangkan
+## Alternatif yang udah kepikiran
 
-## Catatan tambahan
-
-> Fitur yang tidak akan diterima: pemecah captcha otomatis, farm akun
-> massal, dan bypass anti-bot (lihat CONTRIBUTING.md).
+Yang nggak akan diterima: pemecah captcha otomatis, farm akun
+massal, sama bypass anti-bot (lihat CONTRIBUTING.md).
