@@ -8,8 +8,8 @@ Ia mengambil ide intinya — panen sumber publik, cek, gateway lokal, WARP —
 lalu membangunnya ulang dengan mesin async, checker yang mengukur anonimitas
 dan skor, gateway yang mendukung SOCKS5 upstream, dan auto-healer.
 
-> Status: 🚧 dibangun bertahap — lihat [RENCANA_KERJA.md](RENCANA_KERJA.md)
-> untuk tahapan dan progres. Tahap 0–1 selesai.
+> Status: ✅ Tahap 0–4 selesai (tes 34/34) — lihat [RENCANA_KERJA.md](RENCANA_KERJA.md).
+> Tersisa Tahap 5: verifikasi akhir + rilis v1.0.0.
 
 ## Kenapa Proxyx?
 

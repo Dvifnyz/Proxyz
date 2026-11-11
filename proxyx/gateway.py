@@ -369,13 +369,27 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None):
                 path_q += "?" + parts.query
             for _ in range(3):
                 try:
-                    sock = connect_via_proxy(up, target_host, target_port, timeout=10)
-                    if is_https:
-                        ctx = ssl.create_default_context()
-                        sock = ctx.wrap_socket(sock, server_hostname=target_host)
+                    # Target HTTP polos lewat proxy HTTP = GET absolute-URI
+                    # TANPA CONNECT (CONNECT hanya untuk terowongan/TLS).
+                    # Proxy HTTP sederhana tidak melayani CONNECT ke :80.
+                    if not is_https and up.protocol == "http":
+                        sock = socket.create_connection((up.ip, up.port), timeout=10)
+                        request_target = url  # absolute URI
+                        extra_auth = []
+                        if up.username:
+                            cred = base64.b64encode(
+                                f"{up.username}:{up.password}".encode()).decode()
+                            extra_auth.append(("Proxy-Authorization", f"Basic {cred}"))
+                    else:
+                        sock = connect_via_proxy(up, target_host, target_port, timeout=10)
+                        request_target = path_q
+                        extra_auth = []
+                        if is_https:
+                            ctx = ssl.create_default_context()
+                            sock = ctx.wrap_socket(sock, server_hostname=target_host)
                     # kirim request mentah
-                    headers = self._sanitized_headers(target_host)
-                    req_lines = [f"{self.command} {path_q} HTTP/1.1"]
+                    headers = self._sanitized_headers(target_host) + extra_auth
+                    req_lines = [f"{self.command} {request_target} HTTP/1.1"]
                     for k, v in headers:
                         req_lines.append(f"{k}: {v}")
                     req_lines += ["Connection: close", "", ""]

@@ -280,6 +280,36 @@ def test_gateway_sticky_session(http_upstream):
         gw.shutdown(); sa.shutdown(); sb.shutdown(); pa.shutdown(); pb.shutdown()
 
 
+class GetOnlyProxy(BaseHTTPRequestHandler):
+    """Proxy HTTP sederhana TANPA CONNECT — hanya GET absolute-URI.
+    Regresi: forward HTTP polos tidak boleh memakai CONNECT."""
+
+    def log_message(self, *a):
+        pass
+
+    def do_GET(self):
+        body = json.dumps({"ip": "198.51.100.7"}).encode()
+        self.send_response(200)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+
+def test_gateway_forward_http_get_only_proxy():
+    srv = _start_server(GetOnlyProxy)
+    try:
+        pool = Pool([Proxy(protocol="http", ip="127.0.0.1",
+                           port=srv.server_address[1], score=90)])
+        gw = _gateway_server(pool)
+        try:
+            status, body = _get_via_gateway(gw.server_address[1], "http://api.ipify.org/")
+            assert status == 200 and "198.51.100.7" in body
+        finally:
+            gw.shutdown()
+    finally:
+        srv.shutdown()
+
+
 def test_gateway_socks5_upstream(socks_upstream):
     pool = Pool([Proxy(protocol="socks5", ip="127.0.0.1", port=socks_upstream, score=90)])
     gw = _gateway_server(pool)
