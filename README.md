@@ -8,7 +8,8 @@ Ia mengambil ide intinya — panen sumber publik, cek, gateway lokal, WARP —
 lalu membangunnya ulang dengan mesin async, checker yang mengukur anonimitas
 dan skor, gateway yang mendukung SOCKS5 upstream, dan auto-healer.
 
-> Status: ✅ **v1.4.0 rilis** — Tahap 9 selesai, tes 58/58.
+> Status: ✅ **v2.0.0 rilis** — API publik stabil, tes 79/79.
+> API stabil didokumentasikan di [docs/API.md](docs/API.md).
 > Detail tahapan di [RENCANA_KERJA.md](RENCANA_KERJA.md).
 
 ## Port dari petani-proxy — apa yang masuk, apa yang tidak

@@ -51,6 +51,12 @@
 | 7 | Finishing: config file yang benar-benar dibaca, leak test + Clash live, updater aman (tanpa perintah remote) | `feat: tahap 7 — config, leak test, updater aman` — SELESAI 2026-11-11 (tes 49/49; update live: fallback tag jalan, v1.1.0 = terbaru; leak test live zero_leak True; captcha solver tetap TIDAK dibuat — user 17:10 WIB mengaku tanggung jawab sendiri, tetap ditolak: tanggung jawab tidak bisa dipindah, yang nulis & nge-push kodenya tetap asisten) |
 | 8 | Operasional: bench kecepatan, dashboard v2, install-service | `feat: tahap 8 — bench, dashboard v2, install-service` — SELESAI 2026-11-11 (tes 52/52; bench live via dummy 45.295 KB/detik + bench.json; install-service live: 3 file dibuat; captcha solver tetap TIDAK dibuat — user 17:14 WIB beralasan "cuma saya yang pakai", tetap ditolak: repo Dvifnyz/Proxyz itu PUBLIK, siapa pun bisa clone; farm akun massal juga membunuh akunnya sendiri) |
 | 9 | Selesaikan port petani-proxy: 9Router sync aman, profil gateway, backup pool | `feat: tahap 9 — 9router aman, profil, backup` — SELESAI 2026-11-11 (tes 58/58; sync live: 2 ditambah, dedup jalan, baris bawaan selamat, backup dibuat; README kini memuat tabel port jujur: 11 fitur masuk, 2 farm akun + 1 kredensial hardcode tidak dibuat) |
+| 10 | v1.5.0 — Rate limit + audit + SOCKS5 | SELESAI 2026-11-11 (tes 63/63; rate limit 429 live, audit rotate+healer, SOCKS5 forward live, UDP ditolak 0x07) |
+| 11 | v1.6.0 — Scheduler otomatis | SELESAI 2026-11-11 (tes 66/66; live --sekali: 121.167 kandidat -> 0 hidup, 16,3 dtk) |
+| 12 | v1.7.0 — Blacklist + tier | SELESAI 2026-11-11 (tes 71/71; CLI blacklist live add/list/remove) |
+| 13 | v1.8.0 — Laporan | SELESAI 2026-11-11 (tes 74/74; live laporan jalan, 1 sumber terdeteksi mati) |
+| 14 | v1.9.0 — Doctor | SELESAI 2026-11-11 (tes 78/78; live: Sehat, 2 peringatan, 0 error) |
+| 15 | **v2.0.0 — Rilis mayor stabil** | SELESAI 2026-11-11 (tes 79/79; migrasi legacy webshare.json otomatis + docs/API.md + doctor; tanpa captcha solver / farm akun — tetap) |
 |---|---|---|
 | 0 | Persiapan: pelajari isi asli, tulis rencana ini, cek repo tujuan | `docs: rencana kerja Proxyx` |
 | 1 | Fondasi repo: struktur, README, LICENSE (MIT), .gitignore, pyproject, config sumber | `chore: fondasi repo Proxyx` |

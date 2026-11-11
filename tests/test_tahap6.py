@@ -82,6 +82,18 @@ def test_fetch_all_webshare_multi_key(monkeypatch):
     assert len(out) == 1  # dedup + akun mati dilewati
 
 
+def test_legacy_single_key_migrated_on_load(tmp_path, monkeypatch):
+    """v2.0.0: file {"api_key": ...} ditulis ulang ke {"api_keys": [...]}."""
+    import json as _json
+    monkeypatch.setattr(residential, "KEY_FILE", str(tmp_path / "webshare.json"))
+    monkeypatch.delenv("WEBSHARE_API_KEY", raising=False)
+    (tmp_path / "webshare.json").write_text(_json.dumps({"api_key": "lama"}))
+    assert residential.load_api_keys() == ["lama"]
+    data = _json.loads((tmp_path / "webshare.json").read_text())
+    assert data == {"api_keys": ["lama"]}
+    assert residential.load_api_keys() == ["lama"]  # idempotent
+
+
 def test_validate_api_key(monkeypatch):
     monkeypatch.setattr(residential, "fetch_webshare",
                         lambda k: [object()] if k == "bagus" else (_ for _ in ()).throw(ValueError("auth")))

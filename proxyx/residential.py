@@ -47,11 +47,14 @@ KEY_FILE = os.path.join(BASE_DIR, "config", "webshare.json")
 
 def load_api_keys() -> list[str]:
     """Semua API key: env WEBSHARE_API_KEY (satu, dipisah koma bila banyak)
-    + config/webshare.json lokal ({"api_keys": [...]} atau legacy
-    {"api_key": "..."}). File itu di-gitignore — jangan pernah commit key."""
+    + config/webshare.json lokal ({"api_keys": [...]}).
+    v2.0.0: format lama {"api_key": "..."} dimigrasi OTOMATIS ke format
+    list saat pertama dibaca (file ditulis ulang, isi key sama).
+    File itu di-gitignore — jangan pernah commit key."""
     keys: list[str] = []
     env = os.environ.get("WEBSHARE_API_KEY", "")
     keys += [k.strip() for k in env.split(",") if k.strip()]
+    migrated = False
     if os.path.exists(KEY_FILE):
         try:
             with open(KEY_FILE, encoding="utf-8") as f:
@@ -60,6 +63,7 @@ def load_api_keys() -> list[str]:
                 keys += [str(k).strip() for k in data["api_keys"] if str(k).strip()]
             elif data.get("api_key"):
                 keys.append(str(data["api_key"]).strip())
+                migrated = True
         except Exception:
             pass
     out, seen = [], set()
@@ -67,6 +71,14 @@ def load_api_keys() -> list[str]:
         if k not in seen:
             seen.add(k)
             out.append(k)
+    if migrated:
+        # Tulis ulang ke format v2.0.0 (diam-diam; tidak mengubah key).
+        try:
+            with open(KEY_FILE, "w", encoding="utf-8") as f:
+                json.dump({"api_keys": out}, f)
+            os.chmod(KEY_FILE, 0o600)
+        except Exception:
+            pass
     return out
 
 
