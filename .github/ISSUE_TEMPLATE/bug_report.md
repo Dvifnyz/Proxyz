@@ -7,12 +7,12 @@ labels: bug
 
 ## Deskripsi
 
-Jelasin bug-nya singkat aja.
+Jelaskan bug-nya dengan singkat dan jelas.
 
 ## Langkah reproduksi
 
 ```bash
-# perintah yang dijalanin
+# perintah yang dijalankan
 python -m proxyz ...
 ```
 
@@ -32,4 +32,4 @@ python -m proxyz ...
 (paste di sini)
 ```
 
-Jangan tempel API key, token, atau password apa pun.
+> Jangan tempel API key, token, atau password apa pun.

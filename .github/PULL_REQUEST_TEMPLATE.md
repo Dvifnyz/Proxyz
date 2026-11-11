@@ -1,6 +1,6 @@
 ## Ringkasan
 
-Jelasin perubahan ini dalam 1-3 kalimat.
+Jelaskan perubahan ini dalam 1-3 kalimat.
 
 ## Jenis perubahan
 
@@ -12,10 +12,10 @@ Jelasin perubahan ini dalam 1-3 kalimat.
 ## Checklist
 
 - [ ] `pytest -q` hijau
-- [ ] Tes baru ditambahin (buat fitur/bugfix)
-- [ ] README / CHANGELOG diupdate kalau perlu
-- [ ] Nggak ada rahasia (API key, token, password) yang ke-commit
+- [ ] Tes baru ditambahkan (untuk fitur/bugfix)
+- [ ] README / CHANGELOG diperbarui bila perlu
+- [ ] Tidak ada rahasia (API key, token, password) yang ter-commit
 
 ## Issue terkait
 
-Closes # (kalau ada)
+Closes # (bila ada)
