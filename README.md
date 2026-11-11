@@ -1,0 +1,81 @@
+# ⚡ Proxyx
+
+**Panen proxy gratis → cek → gateway lokal berputar → WARP. Lebih cepat dan lebih lengkap dari pendahulunya, tetap gampang dipakai.**
+
+Proxyx ditulis dari nol (bukan fork), terinspirasi
+[PetaniProxy](https://github.com/itzluthfi/petani-proxy) (`itzluthfi/petani-proxy`, MIT).
+Ia mengambil ide intinya — panen sumber publik, cek, gateway lokal, WARP —
+lalu membangunnya ulang dengan mesin async, checker yang mengukur anonimitas
+dan skor, gateway yang mendukung SOCKS5 upstream, dan auto-healer.
+
+> Status: 🚧 dibangun bertahap — lihat [RENCANA_KERJA.md](RENCANA_KERJA.md)
+> untuk tahapan dan progres. Tahap 0–1 selesai.
+
+## Kenapa Proxyx?
+
+|  | PetaniProxy v1.2.0 | Proxyx v1.0.0 |
+|---|---|---|
+| Panen | 30+ sumber | 35 sumber, segar didahulukan |
+| Cek | hidup/mati, <350 ms | + anonimitas (elite/anon/transparan), geo, skor 0–100 |
+| Gateway | HTTP, port 8888 | HTTP + HTTPS CONNECT + SOCKS5 upstream, sticky session, routing per negara |
+| Auto-healer | ada | ada, + isi ulang otomatis dari sumber segar |
+| API | 3 endpoint | status, proxies, random, stats, metrics |
+| Ekspor | txt/json/csv | + Clash YAML |
+| Dependency | 13 (termasuk browser automation + speech recognition) | 2 inti (`aiohttp`, `cryptography`) |
+| Captcha solver / auto-daftar akun | ada (rapuh, gampang diblokir) | **tidak ada** — residential via input manual |
+
+## Cara pakai
+
+```bash
+git clone https://github.com/Dvifnyz/Proxyz.git
+cd Proxyz
+pip install -r requirements.txt
+python -m proxyx
+```
+
+Pilih menu, atau langsung lewat CLI:
+
+```bash
+python -m proxyx panen --jumlah 20 --negara ID
+python -m proxyx gateway --port 8888
+python -m proxyx warp
+```
+
+Pakai gateway di program lain:
+
+```bash
+curl -x http://127.0.0.1:8888 http://api.ipify.org
+```
+
+```python
+import requests
+proxies = {"http": "http://127.0.0.1:8888", "https": "http://127.0.0.1:8888"}
+print(requests.get("https://api.ipify.org?format=json", proxies=proxies, timeout=10).json())
+```
+
+## Fitur
+
+- 🌾 **Harvester async** — 35 sumber publik (HTTP/SOCKS4/SOCKS5), sumber segar dicek duluan
+- 🔍 **Checker** — latency, anonimitas, negara, skor; berhenti otomatis kalau target tercapai
+- 🔄 **Gateway rotating** — `127.0.0.1:8888`, round-robin, retry 3x, sticky session, routing negara
+- ❤️ **Auto-healer** — buang proxy mati, isi ulang otomatis
+- 🌐 **REST API + dashboard** — `/api/status`, `/api/proxies`, `/api/random`, `/api/stats`, `/metrics`
+- ☁️ **WARP** — akun Cloudflare WARP resmi → WireGuard `.conf` + Sing-box JSON
+- 📦 **Ekspor** — TXT, JSON, CSV, Clash YAML
+- 🐳 **Docker** — `docker compose up -d`
+
+## Yang sengaja tidak ada
+
+Tanpa pemecah captcha, tanpa auto-daftar akun, tanpa bypass Turnstile/anti-bot.
+Butuh IP residential? Daftar manual di penyedia (mis. webshare.io, gratis 10 IP),
+tempel `user:pass@ip:port` ke `output/proxy_manual.txt` — gateway ikut memakainya.
+
+## Jujur soal gratisan
+
+Proxy publik gratis berubah-ubah: hari ini hidup, besok mati. Panen ulang tiap
+mau pakai. Jangan pakai proxy publik untuk login akun penting / transaksi.
+
+## Lisensi
+
+MIT — lihat [LICENSE](LICENSE). Terima kasih kepada `itzluthfi/petani-proxy`
+atas ide awalnya.

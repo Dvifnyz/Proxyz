@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "proxyx"
+version = "1.0.0"
+description = "Panen proxy gratis, cek anonimitas, gateway lokal berputar, dan WARP — lebih cepat dan lebih lengkap."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Rasya Andrean" }]
+requires-python = ">=3.9"
+dependencies = [
+    "aiohttp>=3.9.0",
+    "cryptography>=41.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23"]
+
+[project.scripts]
+proxyx = "proxyx.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["proxyx*"]
