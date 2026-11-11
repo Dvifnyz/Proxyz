@@ -4,6 +4,19 @@ Semua perubahan penting Proxyz dicatat di sini, mengikuti
 [Keep a Changelog](https://keepachangelog.com/id/1.1.0/) dan
 [Semantic Versioning](https://semver.org/lang/id/).
 
+## [2.1.2] - 2026-11-11
+
+### Dihapus
+
+- Shim kompatibilitas `proxyx` dihapus total: paket `proxyx/`,
+  perintah `proxyx`, `python -m proxyx`, `import proxyx`, fallback
+  env `PROXYX_TOKEN`, header `X-Proxyx-Token`, dan pembersihan
+  baris 9Router bertanda `Proxyx`. Cuma ada satu nama sekarang:
+  Proxyz. `docs/MIGRASI-2.1.md` ikut dihapus (sudah tidak ada
+  yang dimigrasikan).
+- File `.coverage` yang sempat ke-commit ikut dihapus dari git
+  (sudah ada di `.gitignore`).
+
 ## [2.1.1] - 2026-11-11
 
 ### Diperbaiki
@@ -36,14 +49,12 @@ Semua perubahan penting Proxyz dicatat di sini, mengikuti
 ### Diubah (breaking)
 
 - **Nama tool diganti dari Proxyx menjadi Proxyz** (paket, CLI,
-  config, env, header). Perintah lama `proxyx` dan `import proxyx`
-  masih jalan sampai v3.0.0 sebagai shim deprecated (lihat
-  [docs/MIGRASI-2.1.md](docs/MIGRASI-2.1.md)).
+  config, env, header). Perintah lama `proxyx` sempat dipertahankan
+  sebagai shim deprecated, lalu dihapus di v2.1.2.
 - `config/proxyx.json` -> `config/proxyz.json`.
-- Env `PROXYX_TOKEN` -> `PROXYZ_TOKEN` (nama lama tetap dibaca).
-- Header `X-Proxyx-Token` -> `X-Proxyz-Token` (nama lama tetap dibaca).
-- Baris 9Router kini ditandai `Proxyz`; `--ganti` membersihkan baris
-  nama lama `Proxyx` juga.
+- Env `PROXYX_TOKEN` -> `PROXYZ_TOKEN`.
+- Header `X-Proxyx-Token` -> `X-Proxyz-Token`.
+- Baris 9Router kini ditandai `Proxyz`.
 
 ### Ditambahkan
 

@@ -27,7 +27,14 @@ def test_main_module_version():
                          capture_output=True, text=True, timeout=30,
                          check=False)
     assert out.returncode == 0
-    assert out.stdout.strip().startswith("proxyz 2.1.1")
+    assert out.stdout.strip().startswith("proxyz 2.1.2")
+
+
+def test_no_proxyx_package():
+    """v2.1.2: shim `proxyx` dihapus — cuma ada satu nama, Proxyz.
+    `import proxyx` harus gagal, bukan diam-diam jalan."""
+    import importlib.util
+    assert importlib.util.find_spec("proxyx") is None
 
 
 def test_compat_shim_shared():

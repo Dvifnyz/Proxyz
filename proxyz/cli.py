@@ -259,7 +259,6 @@ def _cmd_bench(a):
 
 
 def _cmd_doctor(a):
-    import sys
 
     from .doctor import print_doctor, run_doctor
     result = run_doctor(check_gateway=not a.no_gateway)
@@ -332,7 +331,6 @@ def _cmd_sync_9router(a):
 
 
 def _cmd_install_service(a):
-    import sys
 
     from .config import load_config
     from .installer import generate
@@ -508,10 +506,6 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv=None) -> None:
-    if os.path.basename(sys.argv[0]).startswith("proxyx"):
-        print("Peringatan: perintah 'proxyx' sudah berganti nama menjadi "
-              "'proxyz' (v2.1.0). Pakai 'proxyz' untuk seterusnya.",
-              file=sys.stderr)
     parser = build_parser()
     args = parser.parse_args(argv)
     if not getattr(args, "func", None):

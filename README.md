@@ -12,16 +12,11 @@
 [![Last commit](https://img.shields.io/github/last-commit/Dvifnyz/Proxyz)](https://github.com/Dvifnyz/Proxyz/commits/main)
 [![Issues](https://img.shields.io/github/issues/Dvifnyz/Proxyz)](https://github.com/Dvifnyz/Proxyz/issues)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Tests](https://img.shields.io/badge/tests-83%20passed-brightgreen)](#pengembangan)
+[![Tests](https://img.shields.io/badge/tests-97%20passed-brightgreen)](#pengembangan)
 
 [📖 Dokumentasi](docs/API.md) · [📋 Changelog](CHANGELOG.md) · [🤝 Berkontribusi](CONTRIBUTING.md) · [🔒 Keamanan](SECURITY.md)
 
 </div>
-
-> **Nama baru di v2.1.0:** tool ini sebelumnya bernama **Proxyx**.
-> Perintah `proxyx` dan `import proxyx` masih jalan sampai v3.0.0,
-> tapi sudah deprecated — pakai `proxyz`. Panduan migrasi:
-> [docs/MIGRASI-2.1.md](docs/MIGRASI-2.1.md).
 
 ## Highlights
 
@@ -270,10 +265,9 @@ Proxyz/
 │   ├── doctor.py        # diagnosa instalasi
 │   ├── updater.py       # update aman via pip
 │   └── ...              # blacklist, tiers, config, installer
-├── proxyx/              # shim deprecated (hapus di v3.0.0)
 ├── config/              # sources.json, proxyz.json, blacklist.txt
 ├── docs/                # API, ARSITEKTUR, MIGRASI, STUDI
-├── tests/               # 83 tes (pytest)
+├── tests/               # 97 tes (pytest)
 ├── Dockerfile           # gateway di Docker
 └── README.md
 ```
@@ -331,7 +325,6 @@ membuka issue.
 - [ ] Mode `proxyz serve` — gateway + auto dalam satu proses
 - [ ] Ekspor Surge / Shadowrocket
 - [ ] Dashboard v3 — grafik latensi & riwayat pool
-- [ ] Hapus shim `proxyx` di v3.0.0
 
 Punya ide lain? Buka [issue fitur](.github/ISSUE_TEMPLATE/feature_request.md).
 
@@ -342,7 +335,7 @@ git clone https://github.com/Dvifnyz/Proxyz.git
 cd Proxyz
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
-pytest -q            # 83 tes
+pytest -q            # 97 tes
 python -m proxyz doctor
 ```
 

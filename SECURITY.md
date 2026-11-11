@@ -31,7 +31,7 @@ CHANGELOG.
   di-commit (`.gitignore`).
 - **Sinkronisasi 9Router** tidak pernah menghapus data orang lain:
   insert-only, backup dulu, `--ganti` hanya menghapus baris
-  bertanda Proxyz/Proxyx.
+  bertanda Proxyz.
 
 ## Yang di luar cakupan
 

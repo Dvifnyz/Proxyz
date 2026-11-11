@@ -38,8 +38,6 @@ DEFAULTS = {
 
 ENV_MAP = {
     "GATEWAY_PORT": ("gateway_port", int),
-    # PROXYX_TOKEN = nama lama (v2.x), tetap dibaca; PROXYZ_TOKEN menang bila keduanya ada.
-    "PROXYX_TOKEN": ("token", str),
     "PROXYZ_TOKEN": ("token", str),
     "HEALER_INTERVAL": ("healer_interval", int),
     "MIN_HEALTHY": ("min_healthy", int),

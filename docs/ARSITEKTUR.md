@@ -90,7 +90,7 @@ flowchart LR
 - Menulis pool ke tabel `proxyPools` SQLite 9Router.
 - Aman: backup DB dulu, insert-only secara default, dedup
   berdasarkan `proxyUrl`, `--ganti` hanya menghapus baris yang
-  ditandai `Proxyz`/`Proxyx` (milik tool ini sendiri).
+  ditandai `Proxyz` (milik tool ini sendiri).
 
 ### Pendukung
 

@@ -337,8 +337,6 @@ def make_handler(pool: Pool, token: str = "", refill_fn=None,
                 return True
             if self.headers.get("X-Proxyz-Token") == token:
                 return True
-            if self.headers.get("X-Proxyx-Token") == token:  # header lama (v2.x)
-                return True
             q = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
             return q.get("token", [""])[0] == token
 
@@ -752,10 +750,8 @@ def serve(pool: Pool, port: int = 8888, token: str = "", refill_fn=None,
           healer: bool = True, healer_interval: int = 90,
           rate_limit_per_min: int = 60, audit_path: str | None = None,
           socks_port: int = 0):
-    """Jalankan gateway (blocking). Token dari env PROXYZ_TOKEN bila ada
-    (PROXYX_TOKEN lama tetap dibaca sebagai fallback)."""
-    token = (token or os.environ.get("PROXYZ_TOKEN", "")
-             or os.environ.get("PROXYX_TOKEN", ""))
+    """Jalankan gateway (blocking). Token dari env PROXYZ_TOKEN bila ada."""
+    token = token or os.environ.get("PROXYZ_TOKEN", "")
     handler = make_handler(pool, token=token, refill_fn=refill_fn,
                            rate_limit_per_min=rate_limit_per_min,
                            audit_path=audit_path)

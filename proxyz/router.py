@@ -80,11 +80,9 @@ def sync_to_9router(proxies: list[Proxy], db_path: str,
         now_iso = datetime.now(timezone.utc).isoformat()
         deleted = 0
         if replace:
-            # Hapus baris milik tool ini — nama baru "Proxyz" maupun
-            # nama lama "Proxyx" (v2.x) — dan hanya itu.
+            # Hapus HANYA baris milik tool ini (bertanda "Proxyz").
             cur = conn.execute(
-                "DELETE FROM proxyPools WHERE data LIKE '%\"name\": \"Proxyz%'"
-                " OR data LIKE '%\"name\": \"Proxyx%'")
+                "DELETE FROM proxyPools WHERE data LIKE '%\"name\": \"Proxyz%'")
             deleted = cur.rowcount
         existing = {row[0] for row in conn.execute(
             "SELECT json_extract(data, '$.proxyUrl') FROM proxyPools")}

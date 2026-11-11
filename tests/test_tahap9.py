@@ -54,17 +54,15 @@ def test_sync_replace_only_own_rows(tmp_path):
     _make_db(db)
     conn = sqlite3.connect(db)
     # Baris "orang lain" + baris unknown — harus selamat dari --ganti.
-    # Baris nama lama "Proxyx" (v2.x) ikut dibersihkan karena itu milik tool ini.
     for name, url in [("Router Bawaan", "http://9.9.9.9:8080"),
-                      ("Lain", "http://8.8.8.8:8080"),
-                      ("Proxyx [ID] 7.7.7.7:8080 (http)", "http://7.7.7.7:8080")]:
+                      ("Lain", "http://8.8.8.8:8080")]:
         conn.execute("INSERT INTO proxyPools VALUES (?,?,?,?,?,?)",
                      ("x", 1, "unknown", json.dumps({"name": name, "proxyUrl": url}),
                       "t", "t"))
     conn.commit(); conn.close()
     router.sync_to_9router(_proxies(), db)
     r = router.sync_to_9router(_proxies(), db, replace=True)
-    assert r["deleted"] == 3  # 2 baris Proxyz + 1 baris nama lama Proxyx
+    assert r["deleted"] == 2  # hanya 2 baris Proxyz
     assert r["inserted"] == 2
     conn = sqlite3.connect(db)
     total = conn.execute("SELECT COUNT(*) FROM proxyPools").fetchone()[0]
