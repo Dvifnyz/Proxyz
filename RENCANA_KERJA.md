@@ -47,6 +47,8 @@
 
 | Tahap | Isi | Commit |
 |---|---|---|
+| 6 | Ketahanan & skala: skor kesehatan sumber + backoff, residential multi-akun + signup semi-otomatis (validasi key live), healer probe HTTP beneran | `feat: tahap 6 — source health, multi-akun, healer HTTP` — SELESAI 2026-11-11 (tes 43/43; panen live 69.101 kandidat + tabel sumber; key palsu ditolak live; healer live: proxy mati dibuang, yang hidup dipertahankan) |
+|---|---|---|
 | 0 | Persiapan: pelajari isi asli, tulis rencana ini, cek repo tujuan | `docs: rencana kerja Proxyx` |
 | 1 | Fondasi repo: struktur, README, LICENSE (MIT), .gitignore, pyproject, config sumber | `chore: fondasi repo Proxyx` |
 | 2 | Harvester + checker async (sumber 35+, anonimitas, geo, skor) + tes + residential via API resmi | `feat: harvester & checker async` — SELESAI 2026-11-11 (tes 18/18, panen live 69.063 HTTP/9,8 dtk) |

@@ -20,12 +20,14 @@ import base64
 import http.client
 import json
 import os
+import re
 import select
 import socket
 import ssl
 import threading
 import time
 import urllib.parse
+import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from .models import Proxy
@@ -132,6 +134,25 @@ def start_healer(pool: Pool, interval: int = 90, min_healthy: int = 5,
     last_refill = 0.0
 
     def probe(p: Proxy) -> str | None:
+        """Mati = kembalikan hostport. HTTP dicek BENAR-BENAR (GET ipify
+        lewat proxy, timeout 4 dtk) — bukan cuma port kebuka, karena
+        port kebuka belum tentu proxy-nya masih melayani request.
+        SOCKS dicek via TCP (cek HTTP penuh sudah dilakukan checker)."""
+        if p.protocol == "http":
+            try:
+                h = urllib.request.ProxyHandler(
+                    {"http": p.url, "https": p.url})  # p.url sudah berisi skema
+                opener = urllib.request.build_opener(h)
+                req = urllib.request.Request(
+                    "http://api.ipify.org",
+                    headers={"User-Agent": "Proxyx/1.0"})
+                with opener.open(req, timeout=4) as r:
+                    if re.fullmatch(r"\d+\.\d+\.\d+\.\d+",
+                                    r.read().decode().strip() or ""):
+                        return None
+            except Exception:
+                return p.hostport
+            return p.hostport
         try:
             with socket.create_connection((p.ip, p.port), timeout=2):
                 return None
@@ -174,13 +195,11 @@ def load_pool_from_disk() -> list[Proxy]:
             seen.add(p.hostport)
             out.append(p)
 
-    # 1. Webshare via API resmi (bila key tersedia)
+    # 1. Webshare via API resmi (semua akun, bila key tersedia)
     try:
-        from .residential import fetch_webshare, load_api_key, load_manual
-        key = load_api_key()
-        if key:
-            for p in fetch_webshare(key):
-                _add(p)
+        from .residential import fetch_all_webshare, load_manual
+        for p in fetch_all_webshare():
+            _add(p)
         for p in load_manual():
             _add(p)
     except Exception:

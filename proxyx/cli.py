@@ -103,37 +103,72 @@ def _cmd_warp(a):
 
 
 def _cmd_residential(a):
-    from .residential import (fetch_webshare, guided_signup, load_api_key,
-                              load_manual, save_api_key)
+    from .residential import (fetch_all_webshare, fetch_webshare,
+                              guided_signup, load_api_keys, load_manual,
+                              save_api_key, validate_api_key)
     if a.signup:
+        # Semi-otomatis: semua langkah otomatis KECUALI captcha-nya,
+        # yang diisi sendiri oleh pengguna sekali saat daftar.
         pw = guided_signup(open_browser=True)
-        print("\n  📝 Daftar manual di https://proxy.webshare.io/register")
-        print(f"  Password yang disarankan (simpan baik-baik): {pw}")
-        print("  Isi captcha sendiri, lalu ambil API key dari dashboard.")
+        print("\n  📝 Pendaftaran dibuka di browser:")
+        print("  1. Isi email + password di bawah, selesaikan captcha sendiri.")
+        print(f"     Password yang disarankan (simpan baik-baik): {pw}")
+        print("  2. Setelah masuk dashboard, salin API key-mu.")
+        try:
+            key = input("  Tempel API key dari dashboard (Enter = lewati): ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            return
+        if not key:
+            print("  Nanti bisa ditambah dengan: python -m proxyx residential --api-key KUNCIMU")
+            return
+        ok, info = validate_api_key(key)
+        if ok:
+            save_api_key(key)
+            print(f"  ✓ Key valid ({info}) — disimpan lokal (config/webshare.json, 0600).")
+        else:
+            print(f"  ✗ Key tidak valid: {info}")
         return
-    key = a.api_key or load_api_key()
     if a.api_key:
-        save_api_key(a.api_key)
-        print("  ✓ API key disimpan lokal (config/webshare.json, 0600).")
-    if not key:
+        ok, info = validate_api_key(a.api_key)
+        if ok:
+            save_api_key(a.api_key)
+            print(f"  ✓ API key valid ({info}) — disimpan lokal.")
+        else:
+            print(f"  ✗ API key tidak valid: {info}")
+            return
+    keys = load_api_keys()
+    if not keys:
         print("  ✗ Belum ada API key. Jalankan: python -m proxyx residential --signup")
-        print("    lalu: python -m proxyx residential --api-key KUNCIMU")
         return
-    try:
-        proxies = fetch_webshare(key)
-    except ValueError:
-        print("  ✗ API key ditolak Webshare. Periksa lagi key-nya.")
-        return
-    except RuntimeError as e:
-        print(f"  ✗ {e}")
-        return
+    all_proxies = []
+    for i, key in enumerate(keys, 1):
+        try:
+            got = fetch_webshare(key)
+            print(f"  ✅ Akun {i}: {len(got)} proxy residential")
+            all_proxies += got
+        except Exception as e:
+            print(f"  ✗ Akun {i}: gagal ({e})")
     manual = load_manual()
-    print(f"  ✅ Webshare: {len(proxies)} proxy residential | manual: {len(manual)}")
-    for p in proxies[:10]:
+    print(f"  Manual: {len(manual)} proxy | Total residential: {len(all_proxies) + len(manual)}")
+    for p in (all_proxies + manual)[:10]:
         print(f"    • {p.url} [{p.country_code}]")
-    if proxies or manual:
+    if all_proxies or manual:
         from .exporter import export_all
-        export_all(proxies + manual, OUT_DIR)
+        export_all(all_proxies + manual, OUT_DIR)
+
+
+def _cmd_sources(a):
+    from .harvester import health_report
+    rows = health_report()
+    if not rows:
+        print("  Belum ada riwayat panen. Jalankan `python -m proxyx panen` dulu.")
+        return
+    print(f"\n  {'SUMBER':50} {'HASIL':>8} {'GAGAL':>6}  STATUS")
+    for r in rows:
+        status = "ISTIRAHAT" if r.get("fails", 0) >= 3 else "aktif"
+        print(f"  {r['url'][:50]:50} {r.get('yield', 0):>8} {r.get('fails', 0):>6}  {status}")
+    print("  (sumber yang gagal 3x beruntun diistirahatkan 1 jam)")
 
 
 def _menu():
@@ -210,8 +245,10 @@ def build_parser() -> argparse.ArgumentParser:
     sw.set_defaults(func=_cmd_warp)
     sr = sub.add_parser("residential", help="proxy residential Webshare")
     sr.add_argument("--api-key", default="")
-    sr.add_argument("--signup", action="store_true", help="panduan daftar manual")
+    sr.add_argument("--signup", action="store_true", help="daftar semi-otomatis + simpan key")
     sr.set_defaults(func=_cmd_residential)
+    ss = sub.add_parser("sources", help="lihat kesehatan sumber panen")
+    ss.set_defaults(func=_cmd_sources)
     return p
 
 

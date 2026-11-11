@@ -45,31 +45,80 @@ MANUAL_FILE = os.path.join(BASE_DIR, "output", "proxy_manual.txt")
 KEY_FILE = os.path.join(BASE_DIR, "config", "webshare.json")
 
 
-def load_api_key() -> str:
-    """API key dari env WEBSHARE_API_KEY, atau config/webshare.json lokal
-    (file itu di-gitignore — jangan pernah commit API key)."""
-    key = os.environ.get("WEBSHARE_API_KEY", "").strip()
-    if key:
-        return key
+def load_api_keys() -> list[str]:
+    """Semua API key: env WEBSHARE_API_KEY (satu, dipisah koma bila banyak)
+    + config/webshare.json lokal ({"api_keys": [...]} atau legacy
+    {"api_key": "..."}). File itu di-gitignore — jangan pernah commit key."""
+    keys: list[str] = []
+    env = os.environ.get("WEBSHARE_API_KEY", "")
+    keys += [k.strip() for k in env.split(",") if k.strip()]
     if os.path.exists(KEY_FILE):
         try:
             with open(KEY_FILE, encoding="utf-8") as f:
-                return str(json.load(f).get("api_key", "")).strip()
+                data = json.load(f)
+            if isinstance(data.get("api_keys"), list):
+                keys += [str(k).strip() for k in data["api_keys"] if str(k).strip()]
+            elif data.get("api_key"):
+                keys.append(str(data["api_key"]).strip())
         except Exception:
-            return ""
-    return ""
+            pass
+    out, seen = [], set()
+    for k in keys:
+        if k not in seen:
+            seen.add(k)
+            out.append(k)
+    return out
+
+
+def load_api_key() -> str:
+    """Satu key pertama (kompatibilitas lama)."""
+    keys = load_api_keys()
+    return keys[0] if keys else ""
 
 
 def save_api_key(key: str) -> str:
-    """Simpan key secara lokal saja (config/webshare.json, bukan repo)."""
+    """Tambah key ke daftar lokal (config/webshare.json, 0600, bukan repo).
+    Key yang sama tidak disimpan dua kali."""
+    keys = load_api_keys()
+    if key not in keys:
+        keys.append(key)
     os.makedirs(os.path.dirname(KEY_FILE), exist_ok=True)
     with open(KEY_FILE, "w", encoding="utf-8") as f:
-        json.dump({"api_key": key}, f)
+        json.dump({"api_keys": keys}, f)
     try:
         os.chmod(KEY_FILE, 0o600)
     except Exception:
         pass
     return KEY_FILE
+
+
+def validate_api_key(key: str) -> tuple[bool, str]:
+    """Validasi key SECARA LIVE ke API Webshare. Kembalikan
+    (True, 'N proxy') atau (False, 'alasan')."""
+    try:
+        proxies = fetch_webshare(key)
+        return True, f"{len(proxies)} proxy"
+    except ValueError:
+        return False, "API key ditolak Webshare (401/403)"
+    except RuntimeError as e:
+        return False, str(e)
+
+
+def fetch_all_webshare(keys: list[str] | None = None) -> list[Proxy]:
+    """Tarik proxy dari SEMUA akun Webshare (multi-akun) + dedup.
+    Akun yang key-nya mati dilewati diam-diam (akun lain tetap jalan)."""
+    keys = keys if keys is not None else load_api_keys()
+    out: list[Proxy] = []
+    seen: set[str] = set()
+    for key in keys:
+        try:
+            for p in fetch_webshare(key):
+                if p.hostport not in seen:
+                    seen.add(p.hostport)
+                    out.append(p)
+        except Exception:
+            continue
+    return out
 
 
 def fetch_webshare(api_key: str, timeout: float = 15.0) -> list[Proxy]:

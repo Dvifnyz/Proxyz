@@ -8,7 +8,7 @@ Ia mengambil ide intinya — panen sumber publik, cek, gateway lokal, WARP —
 lalu membangunnya ulang dengan mesin async, checker yang mengukur anonimitas
 dan skor, gateway yang mendukung SOCKS5 upstream, dan auto-healer.
 
-> Status: ✅ **v1.0.0 rilis** — semua tahap selesai, tes 34/34.
+> Status: ✅ **v1.1.0 rilis** — Tahap 6 selesai, tes 43/43.
 > Detail tahapan di [RENCANA_KERJA.md](RENCANA_KERJA.md).
 
 ## Kenapa Proxyx?
@@ -68,14 +68,15 @@ print(requests.get("https://api.ipify.org?format=json", proxies=proxies, timeout
 
 Residential tetap didukung — lewat jalur resmi, bukan farm akun:
 
-1. Daftar **satu** akun di [proxy.webshare.io/register](https://proxy.webshare.io/register)
-   (captcha diisi sendiri sekali, 30 detik), gratis 10 IP.
-2. Ambil API key dari dashboard Webshare, lalu:
-   ```bash
-   export WEBSHARE_API_KEY="kuncimu"
-   python -m proxyx residential   # menarik proxymu via API resmi
-   ```
-   Atau tempel proxy apa pun (`proto://user:pass@ip:port`) ke
+1. Jalankan `python -m proxyx residential --signup` — tool membukakan
+   halaman daftar + menyiapkan password kuat. Kamu isi form dan captcha
+   sendiri sekali (30 detik), lalu tempel API key dari dashboard ke
+   terminal — tool memvalidasi key itu **langsung** ke API Webshare
+   dan menyimpannya bila valid. Semua langkah lain otomatis.
+2. Punya lebih dari satu akun? Ulangi `--signup` / `--api-key` —
+   Proxyx memakai **semua** akun (multi-akun, digabung ke satu pool).
+   Atau set env: `export WEBSHARE_API_KEY="key1,key2"`.
+3. Atau tempel proxy apa pun (`proto://user:pass@ip:port`) ke
    `output/proxy_manual.txt` — gateway ikut memakainya, residential
    diprioritaskan di pool.
 
