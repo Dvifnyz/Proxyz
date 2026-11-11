@@ -229,6 +229,21 @@ def _cmd_bench(a):
     print(f"  💾 Tersimpan: {path}")
 
 
+def _cmd_auto(a):
+    from .config import load_config
+    from .scheduler import LOG_PATH, run_scheduler
+    cfg = load_config()
+    interval = a.interval if a.interval else cfg["schedule_interval_min"]
+    target = a.jumlah if a.jumlah else cfg["schedule_target"]
+    print(f"\n  🔁 Mode auto: siklus tiap {interval} menit, target {target} hidup.")
+    print("  Ctrl+C untuk berhenti.\n")
+    try:
+        run_scheduler(interval_min=interval, target=target,
+                      once=a.sekali, log_path=LOG_PATH)
+    except KeyboardInterrupt:
+        print("\n  Auto berhenti.")
+
+
 def _cmd_sync_9router(a):
     from .gateway import load_pool_from_disk
     from .router import find_9router_db, sync_to_9router
@@ -407,6 +422,11 @@ def build_parser() -> argparse.ArgumentParser:
     si = sub.add_parser("install-service", help="buat file service (systemd + Windows Task)")
     si.add_argument("--port", type=int, default=0, help="0 = pakai config/proxyx.json")
     si.set_defaults(func=_cmd_install_service)
+    sa = sub.add_parser("auto", help="panen + cek + ekspor berkala, tanpa henti")
+    sa.add_argument("--interval", type=float, default=0, help="menit antar siklus (0 = config)")
+    sa.add_argument("--jumlah", type=int, default=0, help="target hidup per siklus (0 = config)")
+    sa.add_argument("--sekali", action="store_true", help="satu siklus saja (untuk cron)")
+    sa.set_defaults(func=_cmd_auto)
     sw = sub.add_parser("warp", help="buat profil WARP WireGuard")
     sw.add_argument("--jumlah", type=int, default=1)
     sw.set_defaults(func=_cmd_warp)
